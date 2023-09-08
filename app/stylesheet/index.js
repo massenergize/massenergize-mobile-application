@@ -1,1 +1,1 @@
-export const ME_ORANGE = '#fd7e14';
+export const ME_ORANGE = '#d44b4b';
