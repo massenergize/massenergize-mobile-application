@@ -4,29 +4,13 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import auth from '@react-native-firebase/auth';
-import {toggleUniversalModalAction} from '../../config/redux/actions';
+import {
+  setFirebaseAuthenticationAction,
+  signOutAction,
+  toggleUniversalModalAction,
+} from '../../config/redux/actions';
 
-GoogleSignin.configure({
-  webClientId:
-    '738582671182-6b94m9ot6jq3srhglag94atpjrhnhc7g.apps.googleusercontent.com',
-});
-
-const Login = ({toggleModal}) => {
-  // const [show, setShow] = useState(false);
-
-  useEffect(() => {
-    const subscriber = auth().onAuthStateChanged(user => {
-      if (user) {
-        // User is signed in.
-        console.log('User is signed in:', user.displayName);
-      } else {
-        // No user is signed in.
-        console.log('No user is signed in');
-      }
-    });
-
-    return subscriber; 
-  }, []);
+const Login = ({toggleModal, fireAuth, signMeOut, setFireAuth}) => {
   const signInWithGoogle = async () => {
     try {
       await GoogleSignin.hasPlayServices();
@@ -38,7 +22,8 @@ const Login = ({toggleModal}) => {
       );
 
       // Sign-in to Firebase with the Google credential
-      await auth().signInWithCredential(googleCredential);
+      const response = await auth().signInWithCredential(googleCredential);
+      setFireAuth(response?.user);
     } catch (error) {
       console.error('Google Sign-In Error:', error);
     }
@@ -52,13 +37,22 @@ const Login = ({toggleModal}) => {
         alignItems: 'center',
         justifyContent: 'center',
       }}>
+      <Text style={{fontWeight: 'bold', marginBottom: 10}}>
+        Welcome, {fireAuth?.displayName || '...'}
+      </Text>
       <TouchableOpacity
         onPress={() => signInWithGoogle()}
         style={{
           padding: 15,
           backgroundColor: 'red',
+          marginBottom: 10,
         }}>
-        <Text style={{textAlign: 'center', color: 'white', fontWeight: 'bold'}}>
+        <Text
+          style={{
+            textAlign: 'center',
+            color: 'white',
+            fontWeight: 'bold',
+          }}>
           LOG ME IN
         </Text>
       </TouchableOpacity>
@@ -77,16 +71,31 @@ const Login = ({toggleModal}) => {
           TEST MODAL
         </Text>
       </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => signMeOut()}
+        style={{
+          padding: 15,
+          backgroundColor: 'blue',
+          marginTop: 10,
+        }}>
+        <Text style={{textAlign: 'center', color: 'white', fontWeight: 'bold'}}>
+          SIGN ME OUT
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 };
 
-const mapStateToProps = state => ({});
+const mapStateToProps = state => ({
+  fireAuth: state.fireAuth,
+});
 
 const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
       toggleModal: toggleUniversalModalAction,
+      signMeOut: signOutAction,
+      setFireAuth: setFirebaseAuthenticationAction,
     },
     dispatch,
   );
