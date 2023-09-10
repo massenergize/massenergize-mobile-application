@@ -8,6 +8,7 @@ import {Text, View, TouchableOpacity, Image, Button} from 'react-native';
 import {ME_ORANGE} from '../../stylesheet';
 import AboutUsScreen from '../../pages/about/AboutUsScreen';
 import ContactUsScreen from '../../pages/contact-us/ContactUsScreen';
+import Login from '../../pages/auth/Login';
 
 const Drawer = createDrawerNavigator();
 
@@ -165,9 +166,10 @@ const CustomDrawerContent = ({navigation}) => {
 const MEDrawerNavigator = ({}) => {
   return (
     <Drawer.Navigator
-      initialRouteName="Community"
+      initialRouteName="Login"
       drawerContent={props => <CustomDrawerContent {...props} />}
       drawerStyle={{width: 250}}>
+      <Drawer.Screen name="Login" component={Login} />
       <Drawer.Screen name="Community" component={HomeScreen} />
       <Drawer.Screen name="About" component={AboutUsScreen} />
       <Drawer.Screen name="Testimonials" component={HomeScreen} />
