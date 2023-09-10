@@ -1,19 +1,20 @@
 import {View, Text, TouchableOpacity} from 'react-native';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import auth from '@react-native-firebase/auth';
+import {toggleUniversalModalAction} from '../../config/redux/actions';
 
 GoogleSignin.configure({
   webClientId:
     '738582671182-6b94m9ot6jq3srhglag94atpjrhnhc7g.apps.googleusercontent.com',
 });
 
-const Login = () => {
+const Login = ({toggleModal}) => {
+  // const [show, setShow] = useState(false);
+
   useEffect(() => {
-    console.log("JUST ENTERED USEEFFECT")
-    // Check if the user is already signed in (for auto-login)
     const subscriber = auth().onAuthStateChanged(user => {
       if (user) {
         // User is signed in.
@@ -24,7 +25,7 @@ const Login = () => {
       }
     });
 
-    return subscriber; // Unsubscribe on unmount
+    return subscriber; 
   }, []);
   const signInWithGoogle = async () => {
     try {
@@ -46,7 +47,6 @@ const Login = () => {
     <View
       style={{
         height: '100%',
-        // backgroundColor: 'green',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -62,6 +62,21 @@ const Login = () => {
           LOG ME IN
         </Text>
       </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() =>
+          toggleModal({
+            isVisible: true,
+            component: <Text>This is the test modal my gee</Text>,
+          })
+        }
+        style={{
+          padding: 15,
+          backgroundColor: 'green',
+        }}>
+        <Text style={{textAlign: 'center', color: 'white', fontWeight: 'bold'}}>
+          TEST MODAL
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -69,7 +84,12 @@ const Login = () => {
 const mapStateToProps = state => ({});
 
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators({}, dispatch);
+  return bindActionCreators(
+    {
+      toggleModal: toggleUniversalModalAction,
+    },
+    dispatch,
+  );
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);
