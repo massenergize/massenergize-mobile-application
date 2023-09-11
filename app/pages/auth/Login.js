@@ -10,6 +10,8 @@ import {
   toggleUniversalModalAction,
 } from '../../config/redux/actions';
 import Textbox from '../../components/textbox/Textbox';
+import {COLOR_SCHEME} from '../../stylesheet';
+import MEButton from '../../components/button/MEButton';
 
 const Login = ({toggleModal, fireAuth, signMeOut, setFireAuth, navigation}) => {
   const signInWithGoogle = async () => {
@@ -29,6 +31,8 @@ const Login = ({toggleModal, fireAuth, signMeOut, setFireAuth, navigation}) => {
       console.error('Google Sign-In Error:', error);
     }
   };
+
+  
   return (
     <View
       style={{
@@ -36,7 +40,6 @@ const Login = ({toggleModal, fireAuth, signMeOut, setFireAuth, navigation}) => {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        // justifyContent: 'center',
         backgroundColor: 'white',
       }}>
       <Image
@@ -51,6 +54,32 @@ const Login = ({toggleModal, fireAuth, signMeOut, setFireAuth, navigation}) => {
       <View style={{width: '100%', paddingHorizontal: '10%'}}>
         <Textbox label="Email" placholder="Enter email here..." />
         <Textbox label="Password" placholder="Enter your password here..." />
+        <MEButton asLink>Forgot Password</MEButton>
+        {/* <TouchableOpacity
+          style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
+          <Text
+            style={{
+              textDecorationStyle: 'solid',
+              color: COLOR_SCHEME.GREEN,
+              fontWeight: 'bold',
+            }}>
+            Forgot Password
+          </Text>
+          <FontAwesomeIcon
+            name="long-arrow-right"
+            style={{color: COLOR_SCHEME.GREEN, marginLeft: 10}}
+          />
+        </TouchableOpacity> */}
+
+        <MEButton>LOGIN</MEButton>
+
+        <MEButton
+          containerStyle={{marginVertical: 5}}
+          style={{color: COLOR_SCHEME.ORANGE, fontSize: 16}}
+          iconStyle={{color: COLOR_SCHEME.ORANGE}}
+          asLink>
+          Haven't joined yet? Join{' '}
+        </MEButton>
       </View>
     </View>
   );
