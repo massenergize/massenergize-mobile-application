@@ -1,4 +1,4 @@
-import {View, Text, TouchableOpacity} from 'react-native';
+import {View, Text, TouchableOpacity, Image} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -9,6 +9,7 @@ import {
   signOutAction,
   toggleUniversalModalAction,
 } from '../../config/redux/actions';
+import Textbox from '../../components/textbox/Textbox';
 
 const Login = ({toggleModal, fireAuth, signMeOut, setFireAuth, navigation}) => {
   const signInWithGoogle = async () => {
@@ -35,53 +36,22 @@ const Login = ({toggleModal, fireAuth, signMeOut, setFireAuth, navigation}) => {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'center',
+        // justifyContent: 'center',
+        backgroundColor: 'white',
       }}>
-      <Text style={{fontWeight: 'bold', marginBottom: 10}}>
-        Welcome, {fireAuth?.displayName || '...'}
+      <Image
+        src="https://massenergize-prod-files.s3.amazonaws.com/media/energizewayland_resized.jpg"
+        alt="Community Logo"
+        style={{width: 120, height: 120, objectFit: 'contain'}}
+      />
+
+      <Text style={{fontWeight: '600', fontSize: 18, marginBottom: 20}}>
+        Sign in with email & password
       </Text>
-      <TouchableOpacity
-        onPress={() => signInWithGoogle()}
-        style={{
-          padding: 15,
-          backgroundColor: 'red',
-          marginBottom: 10,
-        }}>
-        <Text
-          style={{
-            textAlign: 'center',
-            color: 'white',
-            fontWeight: 'bold',
-          }}>
-          LOG ME IN
-        </Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() =>
-          toggleModal({
-            isVisible: true,
-            component: <Text>This is the test modal my gee</Text>,
-          })
-        }
-        style={{
-          padding: 15,
-          backgroundColor: 'green',
-        }}>
-        <Text style={{textAlign: 'center', color: 'white', fontWeight: 'bold'}}>
-          TEST MODAL
-        </Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() => signMeOut()}
-        style={{
-          padding: 15,
-          backgroundColor: 'blue',
-          marginTop: 10,
-        }}>
-        <Text style={{textAlign: 'center', color: 'white', fontWeight: 'bold'}}>
-          SIGN ME OUT
-        </Text>
-      </TouchableOpacity>
+      <View style={{width: '100%', paddingHorizontal: '10%'}}>
+        <Textbox label="Email" placholder="Enter email here..." />
+        <Textbox label="Password" placholder="Enter your password here..." />
+      </View>
     </View>
   );
 };

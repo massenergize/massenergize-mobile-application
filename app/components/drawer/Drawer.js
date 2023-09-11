@@ -192,7 +192,7 @@ const MEDrawerNavigator = ({toggleModal}) => {
 
   return (
     <Drawer.Navigator
-      initialRouteName="Community"
+      initialRouteName="Login"
       drawerContent={props => (
         <CustomDrawerContent {...props} toggleModal={toggleModal} />
       )}

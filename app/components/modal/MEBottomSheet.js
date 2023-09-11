@@ -21,7 +21,6 @@ const MEBottomSheet = ({
 }) => {
   const renderComponent = () => {
     if (!Component) return <></>;
-
     return <Component {...(componentProps || {})} closeModal={onClose} />;
   };
   return (
