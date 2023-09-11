@@ -41,7 +41,13 @@ const TABS = {
 
 const CustomTabBar = ({state, descriptors, navigation}) => {
   return (
-    <View style={{flexDirection: 'row', backgroundColor: 'white'}}>
+    <View
+      style={{
+        flexDirection: 'row',
+        backgroundColor: 'white',
+        borderTopWidth: 1,
+        borderColor: COLOR_SCHEME.LIGHT_GREY,
+      }}>
       {state.routes.map((route, index) => {
         const {options} = descriptors[route.key];
         const isFocused = state.index === index;
@@ -92,6 +98,7 @@ const TabNavigator = () => {
         //   showLabel: false,
         //   style: {backgroundColor: 'white'},
         // }}
+        initialRouteName="Events"
         tabBar={props => <CustomTabBar {...props} />}
         screenOptions={({}) => ({
           tabBarShowLabel: false,

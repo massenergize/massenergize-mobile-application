@@ -87,12 +87,13 @@ const CustomDrawerContent = ({navigation}) => {
           <View
             style={{
               padding: 15,
-              paddingLeft: 25,
+              // paddingLeft: 25,
               backgroundColor: '#f2f3f5',
               marginBottom: 20,
             }}>
-            <Text style={{fontWeight: 'bold', fontSize: 15}}>
-              Wayland Community
+            <Text
+              style={{fontWeight: 'bold', fontSize: 15, textAlign: 'center'}}>
+              @Wayland
             </Text>
           </View>
 
