@@ -3,10 +3,8 @@ import React from 'react';
 import {Image} from 'react-native';
 import Textbox from '../../components/textbox/Textbox';
 import MEButton from '../../components/button/MEButton';
-import CompletProfile from './CompleteProfile';
 
-const Register = () => {
-  return <CompletProfile />;
+const CompletProfile = () => {
   return (
     // <ScrollView vertical style={{height: '100%'}}>
     <View
@@ -23,9 +21,9 @@ const Register = () => {
         style={{width: 120, height: 120, objectFit: 'contain'}}
       />
       <Text style={{fontWeight: '600', fontSize: 18, marginBottom: 20}}>
-        Welcome!
+        Complete Your Profile!
       </Text>
-      <Text
+      {/* <Text
         style={{
           fontWeight: '500',
           paddingHorizontal: 25,
@@ -34,23 +32,21 @@ const Register = () => {
         }}>
         When you join, we can count your impact. We do not collect sensitive
         personal data and do not share data.
-      </Text>
+      </Text> */}
 
       <View style={{width: '100%', paddingHorizontal: '10%'}}>
-        <Textbox label="Email" placholder="Enter email address..." />
-        <Textbox label="Password" placholder="Enter password here..." />
         <Textbox
-          label="Confirm Password"
-          placholder="Re-enter password here..."
+          label="Preferred Name (unique)"
+          placholder="Enter preferred name..."
         />
-        <MEButton containerStyle={{width: '100%'}}>REGISTER</MEButton>
-        <MEButton asLink style={{marginLeft: 'auto'}}>
-          Login Instead
-        </MEButton>
+        <Textbox label="First Name" placholder="Enter firstname here..." />
+        <Textbox label="Last Name" placholder="Enter last Name here..." />
+        <Textbox label="Zipcode" placholder="Enter your zipcode here......" />
+        <MEButton containerStyle={{width: '100%'}}>COMPLETE</MEButton>
       </View>
     </View>
     // </ScrollView>
   );
 };
 
-export default Register;
+export default CompletProfile;
