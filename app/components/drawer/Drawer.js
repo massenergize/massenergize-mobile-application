@@ -11,23 +11,17 @@ import AboutUsScreen from '../../pages/about/AboutUsScreen';
 import ContactUsScreen from '../../pages/contact-us/ContactUsScreen';
 import Login from '../../pages/auth/Login';
 import {FontAwesomeIcon} from '../icons';
-import {useNavigation} from '@react-navigation/native';
+import UserProfile from '../../pages/user-profile/UserProfile';
+import AuthOptions from '../../pages/auth/AuthOptions';
+import {bindActionCreators} from 'redux';
+import {toggleUniversalModalAction} from '../../config/redux/actions';
+import {connect} from 'react-redux';
+import Register from '../../pages/auth/Register';
 
 const Drawer = createDrawerNavigator();
 
-const CustomDrawerContent = ({navigation}) => {
+const CustomDrawerContent = ({navigation, toggleModal}) => {
   const getDrawerItems = () => {
-    // drawerItem object
-    // name: name of the drawer item to be displayed in the sidebar
-    // icon: icon to be displayed next to the name
-    // dropdown: boolean to determine if the drawer item is a dropdown (if a dropdown, there is no route)
-    // route: route to navigate to when the drawer item is clicked
-    // dropdownItems: array of drawerItem objects to be displayed in the dropdown (dropDown items do not have icons)
-    // currently all dropdown items are empty because we only had one page in each of the dropdowns
-    // the dropdown items we would have are "About Us" and "Resources"
-
-    // Community and About Us are displayed by default
-
     const drawerItems = [
       {
         name: 'Community',
@@ -122,51 +116,58 @@ const CustomDrawerContent = ({navigation}) => {
         </View>
       </DrawerContentScrollView>
       <View style={{width: '100%', marginBottom: 20, padding: 20}}>
-        <TouchableOpacity>
-          <TouchableOpacity
+        {/* <TouchableOpacity> */}
+        <TouchableOpacity
+          onPress={() => {
+            toggleModal({
+              isVisible: true,
+              Component: AuthOptions,
+              title: 'How would you like to sign in or Join ?',
+            });
+          }}
+          style={{
+            backgroundColor: COLOR_SCHEME.GREEN,
+            borderColor: COLOR_SCHEME.GREEN,
+            padding: 12,
+            borderRadius: 5,
+            borderWidth: 2,
+          }}>
+          <Text
             style={{
-              backgroundColor: COLOR_SCHEME.GREEN,
-              borderColor: COLOR_SCHEME.GREEN,
-              padding: 12,
-              borderRadius: 5,
-              borderWidth: 2,
+              color: 'white',
+              fontWeight: 'bold',
+              fontSize: 13,
+              textAlign: 'center',
             }}>
-            <Text
-              style={{
-                color: 'white',
-                fontWeight: 'bold',
-                fontSize: 15,
-                textAlign: 'center',
-              }}>
-              LOGIN
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              // backgroundColor: ME_ORANGE,
-              padding: 12,
-              borderWidth: 2,
-              borderColor: ME_ORANGE,
-              marginTop: 10,
-              borderRadius: 5,
-            }}>
-            <Text
-              style={{
-                color: ME_ORANGE,
-                fontWeight: 'bold',
-                fontSize: 15,
-                textAlign: 'center',
-              }}>
-              SWITCH COMMUNITIES
-            </Text>
-          </TouchableOpacity>
+            LOGIN
+          </Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            // backgroundColor: ME_ORANGE,
+            padding: 12,
+            borderWidth: 2,
+            borderColor: ME_ORANGE,
+            marginTop: 10,
+            borderRadius: 5,
+          }}>
+          <Text
+            style={{
+              color: ME_ORANGE,
+              fontWeight: 'bold',
+              fontSize: 13,
+              textAlign: 'center',
+            }}>
+            SWITCH COMMUNITIES
+          </Text>
+        </TouchableOpacity>
+        {/* </TouchableOpacity> */}
       </View>
     </>
   );
 };
 
-const MEDrawerNavigator = ({}) => {
+const MEDrawerNavigator = ({toggleModal}) => {
   const options = ({navigation}) => ({
     headerLeft: () => {
       return (
@@ -180,7 +181,9 @@ const MEDrawerNavigator = ({}) => {
 
     headerRight: () => {
       return (
-        <TouchableOpacity style={{marginRight: 15}}>
+        <TouchableOpacity
+          style={{marginRight: 15}}
+          onPress={() => navigation.navigate('Profile')}>
           <FontAwesomeIcon name="user-circle" size={21} />
         </TouchableOpacity>
       );
@@ -190,9 +193,12 @@ const MEDrawerNavigator = ({}) => {
   return (
     <Drawer.Navigator
       initialRouteName="Community"
-      drawerContent={props => <CustomDrawerContent {...props} />}
+      drawerContent={props => (
+        <CustomDrawerContent {...props} toggleModal={toggleModal} />
+      )}
       drawerStyle={{width: 250}}>
       <Drawer.Screen options={options} name="Login" component={Login} />
+      <Drawer.Screen options={options} name="Register" component={Register} />
       <Drawer.Screen
         options={options}
         name="Community"
@@ -215,8 +221,16 @@ const MEDrawerNavigator = ({}) => {
         name="Contact Us"
         component={ContactUsScreen}
       />
+      <Drawer.Screen options={options} name="Profile" component={UserProfile} />
     </Drawer.Navigator>
   );
 };
 
-export default MEDrawerNavigator;
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators(
+    {toggleModal: toggleUniversalModalAction},
+    dispatch,
+  );
+};
+
+export default connect(null, mapDispatchToProps)(MEDrawerNavigator);

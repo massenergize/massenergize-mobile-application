@@ -13,11 +13,17 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 const MEBottomSheet = ({
   isVisible,
   onClose,
-  component,
+  Component,
   title,
   titleStyle,
   contentStyle,
+  componentProps,
 }) => {
+  const renderComponent = () => {
+    if (!Component) return <></>;
+
+    return <Component {...(componentProps || {})} closeModal={onClose} />;
+  };
   return (
     <Modal
       animationType="slide"
@@ -56,7 +62,7 @@ const MEBottomSheet = ({
                 />
               </TouchableOpacity>
             </View>
-            <View style={contentStyle || {}}>{component}</View>
+            <View style={contentStyle || {}}>{renderComponent()}</View>
           </View>
         </View>
       </TouchableWithoutFeedback>

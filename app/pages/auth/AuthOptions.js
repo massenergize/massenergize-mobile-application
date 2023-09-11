@@ -1,12 +1,82 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import {View, Text, TouchableOpacity, ScrollView} from 'react-native';
+import React from 'react';
 
-const AuthOptions = () => {
+import {FontAwesomeIcon} from '../../components/icons';
+import {COLOR_SCHEME} from '../../stylesheet';
+import {useNavigation} from '@react-navigation/native';
+
+const AuthOptions = ({closeModal}) => {
+  const navigation = useNavigation();
+  const options = [
+    {
+      key: 'email-only',
+      name: 'With Email Only (No Password)',
+      icon: 'envelope',
+      disabled: true,
+    },
+    {key: 'Login', name: 'Email & Password', icon: 'lock'},
+    {
+      key: 'google',
+      name: 'Gmail',
+      icon: 'google',
+      theme: {text: {color: 'red'}, icon: {color: 'red'}},
+    },
+    {
+      key: 'facbeook',
+      name: 'Facebook',
+      icon: 'facebook',
+      theme: {text: {color: '#1877F2'}, icon: {color: '#1877F2'}},
+      disabled: true,
+    },
+  ];
   return (
-    <View>
-      <Text>AuthOptions</Text>
-    </View>
-  )
-}
+    <ScrollView vertical>
+      {options.map(option => {
+        const {theme, disabled, onPress} = option;
+        return (
+          <TouchableOpacity
+            onPress={() => {
+              if (onPress) return onPress();
+              navigation.navigate(option.key);
+              closeModal && closeModal();
+            }}
+            disabled={disabled}
+            key={option.key}
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              paddingHorizontal: 15,
+              paddingVertical: 15,
+              paddingRight: 20,
+              borderBottomWidth: 1,
+              borderColor: COLOR_SCHEME.LIGHT_GREY,
+              opacity: disabled ? 0.2 : 1,
+            }}>
+            <FontAwesomeIcon
+              name={option.icon}
+              size={21}
+              style={{...(theme?.icon || {})}}
+            />
+            <Text
+              style={{
+                fontWeight: 'bold',
+                fontSize: 15,
+                marginLeft: 20,
+                ...(theme?.text || {}),
+              }}>
+              {option.name}
+            </Text>
+            <FontAwesomeIcon
+              size={22}
+              name="long-arrow-right"
+              style={{marginLeft: 'auto', color: COLOR_SCHEME.LIGHT_GREY}}
+            />
+          </TouchableOpacity>
+        );
+      })}
+    </ScrollView>
+  );
+};
 
-export default AuthOptions
+export default AuthOptions;
