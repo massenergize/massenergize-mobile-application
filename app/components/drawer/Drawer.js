@@ -1,14 +1,17 @@
-import React from 'react';
+import React, {useRef} from 'react';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import HomeScreen from '../../pages/home/HomeScreen';
 import {DrawerItem, DrawerContentScrollView} from '@react-navigation/drawer';
 // import Icon from 'react-native-vector-icons/FontAwesome';
 import Icon from 'react-native-vector-icons/Ionicons';
+
 import {Text, View, TouchableOpacity, Image, Button} from 'react-native';
-import {ME_ORANGE} from '../../stylesheet';
+import {COLOR_SCHEME, ME_ORANGE} from '../../stylesheet';
 import AboutUsScreen from '../../pages/about/AboutUsScreen';
 import ContactUsScreen from '../../pages/contact-us/ContactUsScreen';
 import Login from '../../pages/auth/Login';
+import {FontAwesomeIcon} from '../icons';
+import {useNavigation} from '@react-navigation/native';
 
 const Drawer = createDrawerNavigator();
 
@@ -24,6 +27,7 @@ const CustomDrawerContent = ({navigation}) => {
     // the dropdown items we would have are "About Us" and "Resources"
 
     // Community and About Us are displayed by default
+
     const drawerItems = [
       {
         name: 'Community',
@@ -39,35 +43,22 @@ const CustomDrawerContent = ({navigation}) => {
         route: 'About',
         dropdownItems: [],
       },
+      {
+        name: 'Testimonials',
+        icon: 'chatbox-outline',
+        dropdown: false,
+        route: 'Testimonials',
+        dropdownItems: [],
+      },
+      {
+        name: 'Service Providers',
+        icon: 'document-text-outline',
+        dropdown: false,
+        route: 'Service Providers',
+        dropdownItems: [],
+      },
     ];
-    // // add pages if they are published
-    // if (testimonialsSettings.is_published) {
-    //   drawerItems.push({
-    //     name: "Testimonials",
-    //     icon: "chatbox-outline",
-    //     dropdown: false,
-    //     route: "Testimonials",
-    //     dropdownItems: [],
-    //   })
-    // }
-    // if (teamsSettings.is_published) {
-    //   drawerItems.push({
-    //     name: "Teams",
-    //     icon: "people-outline",
-    //     dropdown: false,
-    //     route: "Teams",
-    //     dropdownItems: [],
-    //   })
-    // }
-    // if (vendorsSettings.is_published) {
-    //   drawerItems.push({
-    //     name: "Service Providers",
-    //     icon: "document-text-outline",
-    //     dropdown: false,
-    //     route: "Service Providers",
-    //     dropdownItems: [],
-    //   })
-    // }
+
     drawerItems.push({
       name: 'Contact Us',
       icon: 'at-circle-outline',
@@ -90,25 +81,21 @@ const CustomDrawerContent = ({navigation}) => {
             <Image
               src="https://massenergize-prod-files.s3.amazonaws.com/media/energizewayland_resized.jpg"
               alt="Community Logo"
-              style={{width: '50%', height: '50%', objectFit: 'contain'}}
+              style={{width: 120, height: 120, objectFit: 'contain'}}
             />
           </View>
           <View
-            style={{padding: 15, paddingLeft: 25, backgroundColor: '#f2f3f5'}}>
+            style={{
+              padding: 15,
+              paddingLeft: 25,
+              backgroundColor: '#f2f3f5',
+              marginBottom: 20,
+            }}>
             <Text style={{fontWeight: 'bold', fontSize: 15}}>
               Wayland Community
             </Text>
           </View>
 
-          {/* Custom Drawer Items */}
-          {/*  <DrawerItem
-              key={menu?.name}
-              label={menu?.name}
-              icon={({color, size}) => (
-                <Icon name={menu?.icon} size={size} color={color} />
-              )}
-              onPress={() => navigation.navigate('Community')}
-            /> */}
           {getDrawerItems().map(menu => (
             <TouchableOpacity
               key={menu?.name}
@@ -124,7 +111,7 @@ const CustomDrawerContent = ({navigation}) => {
                 style={{
                   color: 'black',
                   fontWeight: '500',
-                  marginLeft: 10,
+                  marginLeft: 20,
                   fontSize: 15,
                 }}>
                 {menu?.name}
@@ -133,9 +120,16 @@ const CustomDrawerContent = ({navigation}) => {
           ))}
         </View>
       </DrawerContentScrollView>
-      <View style={{width: '100%'}}>
+      <View style={{width: '100%', marginBottom: 20, padding: 20}}>
         <TouchableOpacity>
-          <TouchableOpacity style={{backgroundColor: 'green', padding: 13}}>
+          <TouchableOpacity
+            style={{
+              backgroundColor: COLOR_SCHEME.GREEN,
+              borderColor: COLOR_SCHEME.GREEN,
+              padding: 12,
+              borderRadius: 5,
+              borderWidth: 2,
+            }}>
             <Text
               style={{
                 color: 'white',
@@ -146,10 +140,18 @@ const CustomDrawerContent = ({navigation}) => {
               LOGIN
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={{backgroundColor: ME_ORANGE, padding: 13}}>
+          <TouchableOpacity
+            style={{
+              // backgroundColor: ME_ORANGE,
+              padding: 12,
+              borderWidth: 2,
+              borderColor: ME_ORANGE,
+              marginTop: 10,
+              borderRadius: 5,
+            }}>
             <Text
               style={{
-                color: 'white',
+                color: ME_ORANGE,
                 fontWeight: 'bold',
                 fontSize: 15,
                 textAlign: 'center',
@@ -164,18 +166,54 @@ const CustomDrawerContent = ({navigation}) => {
 };
 
 const MEDrawerNavigator = ({}) => {
+  const options = ({navigation}) => ({
+    headerLeft: () => {
+      return (
+        <TouchableOpacity
+          style={{marginLeft: 15}}
+          onPress={() => navigation.toggleDrawer()}>
+          <FontAwesomeIcon name="bars" size={21} />
+        </TouchableOpacity>
+      );
+    },
+
+    headerRight: () => {
+      return (
+        <TouchableOpacity style={{marginRight: 15}}>
+          <FontAwesomeIcon name="user-circle" size={21} />
+        </TouchableOpacity>
+      );
+    },
+  });
+
   return (
     <Drawer.Navigator
-      initialRouteName="Login"
+      initialRouteName="Community"
       drawerContent={props => <CustomDrawerContent {...props} />}
       drawerStyle={{width: 250}}>
-      <Drawer.Screen name="Login" component={Login} />
-      <Drawer.Screen name="Community" component={HomeScreen} />
-      <Drawer.Screen name="About" component={AboutUsScreen} />
-      <Drawer.Screen name="Testimonials" component={HomeScreen} />
-      <Drawer.Screen name="Teams" component={HomeScreen} />
-      <Drawer.Screen name="Service Providers" component={HomeScreen} />
-      <Drawer.Screen name="Contact Us" component={ContactUsScreen} />
+      <Drawer.Screen options={options} name="Login" component={Login} />
+      <Drawer.Screen
+        options={options}
+        name="Community"
+        component={HomeScreen}
+      />
+      <Drawer.Screen options={options} name="About" component={AboutUsScreen} />
+      <Drawer.Screen
+        options={options}
+        name="Testimonials"
+        component={HomeScreen}
+      />
+      <Drawer.Screen options={options} name="Teams" component={HomeScreen} />
+      <Drawer.Screen
+        options={options}
+        name="Service Providers"
+        component={HomeScreen}
+      />
+      <Drawer.Screen
+        options={options}
+        name="Contact Us"
+        component={ContactUsScreen}
+      />
     </Drawer.Navigator>
   );
 };

@@ -10,7 +10,7 @@ import {
   toggleUniversalModalAction,
 } from '../../config/redux/actions';
 
-const Login = ({toggleModal, fireAuth, signMeOut, setFireAuth}) => {
+const Login = ({toggleModal, fireAuth, signMeOut, setFireAuth, navigation}) => {
   const signInWithGoogle = async () => {
     try {
       await GoogleSignin.hasPlayServices();

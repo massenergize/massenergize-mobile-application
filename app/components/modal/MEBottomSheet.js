@@ -10,7 +10,14 @@ import {
 import React, {Children} from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-const MEBottomSheet = ({isVisible, onClose, component}) => {
+const MEBottomSheet = ({
+  isVisible,
+  onClose,
+  component,
+  title,
+  titleStyle,
+  contentStyle,
+}) => {
   return (
     <Modal
       animationType="slide"
@@ -20,22 +27,36 @@ const MEBottomSheet = ({isVisible, onClose, component}) => {
       <TouchableWithoutFeedback>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <TouchableOpacity
-              onPress={onClose}
+            <View
               style={{
+                backgroundColor: '#f2f3f5',
                 display: 'flex',
-                paddingRight: 5,
-                paddingTop: 5,
-                paddingBottom: 10,
+                flexDirection: 'row',
+                alignItems: 'center',
+                padding: 15,
+                borderTopRightRadius: 10,
+                borderTopLeftRadius: 10,
               }}>
-              <Icon
-                name="times-circle"
-                style={{marginLeft: 'auto'}}
-                size={24}
-              />
-            </TouchableOpacity>
-
-            {component}
+              {title && (
+                <Text
+                  style={{
+                    fontWeight: 'bold',
+                    fontSize: 15,
+                    ...(titleStyle || {}),
+                  }}>
+                  {title}
+                </Text>
+              )}
+              <TouchableOpacity onPress={onClose} style={{marginLeft: 'auto'}}>
+                <Icon
+                  color="grey"
+                  name="times-circle"
+                  style={{marginLeft: 'auto'}}
+                  size={24}
+                />
+              </TouchableOpacity>
+            </View>
+            <View style={contentStyle || {}}>{component}</View>
           </View>
         </View>
       </TouchableWithoutFeedback>
@@ -52,7 +73,7 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     backgroundColor: 'white',
-    padding: 16,
+    // padding: 16,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
     width: '100%',

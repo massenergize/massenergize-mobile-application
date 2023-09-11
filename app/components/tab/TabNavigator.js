@@ -1,51 +1,101 @@
-import {View, Text} from 'react-native';
+import {View, Text, TouchableOpacity} from 'react-native';
 import React from 'react';
 
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import AboutUsScreen from '../../pages/about/AboutUsScreen';
 
+import AboutUsScreen from '../../pages/about/AboutUsScreen';
+import {FontAwesomeIcon, IonicIcon} from '../icons';
+import {COLOR_SCHEME} from '../../stylesheet';
+import EventsScreen from '../../pages/events/EventsScreen';
+import CommunityHomeScreen from '../../pages/home/CommunityHomeScreen';
+import ActionsScreen from '../../pages/actions/ActionsScreen';
+import TeamsScreen from '../../pages/teams/TeamsScreen';
+
+// TODO: When there is time, lets make this a component that can accept any dynamic list of tab items
 const TABS = {
-  community: {
-    name: 'community',
+  Home: {
+    name: 'Home',
     icon: 'home',
-    key: 'community',
-    component: AboutUsScreen,
+    key: 'home',
+    component: CommunityHomeScreen,
   },
-  actions: {
+  Actions: {
     name: 'Actions',
     icon: 'flash',
     key: 'actions',
-    component: AboutUsScreen,
+    component: ActionsScreen,
   },
-  events: {
+  Events: {
     name: 'Events',
     icon: 'calendar',
     key: 'events',
-    component: AboutUsScreen,
+    component: EventsScreen,
   },
-  profile: {
-    name: 'profile',
-    icon: 'person-circle',
-    key: 'community',
-    component: AboutUsScreen,
+  Teams: {
+    name: 'Teams',
+    icon: 'users',
+    key: 'teams',
+    component: TeamsScreen,
   },
 };
+
+const CustomTabBar = ({state, descriptors, navigation}) => {
+  return (
+    <View style={{flexDirection: 'row', backgroundColor: 'white'}}>
+      {state.routes.map((route, index) => {
+        const {options} = descriptors[route.key];
+        const isFocused = state.index === index;
+        const tintColor = isFocused ? COLOR_SCHEME.GREEN : 'grey';
+
+        let tab = TABS[route.name];
+        const icon = tab?.icon;
+
+        return (
+          <TouchableOpacity
+            key={route.key}
+            onPress={() => {
+              const event = navigation.emit({
+                type: 'tabPress',
+                target: route.key,
+                canPreventDefault: true,
+              });
+
+              if (!isFocused && !event.defaultPrevented) {
+                navigation.navigate(route.name);
+              }
+            }}
+            style={{flex: 1, alignItems: 'center', padding: 16}}>
+            <FontAwesomeIcon name={icon} size={22} color={tintColor} />
+            <Text
+              style={{
+                color: tintColor,
+                fontSize: 10,
+                marginTop: 5,
+                fontWeight: isFocused ? 'bold' : '400',
+              }}>
+              {route.name}
+            </Text>
+          </TouchableOpacity>
+        );
+      })}
+    </View>
+  );
+};
+
 const TabNavigator = () => {
   const Tab = createBottomTabNavigator();
 
   return (
     <View style={{height: '100%', backgroundColor: 'red'}}>
-      <View></View>
       <Tab.Navigator
-        screenOptions={({route}) => ({
-          tabBarIcon: ({focused, color, size}) => {
-            let tab = TABS[route.name];
-            return <Ionicons name={tab?.icon} size={size} color={color} />;
-          },
-          tabBarActiveTintColor: '#64B058',
-          tabBarInactiveTintColor: '#B3B2BD',
-          tabBarLabel: TABS[route.name]?.name,
+        // tabBarOptions={{
+        //   showLabel: false,
+        //   style: {backgroundColor: 'white'},
+        // }}
+        tabBar={props => <CustomTabBar {...props} />}
+        screenOptions={({}) => ({
+          tabBarShowLabel: false,
+          tabBarStyle: [{backgroundColor: 'white'}, null],
           headerShown: false,
         })}>
         {Object.entries(TABS).map(([key, value]) => {
