@@ -1,18 +1,39 @@
-import {View, Text, Checkbox} from 'react-native';
-import React from 'react';
+import {View, Text, Checkbox, Alert} from 'react-native';
+import React, {useState} from 'react';
 import Textbox from '../../components/textbox/Textbox';
 import Slider from '@react-native-community/slider';
 import MEButton from '../../components/button/MEButton';
 import {COLOR_SCHEME} from '../../stylesheet';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {setZipCodeOptions} from '../../config/redux/actions';
+import {fetchCommunities, setZipCodeOptions} from '../../config/redux/actions';
 
-const ZipCodeInput = ({updateOptions, zipcodeOptions}) => {
+
+const ZipCodeInput = ({
+  updateOptions,
+  zipcodeOptions,
+  fetchCommunitiesFromBackend,
+  closeModal,
+}) => {
+  const [loading, setLoading] = useState(false);
   const {zipcode, miles} = zipcodeOptions || {};
 
   const doUpdate = (name, value) => {
-    updateOptions({...zipcodeOptions, [name]: value});
+    const data = {...zipcodeOptions, [name]: value};
+    updateOptions(data);
+  };
+
+  const search = () => {
+    const data = {zipcode, maxDistance: miles};
+    setLoading(true);
+    fetchCommunitiesFromBackend(data, (data, error) => {
+      if (!data) {
+        setLoading(false);
+        return Alert.alert(error);
+      }
+      setLoading(false);
+      closeModal();
+    });
   };
   return (
     <View style={{padding: 20}}>
@@ -33,7 +54,9 @@ const ZipCodeInput = ({updateOptions, zipcodeOptions}) => {
         minimumValue={0}
         value={miles}></Slider>
       <Text>Within {miles} Miles</Text>
-      <MEButton>SEARCH</MEButton>
+      <MEButton loading={loading} onPress={search}>
+        SEARCH
+      </MEButton>
     </View>
   );
 };
@@ -46,6 +69,7 @@ const mapDispatch = dispatch => {
   return bindActionCreators(
     {
       updateOptions: setZipCodeOptions,
+      fetchCommunitiesFromBackend: fetchCommunities,
     },
     dispatch,
   );

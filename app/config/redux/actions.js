@@ -33,8 +33,9 @@ export const fetchCommunities = (data, cb) => dispatch => {
       const near = communities
         .filter(c => c.location.distance !== 0)
         .sort((a, b) => a.location.distance - b.location.distance);
-      console.log('');
-      dispatch(setCommunitiesAction({matches, near}));
+      const data = {matches, near};
+      dispatch(setCommunitiesAction(data));
+      cb && cb(data);
     })
     .catch(e => {
       cb && cb(null, e?.toString());

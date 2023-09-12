@@ -9,13 +9,16 @@ import {
   setFirebaseAuthenticationAction,
   toggleUniversalModalAction,
 } from '../config/redux/actions';
-import {NavigationContainer} from '@react-navigation/native';
+import {NavigationContainer, useNavigation} from '@react-navigation/native';
 import {isUserAuthenticated} from '../config/firebase';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
 import CommunitySelect from './community-select/CommunitySelect';
 import {createStackNavigator} from '@react-navigation/stack';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
+import LoadingScreen from './misc/LoadingScreen';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {COMMUNITY_CHOICE} from '../utils/values';
 
 GoogleSignin.configure({
   webClientId:
@@ -31,6 +34,18 @@ const RootWrapper = ({
   setFirebaseAuth,
   fetchCommunitiesFromBackend,
 }) => {
+  const navigation = useNavigation();
+  useEffect(() => {
+    AsyncStorage.getItem(COMMUNITY_CHOICE)
+      .then(choice => {
+        if (choice)
+          return navigation.navigate('Loading', {community_id: choice});
+        console.log('WE GET CHOICE', choice);
+      })
+      .catch(e => console.log('Hwat happened', e.toString()));
+    // console.log('WHATS THE VERDICT: ', choice);
+  }, []);
+
   useEffect(() => {
     const {zipcode, miles} = zipcodeOptions || {};
     // First time app launches, it will load a few communities at 10 miles... (zipcode is set as wayland zip, and 10 miles check reducers.js)
@@ -39,12 +54,13 @@ const RootWrapper = ({
   useEffect(() => {
     isUserAuthenticated((yes, user) => {
       if (yes) setFirebaseAuth(user);
-      else console.log('User is not signed in yet, do something!');
+      else console.log('User is not signed in yet!');
     });
   }, []);
 
   return (
-    <NavigationContainer>
+    // <NavigationContainer>
+    <>
       <MainStack.Navigator initialRouteName="CommunitySelectionPage">
         <MainStack.Screen
           options={{headerShown: false}}
@@ -56,12 +72,18 @@ const RootWrapper = ({
           name="CommunityPages"
           component={MEDrawerNavigator}
         />
+        <MainStack.Screen
+          options={{headerShown: false}}
+          name="Loading"
+          component={LoadingScreen}
+        />
       </MainStack.Navigator>
       <MEBottomSheet
         onClose={() => toggleModal({isVisible: false, component: <></>})}
         {...(modalOptions || {})}
       />
-    </NavigationContainer>
+    </>
+    // </NavigationContainer>
   );
 };
 const mapStateToProps = state => ({
