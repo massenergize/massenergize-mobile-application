@@ -14,7 +14,8 @@ import {toggleUniversalModalAction} from '../../config/redux/actions';
 import {connect} from 'react-redux';
 import ZipCodeInput from './ZipCodeInput';
 
-const CommunitySelect = ({toggleModal}) => {
+const CommunitySelect = ({toggleModal, zipcodeOptions}) => {
+  const {zipcode, miles} = zipcodeOptions || {};
   return (
     <SafeAreaView>
       <View style={{height: '100%'}}>
@@ -82,14 +83,14 @@ const CommunitySelect = ({toggleModal}) => {
               paddingHorizontal: 45,
             }}>
             <Text style={{fontSize: 12, fontWeight: 'bold', color: 'black'}}>
-              ZIPCODE: 01778, (10 miles) NEAR ME
+              Zipcode: {zipcode}, ({miles} miles) Near me
             </Text>
           </HStack>
 
           <ScrollView
             verticals
             style={{paddingHorizontal: 20, paddingVertical: 20}}>
-            <Text style={{fontWeight: '500', color: 'grey', fontSize: 12}}>
+            <Text style={{fontWeight: '400', color: 'grey', fontSize: 12}}>
               MATCHED COMMUNITIES
             </Text>
             {[1, 2, 3, 4].map(item => (
@@ -137,6 +138,9 @@ const OneCommunityItem = () => {
   );
 };
 
+const mapStateToProps = state => ({
+  zipcodeOptions: state.zipcodeOptions,
+});
 const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
@@ -146,4 +150,4 @@ const mapDispatchToProps = dispatch => {
   );
 };
 
-export default connect(null, mapDispatchToProps)(CommunitySelect);
+export default connect(mapStateToProps, mapDispatchToProps)(CommunitySelect);

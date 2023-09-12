@@ -1,5 +1,11 @@
 import {firebaseSignOut} from '../firebase';
-import {SET_FIREBASE_AUTH, SIGN_OUT, TOGGLE_UNIVERSAL_MODAL} from './types';
+import {
+  COMMUNITIES,
+  SET_FIREBASE_AUTH,
+  SIGN_OUT,
+  TOGGLE_UNIVERSAL_MODAL,
+  ZIP_CODE_OPTIONS,
+} from './types';
 
 export const test = () => ({type: 'TEST', payload: {value: 'Ankara messi!'}});
 
@@ -8,6 +14,12 @@ export const toggleUniversalModalAction = payload => {
 };
 export const setFirebaseAuthenticationAction = payload => {
   return {type: SET_FIREBASE_AUTH, payload};
+};
+export const setZipCodeOptions = payload => {
+  return {type: ZIP_CODE_OPTIONS, payload};
+};
+export const setCommunitiesAction = payload => {
+  return {type: COMMUNITIES, payload};
 };
 export const signOutAction = () => dispatch => {
   return firebaseSignOut(() => {
