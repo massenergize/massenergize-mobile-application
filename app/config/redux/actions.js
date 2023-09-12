@@ -67,7 +67,7 @@ export const fetchAllCommunityData = (body, cb) => dispatch => {
     apiCall('testimonials.list', body),
     apiCall('graphs.actions.completed', body),
     apiCall('communities.actions.completed', body),
-    apiCall('about_us_page_settings.info.info', body),
+    apiCall('about_us_page_settings.info', body),
     apiCall('teams.stats', body),
     apiCall('home_page_settings.info', body),
     apiCall('teams_page_settings.info', body),
@@ -100,6 +100,7 @@ export const fetchAllCommunityData = (body, cb) => dispatch => {
       dispatch(
         setActionWithValue(SET_COMPLETED_ACTIONS, completedActions.data),
       );
+
       dispatch(setActionWithValue(SET_ABOUT_US_INFO, aboutAsPage.data));
       dispatch(setActionWithValue(SET_TEAMS_STATS, teamsStats.data));
       dispatch(setActionWithValue(SET_HOMEPAGE_INFO, homePageSettings.data));

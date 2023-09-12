@@ -1,7 +1,20 @@
 import {LOADING} from '../../utils/values';
 import {
+  ACTIVE_COMMUNITY,
   COMMUNITIES,
+  SET_ABOUT_US_INFO,
+  SET_ACTION_LIST,
+  SET_COMMUNITY_INFO,
+  SET_COMPLETED_ACTIONS,
+  SET_EVENT_LIST,
   SET_FIREBASE_AUTH,
+  SET_GRAPHS_DATA,
+  SET_HOMEPAGE_INFO,
+  SET_TEAMS_STATS,
+  SET_TESTIMONIALS_LIST,
+  SET_TESTIMONIALS_PAGE_INFO,
+  SET_VENDORS_LIST,
+  SET_VENDORS_PAGE_INFO,
   TOGGLE_UNIVERSAL_MODAL,
   ZIP_CODE_OPTIONS,
 } from './types';
@@ -31,6 +44,54 @@ export const reducerForSettingCommunties = (state = LOADING, action) => {
   return state;
 };
 export const reducerForSettingActiveCommunity = (state = null, action) => {
-  if (action?.type === COMMUNITIES) return action.payload;
+  if (action?.type === ACTIVE_COMMUNITY) return action.payload;
+  return state;
+};
+export const reducerForCommunityInfo = (state = null, action) => {
+  if (action?.type === SET_COMMUNITY_INFO) return action.payload;
+  return state;
+};
+export const reducerForActionList = (state = null, action) => {
+  if (action?.type === SET_ACTION_LIST) return action.payload;
+  return state;
+};
+export const reducerForEventsList = (state = null, action) => {
+  if (action?.type === SET_EVENT_LIST) return action.payload;
+  return state;
+};
+export const reducerForVendorList = (state = null, action) => {
+  if (action?.type === SET_VENDORS_LIST) return action.payload;
+  return state;
+};
+export const reducerForTestimonialList = (state = null, action) => {
+  if (action?.type === SET_TESTIMONIALS_LIST) return action.payload;
+  return state;
+};
+export const reducerForGraphData = (state = null, action) => {
+  if (action?.type === SET_GRAPHS_DATA) return action.payload;
+  return state;
+};
+export const reducerForCompletedActions = (state = null, action) => {
+  if (action?.type === SET_COMPLETED_ACTIONS) return action.payload;
+  return state;
+};
+export const reducerForAboutUsPageInfo = (state = null, action) => {
+  if (action?.type === SET_ABOUT_US_INFO) return action.payload;
+  return state;
+};
+export const reducerForTeamsStats = (state = null, action) => {
+  if (action?.type === SET_TEAMS_STATS) return action.payload;
+  return state;
+};
+export const reducerForHomepageInfo = (state = null, action) => {
+  if (action?.type === SET_HOMEPAGE_INFO) return action.payload;
+  return state;
+};
+export const reducerForVendorsPageInfo = (state = null, action) => {
+  if (action?.type === SET_VENDORS_PAGE_INFO) return action.payload;
+  return state;
+};
+export const reducerForTestimonialsPageInfo = (state = null, action) => {
+  if (action?.type === SET_TESTIMONIALS_PAGE_INFO) return action.payload;
   return state;
 };

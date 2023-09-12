@@ -13,7 +13,14 @@ import Textbox from '../../components/textbox/Textbox';
 import {COLOR_SCHEME} from '../../stylesheet';
 import MEButton from '../../components/button/MEButton';
 
-const Login = ({toggleModal, fireAuth, signMeOut, setFireAuth, navigation}) => {
+const Login = ({
+  toggleModal,
+  fireAuth,
+  signMeOut,
+  setFireAuth,
+  navigation,
+  activeCommunity,
+}) => {
   const signInWithGoogle = async () => {
     try {
       await GoogleSignin.hasPlayServices();
@@ -32,7 +39,6 @@ const Login = ({toggleModal, fireAuth, signMeOut, setFireAuth, navigation}) => {
     }
   };
 
-  
   return (
     <View
       style={{
@@ -43,7 +49,8 @@ const Login = ({toggleModal, fireAuth, signMeOut, setFireAuth, navigation}) => {
         backgroundColor: 'white',
       }}>
       <Image
-        src="https://massenergize-prod-files.s3.amazonaws.com/media/energizewayland_resized.jpg"
+        src={activeCommunity?.logo?.url}
+        // src="https://massenergize-prod-files.s3.amazonaws.com/media/energizewayland_resized.jpg"
         alt="Community Logo"
         style={{width: 120, height: 120, objectFit: 'contain'}}
       />
@@ -87,6 +94,7 @@ const Login = ({toggleModal, fireAuth, signMeOut, setFireAuth, navigation}) => {
 
 const mapStateToProps = state => ({
   fireAuth: state.fireAuth,
+  activeCommunity: state.activeCommunity,
 });
 
 const mapDispatchToProps = dispatch => {

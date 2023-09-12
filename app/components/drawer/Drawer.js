@@ -20,7 +20,7 @@ import Register from '../../pages/auth/Register';
 
 const Drawer = createDrawerNavigator();
 
-const CustomDrawerContent = ({navigation, toggleModal}) => {
+const CustomDrawerContent = ({navigation, toggleModal, activeCommunity}) => {
   const getDrawerItems = () => {
     const drawerItems = [
       {
@@ -62,6 +62,7 @@ const CustomDrawerContent = ({navigation, toggleModal}) => {
     });
     return drawerItems;
   };
+
   return (
     <>
       <DrawerContentScrollView>
@@ -73,7 +74,8 @@ const CustomDrawerContent = ({navigation, toggleModal}) => {
               justifyContent: 'center',
             }}>
             <Image
-              src="https://massenergize-prod-files.s3.amazonaws.com/media/energizewayland_resized.jpg"
+              // src="https://massenergize-prod-files.s3.amazonaws.com/media/energizewayland_resized.jpg"
+              src={activeCommunity?.logo?.url}
               alt="Community Logo"
               style={{width: 120, height: 120, objectFit: 'contain'}}
             />
@@ -87,7 +89,7 @@ const CustomDrawerContent = ({navigation, toggleModal}) => {
             }}>
             <Text
               style={{fontWeight: 'bold', fontSize: 15, textAlign: 'center'}}>
-              @Wayland
+              @{activeCommunity?.name}
             </Text>
           </View>
 
@@ -117,6 +119,7 @@ const CustomDrawerContent = ({navigation, toggleModal}) => {
       </DrawerContentScrollView>
       <View style={{width: '100%', marginBottom: 20, padding: 20}}>
         <TouchableOpacity
+          onPress={() => navigation.navigate('CommunitySelectionPage')}
           style={{
             // backgroundColor: ME_ORANGE,
             padding: 12,
@@ -165,7 +168,7 @@ const CustomDrawerContent = ({navigation, toggleModal}) => {
   );
 };
 
-const MEDrawerNavigator = ({toggleModal}) => {
+const MEDrawerNavigator = ({toggleModal, activeCommunity}) => {
   const options = ({navigation}) => ({
     headerLeft: () => {
       return (
@@ -192,7 +195,11 @@ const MEDrawerNavigator = ({toggleModal}) => {
     <Drawer.Navigator
       initialRouteName="Login"
       drawerContent={props => (
-        <CustomDrawerContent {...props} toggleModal={toggleModal} />
+        <CustomDrawerContent
+          {...props}
+          toggleModal={toggleModal}
+          activeCommunity={activeCommunity}
+        />
       )}
       drawerStyle={{width: 250}}>
       <Drawer.Screen options={options} name="Login" component={Login} />
@@ -224,6 +231,11 @@ const MEDrawerNavigator = ({toggleModal}) => {
   );
 };
 
+const mapSateToProps = state => {
+  return {
+    activeCommunity: state.activeCommunity,
+  };
+};
 const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {toggleModal: toggleUniversalModalAction},
@@ -231,4 +243,4 @@ const mapDispatchToProps = dispatch => {
   );
 };
 
-export default connect(null, mapDispatchToProps)(MEDrawerNavigator);
+export default connect(mapSateToProps, mapDispatchToProps)(MEDrawerNavigator);

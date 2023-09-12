@@ -14,6 +14,7 @@ const LoadingScreen = ({route, fetchAll, navigation}) => {
   const {community_id} = route?.params || {};
 
   const fetch = () => {
+    setError(null);
     fetchAll({community_id}, (data, error) => {
       if (!data) {
         console.log('ERROR_LOADING_COMMUNITY_DATA', error);

@@ -2,8 +2,20 @@
 import {combineReducers} from 'redux';
 import {
   firebaseAuthReducer,
+  reducerForAboutUsPageInfo,
+  reducerForActionList,
+  reducerForCommunityInfo,
+  reducerForCompletedActions,
+  reducerForEventsList,
+  reducerForGraphData,
+  reducerForHomepageInfo,
   reducerForSettingActiveCommunity,
   reducerForSettingCommunties,
+  reducerForTeamsStats,
+  reducerForTestimonialList,
+  reducerForTestimonialsPageInfo,
+  reducerForVendorList,
+  reducerForVendorsPageInfo,
   reducerForZipCodeOptions,
   testReducer,
   universalModalReducer,
@@ -16,6 +28,18 @@ const rootReducer = combineReducers({
   zipcodeOptions: reducerForZipCodeOptions, // content from the zipcode bottom sheet that users use is sotred here
   communities: reducerForSettingCommunties, // list of communities loaded for community selection page,
   activeCommunity: reducerForSettingActiveCommunity, // Current active community
+  communityInfo: reducerForCommunityInfo,
+  actions: reducerForActionList,
+  events: reducerForEventsList,
+  vendors: reducerForVendorList,
+  testimonials: reducerForTestimonialList,
+  graphData: reducerForGraphData,
+  completedActions: reducerForCompletedActions,
+  aboutUsPage: reducerForAboutUsPageInfo,
+  teamsStats: reducerForTeamsStats,
+  homePage: reducerForHomepageInfo,
+  vendorsPage: reducerForVendorsPageInfo,
+  testimonialsPage: reducerForTestimonialsPageInfo,
 });
 
 export default rootReducer;
