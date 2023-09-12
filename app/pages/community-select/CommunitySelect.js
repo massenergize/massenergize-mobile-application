@@ -10,7 +10,10 @@ import Textbox from '../../components/textbox/Textbox';
 import Slider from '@react-native-community/slider';
 import MEButton from '../../components/button/MEButton';
 import {bindActionCreators} from 'redux';
-import {toggleUniversalModalAction} from '../../config/redux/actions';
+import {
+  setActiveCommunityAction,
+  toggleUniversalModalAction,
+} from '../../config/redux/actions';
 import {connect} from 'react-redux';
 import ZipCodeInput from './ZipCodeInput';
 import Loader from '../../components/loaders/Loader';
@@ -20,29 +23,31 @@ import {
   ZIP_CODE_OPTIONS_STORAGE_KEY,
 } from '../../utils/values';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {groupCommunities} from '../../utils/common';
 
 const CommunitySelect = ({
   toggleModal,
   zipcodeOptions,
   communities,
   navigation,
+  setActiveCommunity,
 }) => {
   const {zipcode, miles} = zipcodeOptions || {};
 
-  // useEffect(() => {
-  //   AsyncStorage.getItem(COMMUNITY_CHOICE)
-  //     .then(choice => {
-  //       if (choice)
-  //         return navigation.navigate('Loading', {community_id: choice});
-  //     })
-  //     .catch(e => console.log('Hwat happened', e.toString()));
-  //   // console.log('WHATS THE VERDICT: ', choice);
-  // }, []);
+  const chooseCommunity = async community => {
+    setActiveCommunity(community);
+    const id = community?.id;
+    console.log('THIS IS WHAT I CHOCE', id);
+    await AsyncStorage.setItem(COMMUNITY_CHOICE, id?.toString());
+    navigation.navigate('Loading', {community_id: id});
+  };
 
   const organisedData = () => {
     if (communities === LOADING)
       return {fetchingContent: true, matches: [], near: []};
-    return communities;
+
+    return groupCommunities(communities);
+    // return communities;
   };
   let {fetchingContent, matches, near} = organisedData();
 
@@ -58,14 +63,10 @@ const CommunitySelect = ({
       <View key={index.toString()}>
         <OneCommunityItem
           {...community}
-          onPress={() => chooseCommunity(community?.id)}
+          onPress={() => chooseCommunity(community)}
         />
       </View>
     ));
-  };
-  const chooseCommunity = async id => {
-    await AsyncStorage.setItem(COMMUNITY_CHOICE, id?.toString());
-    navigation.navigate('Loading', {community_id: id});
   };
 
   const renderNearByCommunities = () => {
@@ -75,7 +76,7 @@ const CommunitySelect = ({
       <View key={index.toString()}>
         <OneCommunityItem
           {...community}
-          onPress={() => chooseCommunity(community?.id)}
+          onPress={() => chooseCommunity(community)}
         />
       </View>
     ));
@@ -250,6 +251,7 @@ const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
       toggleModal: toggleUniversalModalAction,
+      setActiveCommunity: setActiveCommunityAction,
     },
     dispatch,
   );

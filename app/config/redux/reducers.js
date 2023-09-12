@@ -30,3 +30,7 @@ export const reducerForSettingCommunties = (state = LOADING, action) => {
   if (action?.type === COMMUNITIES) return action.payload;
   return state;
 };
+export const reducerForSettingActiveCommunity = (state = null, action) => {
+  if (action?.type === COMMUNITIES) return action.payload;
+  return state;
+};

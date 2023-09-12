@@ -6,6 +6,7 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {
   fetchCommunities,
+  setActiveCommunityAction,
   setFirebaseAuthenticationAction,
   toggleUniversalModalAction,
 } from '../config/redux/actions';
@@ -33,24 +34,45 @@ const RootWrapper = ({
   toggleModal,
   setFirebaseAuth,
   fetchCommunitiesFromBackend,
+  // communities,
+  activeCommunity,
+  setActiveCommunity,
 }) => {
   const navigation = useNavigation();
   useEffect(() => {
     AsyncStorage.getItem(COMMUNITY_CHOICE)
       .then(choice => {
-        if (choice)
-          return navigation.navigate('Loading', {community_id: choice});
-        console.log('WE GET CHOICE', choice);
+        if (!choice) return;
+        navigation.navigate('Loading', {community_id: choice});
       })
-      .catch(e => console.log('Hwat happened', e.toString()));
-    // console.log('WHATS THE VERDICT: ', choice);
+      .catch(e => console.log('ERROR_FETCHING_SAVED_CHOICE', e.toString()));
   }, []);
 
   useEffect(() => {
     const {zipcode, miles} = zipcodeOptions || {};
     // First time app launches, it will load a few communities at 10 miles... (zipcode is set as wayland zip, and 10 miles check reducers.js)
-    fetchCommunitiesFromBackend({zipcode, maxDistance: miles});
+    fetchCommunitiesFromBackend({zipcode, maxDistance: miles}, data => {
+      if (!data || activeCommunity?.id) return;
+      // There is a scenario where the list of communities will not be ready by the time the useEffect above has retrieved a saved community choice
+      // In that case, that process can go ahead and load the other community data.
+      // When the community list is retrieved, the object of the chosen community will be found here
+      // and set to redux quitely
+      // Catch: all of this is if activeCommunity value in redux store is empty ofcourse
+      AsyncStorage.getItem(COMMUNITY_CHOICE)
+        .then(choice => {
+          const found = data?.find(com => com.id?.toString() === choice);
+          if (!found) return navigation.navigate('CommunitySelectionPage'); // This means the saved choice of community is not in the community list retrieved. In such case we go babck to community selection page
+          setActiveCommunity(found);
+        })
+        .catch(e =>
+          console.log(
+            'ERROR_FINDING_COMMUNITY_OBJECT_FOR_SAVED_CHOICE',
+            e.toString(),
+          ),
+        );
+    });
   }, []);
+
   useEffect(() => {
     isUserAuthenticated((yes, user) => {
       if (yes) setFirebaseAuth(user);
@@ -90,6 +112,7 @@ const mapStateToProps = state => ({
   modalOptions: state.modalOptions,
   fireAuth: state.fireAuth,
   zipcodeOptions: state.zipcodeOptions,
+  activeCommunity: state.activeCommunity,
 });
 
 const mapDispatchToProps = dispatch => {
@@ -98,6 +121,7 @@ const mapDispatchToProps = dispatch => {
       toggleModal: toggleUniversalModalAction,
       setFirebaseAuth: setFirebaseAuthenticationAction,
       fetchCommunitiesFromBackend: fetchCommunities,
+      setActiveCommunity: setActiveCommunityAction,
     },
     dispatch,
   );

@@ -1,6 +1,7 @@
 import {apiCall} from '../../api/functions';
 import {firebaseSignOut} from '../firebase';
 import {
+  ACTIVE_COMMUNITY,
   COMMUNITIES,
   SET_FIREBASE_AUTH,
   SIGN_OUT,
@@ -27,21 +28,21 @@ export const fetchCommunities = (data, cb) => dispatch => {
   apiCall('communities.list', data)
     .then(response => {
       if (!response.success) return cb && cb(null, response.error);
-      let communities = response.data;
-      communities = communities.filter(c => c.is_geographically_focused);
-      const matches = communities.filter(c => c.location.distance === 0);
-      const near = communities
-        .filter(c => c.location.distance !== 0)
-        .sort((a, b) => a.location.distance - b.location.distance);
-      const data = {matches, near};
-      dispatch(setCommunitiesAction(data));
-      cb && cb(data);
+
+      dispatch(setCommunitiesAction(response.data));
+      cb && cb(response.data);
     })
     .catch(e => {
       cb && cb(null, e?.toString());
       dispatch(setCommunitiesAction({}));
     });
 };
+
+export const setActiveCommunityAction = payload => {
+  return {type: ACTIVE_COMMUNITY, payload};
+};
+
+export const fetchAllCommunityData = (id, cb) => {};
 export const signOutAction = () => dispatch => {
   return firebaseSignOut(() => {
     console.log('Yes we just signed out!');
