@@ -37,7 +37,6 @@ const CommunitySelect = ({
   const chooseCommunity = async community => {
     setActiveCommunity(community);
     const id = community?.id;
-    console.log('THIS IS WHAT I CHOCE', id);
     await AsyncStorage.setItem(COMMUNITY_CHOICE, id?.toString());
     navigation.navigate('Loading', {community_id: id});
   };

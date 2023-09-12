@@ -1,22 +1,61 @@
 import {View, Text} from 'react-native';
-import React, { useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import VStack from '../../components/stacks/VStack';
 import Loader from '../../components/loaders/Loader';
 import MEButton from '../../components/button/MEButton';
+import {bindActionCreators} from 'redux';
+import {fetchAllCommunityData} from '../../config/redux/actions';
+import HStack from '../../components/stacks/HStack';
+import {connect} from 'react-redux';
 
-const LoadingScreen = ({route}) => {
+const LoadingScreen = ({route, fetchAll, navigation}) => {
+  const [hasError, setError] = useState(null);
+
   const {community_id} = route?.params || {};
 
-  useEffect(() => { 
-    
-  },[])
-
+  const fetch = () => {
+    fetchAll({community_id}, (data, error) => {
+      if (!data) {
+        console.log('ERROR_LOADING_COMMUNITY_DATA', error);
+        return setError(error);
+      }
+      navigation.navigate('CommunityPages');
+    });
+  };
+  useEffect(() => {
+    fetch();
+  }, [community_id]);
 
   return (
-    <VStack center style={{height: '100%'}}>
-      <Loader text="Almost there..." />
+    <VStack center style={{height: '100%', backgroundColor: 'white'}}>
+      {hasError ? (
+        <>
+          <Text
+            style={{textAlign: 'center', fontWeight: '500', marginBottom: 10}}>
+            Sorry, we could not load the data for your selected community
+          </Text>
+          <HStack>
+            <MEButton onPress={fetch}>Retry</MEButton>
+            <MEButton
+              onPress={() => navigation.navigate('CommunitySelectionPage')}
+              containerStyle={{backgroundColor: 'red', marginHorizontal: 5}}>
+              Go Back
+            </MEButton>
+          </HStack>
+        </>
+      ) : (
+        <Loader text="Fetching community data..." />
+      )}
     </VStack>
   );
 };
 
-export default LoadingScreen;
+const mapDispatch = dispatch => {
+  return bindActionCreators(
+    {
+      fetchAll: fetchAllCommunityData,
+    },
+    dispatch,
+  );
+};
+export default connect(null, mapDispatch)(LoadingScreen);

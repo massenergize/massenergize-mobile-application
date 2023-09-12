@@ -116,7 +116,25 @@ const CustomDrawerContent = ({navigation, toggleModal}) => {
         </View>
       </DrawerContentScrollView>
       <View style={{width: '100%', marginBottom: 20, padding: 20}}>
-        {/* <TouchableOpacity> */}
+        <TouchableOpacity
+          style={{
+            // backgroundColor: ME_ORANGE,
+            padding: 12,
+            borderWidth: 2,
+            borderColor: ME_ORANGE,
+            marginBottom: 10,
+            borderRadius: 5,
+          }}>
+          <Text
+            style={{
+              color: ME_ORANGE,
+              fontWeight: 'bold',
+              fontSize: 13,
+              textAlign: 'center',
+            }}>
+            SWITCH COMMUNITIES
+          </Text>
+        </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
             toggleModal({
@@ -142,26 +160,6 @@ const CustomDrawerContent = ({navigation, toggleModal}) => {
             LOGIN
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={{
-            // backgroundColor: ME_ORANGE,
-            padding: 12,
-            borderWidth: 2,
-            borderColor: ME_ORANGE,
-            marginTop: 10,
-            borderRadius: 5,
-          }}>
-          <Text
-            style={{
-              color: ME_ORANGE,
-              fontWeight: 'bold',
-              fontSize: 13,
-              textAlign: 'center',
-            }}>
-            SWITCH COMMUNITIES
-          </Text>
-        </TouchableOpacity>
-        {/* </TouchableOpacity> */}
       </View>
     </>
   );
@@ -192,7 +190,7 @@ const MEDrawerNavigator = ({toggleModal}) => {
 
   return (
     <Drawer.Navigator
-      initialRouteName="Register"
+      initialRouteName="Login"
       drawerContent={props => (
         <CustomDrawerContent {...props} toggleModal={toggleModal} />
       )}

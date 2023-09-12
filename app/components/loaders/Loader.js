@@ -16,7 +16,9 @@ const Loader = ({style, text, loaderStyle}) => {
         size={32}
         color={COLOR_SCHEME.GREEN}
       />
-      <Text>{text || 'loading...'}</Text>
+      <Text style={{fontWeight: 'bold', color: COLOR_SCHEME.GREEN}}>
+        {text || 'loading...'}
+      </Text>
     </View>
   );
 };
