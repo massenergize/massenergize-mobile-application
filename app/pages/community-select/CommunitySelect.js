@@ -13,9 +13,48 @@ import {bindActionCreators} from 'redux';
 import {toggleUniversalModalAction} from '../../config/redux/actions';
 import {connect} from 'react-redux';
 import ZipCodeInput from './ZipCodeInput';
+import Loader from '../../components/loaders/Loader';
+import {LOADING} from '../../utils/values';
 
-const CommunitySelect = ({toggleModal, zipcodeOptions}) => {
+const CommunitySelect = ({toggleModal, zipcodeOptions, communities}) => {
   const {zipcode, miles} = zipcodeOptions || {};
+
+  // console.log('Lets see communities', communities);
+  const organisedData = () => {
+    if (communities === LOADING)
+      return {fetchingContent: true, matches: [], near: []};
+    // const {near, matches} = communities;
+    return communities;
+  };
+  let {fetchingContent, matches, near} = organisedData();
+
+  // console.log('LEts see communities', communities);
+
+  const renderMatches = () => {
+    if (fetchingContent) return <></>;
+    if (!fetchingContent && !matches?.length)
+      return (
+        <Text style={{marginVertical: 10}}>
+          Sorry Could not find any communities in the zipcode...
+        </Text>
+      );
+    return matches?.map((community, index) => (
+      <View key={index.toString()}>
+        <OneCommunityItem {...community} />
+      </View>
+    ));
+  };
+
+  const renderNearByCommunities = () => {
+    if (fetchingContent || (!fetchingContent && !near?.length)) return <></>;
+
+    return near?.map((community, index) => (
+      <View key={index.toString()}>
+        <OneCommunityItem {...community} />
+      </View>
+    ));
+  };
+
   return (
     <SafeAreaView>
       <View style={{height: '100%'}}>
@@ -93,11 +132,25 @@ const CommunitySelect = ({toggleModal, zipcodeOptions}) => {
             <Text style={{fontWeight: '400', color: 'grey', fontSize: 12}}>
               MATCHED COMMUNITIES
             </Text>
-            {[1, 2, 3, 4].map(item => (
-              <View key={item}>
-                <OneCommunityItem />
-              </View>
-            ))}
+
+            {fetchingContent && <Loader />}
+
+            {renderMatches()}
+            {near.length ? (
+              <Text
+                style={{
+                  fontWeight: '400',
+                  paddingTop: 15,
+                  color: 'grey',
+                  fontSize: 12,
+                }}>
+                COMMUNITIES NEARBY
+              </Text>
+            ) : (
+              <></>
+            )}
+
+            {renderNearByCommunities()}
           </ScrollView>
         </View>
       </View>
@@ -105,7 +158,12 @@ const CommunitySelect = ({toggleModal, zipcodeOptions}) => {
   );
 };
 
-const OneCommunityItem = () => {
+const OneCommunityItem = ({
+  name,
+  is_geographically_focused,
+  location,
+  logo,
+}) => {
   return (
     <HStack
       style={{
@@ -116,7 +174,8 @@ const OneCommunityItem = () => {
         paddingVertical: 10,
       }}>
       <Image
-        src="https://massenergize-prod-files.s3.amazonaws.com/media/energizewayland_resized.jpg"
+        src={logo?.url}
+        // src="https://massenergize-prod-files.s3.amazonaws.com/media/energizewayland_resized.jpg"
         alt="Community Logo"
         style={{
           width: 70,
@@ -127,12 +186,28 @@ const OneCommunityItem = () => {
       />
       <VStack style={{}}>
         <Text style={{fontWeight: 'bold', fontSize: 15, marginBottom: 5}}>
-          Energize Wayland
+          {name}
         </Text>
-        <Text style={{fontSize: 14, marginBottom: 5}}>
-          Wayland, Masschusetts
-        </Text>
-        <Text>4 miles away</Text>
+        {is_geographically_focused ? (
+          <View>
+            <Text style={{fontSize: 14, color: 'grey'}}>
+              {location?.city || 'null'},{' '}
+              {location?.state || location?.country || 'null'}
+            </Text>
+            <Text style={{fontSize: 14, color: 'grey', marginTop: 5}}>
+              {Math.round(location?.distance)} miles away
+            </Text>
+          </View>
+        ) : (
+          <View>
+            <Text style={{fontSize: 14, color: 'grey'}}>
+              {location?.country || ''}
+            </Text>
+            <Text style={{fontSize: 14, color: 'grey', marginTop: 5}}>
+              Non-geographically-focused
+            </Text>
+          </View>
+        )}
       </VStack>
     </HStack>
   );
@@ -140,6 +215,7 @@ const OneCommunityItem = () => {
 
 const mapStateToProps = state => ({
   zipcodeOptions: state.zipcodeOptions,
+  communities: state.communities,
 });
 const mapDispatchToProps = dispatch => {
   return bindActionCreators(

@@ -5,6 +5,7 @@ import MEBottomSheet from '../components/modal/MEBottomSheet';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {
+  fetchCommunities,
   setFirebaseAuthenticationAction,
   toggleUniversalModalAction,
 } from '../config/redux/actions';
@@ -23,13 +24,25 @@ GoogleSignin.configure({
 
 const MainStack = createStackNavigator();
 
-const RootWrapper = ({modalOptions, toggleModal, setFirebaseAuth}) => {
+const RootWrapper = ({
+  zipcodeOptions,
+  modalOptions,
+  toggleModal,
+  setFirebaseAuth,
+  fetchCommunitiesFromBackend,
+}) => {
+  useEffect(() => {
+    const {zipcode, miles} = zipcodeOptions || {};
+    // First time app launches, it will load a few communities at 10 miles... (zipcode is set as wayland zip, and 10 miles check reducers.js)
+    fetchCommunitiesFromBackend({zipcode, maxDistance: miles});
+  }, []);
   useEffect(() => {
     isUserAuthenticated((yes, user) => {
       if (yes) setFirebaseAuth(user);
       else console.log('User is not signed in yet, do something!');
     });
   }, []);
+
   return (
     <NavigationContainer>
       <MainStack.Navigator initialRouteName="CommunitySelectionPage">
@@ -54,6 +67,7 @@ const RootWrapper = ({modalOptions, toggleModal, setFirebaseAuth}) => {
 const mapStateToProps = state => ({
   modalOptions: state.modalOptions,
   fireAuth: state.fireAuth,
+  zipcodeOptions: state.zipcodeOptions,
 });
 
 const mapDispatchToProps = dispatch => {
@@ -61,6 +75,7 @@ const mapDispatchToProps = dispatch => {
     {
       toggleModal: toggleUniversalModalAction,
       setFirebaseAuth: setFirebaseAuthenticationAction,
+      fetchCommunitiesFromBackend: fetchCommunities,
     },
     dispatch,
   );

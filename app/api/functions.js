@@ -1,4 +1,4 @@
-import { IS_LOCAL } from "../config";
+import { IS_LOCAL } from "./config";
 import URLS from "./urls";
 
 /**
