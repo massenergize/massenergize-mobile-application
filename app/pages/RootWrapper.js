@@ -12,10 +12,16 @@ import {NavigationContainer} from '@react-navigation/native';
 import {isUserAuthenticated} from '../config/firebase';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
+import CommunitySelect from './community-select/CommunitySelect';
+import {createStackNavigator} from '@react-navigation/stack';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
+
 GoogleSignin.configure({
   webClientId:
     '738582671182-6b94m9ot6jq3srhglag94atpjrhnhc7g.apps.googleusercontent.com',
 });
+
+const MainStack = createStackNavigator();
 
 const RootWrapper = ({modalOptions, toggleModal, setFirebaseAuth}) => {
   useEffect(() => {
@@ -26,7 +32,18 @@ const RootWrapper = ({modalOptions, toggleModal, setFirebaseAuth}) => {
   }, []);
   return (
     <NavigationContainer>
-      <MEDrawerNavigator />
+      <MainStack.Navigator initialRouteName="CommunitySelectionPage">
+        <MainStack.Screen
+          options={{headerShown: false}}
+          name="CommunitySelectionPage"
+          component={CommunitySelect}
+        />
+        <MainStack.Screen
+          options={{headerShown: false}}
+          name="CommunityPages"
+          component={MEDrawerNavigator}
+        />
+      </MainStack.Navigator>
       <MEBottomSheet
         onClose={() => toggleModal({isVisible: false, component: <></>})}
         {...(modalOptions || {})}

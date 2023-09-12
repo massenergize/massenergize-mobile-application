@@ -1,0 +1,149 @@
+import {View, Text, ScrollView, TouchableOpacity, Image} from 'react-native';
+import React from 'react';
+import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
+import {COLOR_SCHEME} from '../../stylesheet';
+import {FontAwesomeIcon} from '../../components/icons';
+
+import HStack from '../../components/stacks/HStack';
+import VStack from '../../components/stacks/VStack';
+import Textbox from '../../components/textbox/Textbox';
+import Slider from '@react-native-community/slider';
+import MEButton from '../../components/button/MEButton';
+import {bindActionCreators} from 'redux';
+import {toggleUniversalModalAction} from '../../config/redux/actions';
+import {connect} from 'react-redux';
+import ZipCodeInput from './ZipCodeInput';
+
+const CommunitySelect = ({toggleModal}) => {
+  return (
+    <SafeAreaView>
+      <View style={{height: '100%'}}>
+        <View
+          style={{
+            height: '30%',
+            backgroundColor: COLOR_SCHEME.GREEN,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <FontAwesomeIcon name="group" size={32} color="white" />
+          <Text
+            style={{
+              fontSize: 22,
+              fontWeight: 'bold',
+              color: 'white',
+              marginTop: 20,
+              width: '70%',
+              textAlign: 'center',
+            }}>
+            Become Part of a Community
+          </Text>
+        </View>
+        <View
+          style={{
+            height: '75%',
+            backgroundColor: 'white',
+            marginTop: -20,
+            borderTopRightRadius: 10,
+            borderTopLeftRadius: 10,
+          }}>
+          <HStack
+            style={{
+              paddingVertical: 15,
+              paddingHorizontal: 20,
+              alignItems: 'center',
+              width: '100%',
+              backgroundColor: COLOR_SCHEME.LIGHT_GREY,
+            }}>
+            <VStack>
+              <MEButton
+                onPress={() =>
+                  toggleModal({
+                    isVisible: true,
+                    Component: ZipCodeInput,
+                    title: 'Find your community with your zipcode',
+                  })
+                }
+                asLink
+                icon="search"
+                noArrow
+                style={{fontSize: 16}}
+                iconStyle={{fontSize: 15}}>
+                Find communities with your zipcode
+              </MEButton>
+            </VStack>
+          </HStack>
+          <HStack
+            style={{
+              width: '100%',
+              backgroundColor: '#e3e1e1',
+              paddingVertical: 5,
+              paddingHorizontal: 45,
+            }}>
+            <Text style={{fontSize: 12, fontWeight: 'bold', color: 'black'}}>
+              ZIPCODE: 01778, (10 miles) NEAR ME
+            </Text>
+          </HStack>
+
+          <ScrollView
+            verticals
+            style={{paddingHorizontal: 20, paddingVertical: 20}}>
+            <Text style={{fontWeight: '500', color: 'grey', fontSize: 12}}>
+              MATCHED COMMUNITIES
+            </Text>
+            {[1, 2, 3, 4].map(item => (
+              <View key={item}>
+                <OneCommunityItem />
+              </View>
+            ))}
+          </ScrollView>
+        </View>
+      </View>
+    </SafeAreaView>
+  );
+};
+
+const OneCommunityItem = () => {
+  return (
+    <HStack
+      style={{
+        width: '100%',
+        alignItems: 'center',
+        borderBottomWidth: 1,
+        borderColor: COLOR_SCHEME.LIGHT_GREY,
+        paddingVertical: 10,
+      }}>
+      <Image
+        src="https://massenergize-prod-files.s3.amazonaws.com/media/energizewayland_resized.jpg"
+        alt="Community Logo"
+        style={{
+          width: 70,
+          height: 70,
+          objectFit: 'contain',
+          marginRight: 20,
+        }}
+      />
+      <VStack style={{}}>
+        <Text style={{fontWeight: 'bold', fontSize: 15, marginBottom: 5}}>
+          Energize Wayland
+        </Text>
+        <Text style={{fontSize: 14, marginBottom: 5}}>
+          Wayland, Masschusetts
+        </Text>
+        <Text>4 miles away</Text>
+      </VStack>
+    </HStack>
+  );
+};
+
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators(
+    {
+      toggleModal: toggleUniversalModalAction,
+    },
+    dispatch,
+  );
+};
+
+export default connect(null, mapDispatchToProps)(CommunitySelect);

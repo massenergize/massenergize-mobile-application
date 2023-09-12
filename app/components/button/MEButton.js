@@ -4,12 +4,13 @@ import {COLOR_SCHEME} from '../../stylesheet';
 import {FontAwesomeIcon} from '../icons';
 
 const MEButton = props => {
-  const {children, containerStyle, style, asLink} = props;
+  const {children, containerStyle, style, asLink, onPress} = props;
 
   if (asLink) return <LinkButton {...props} />;
 
   return (
     <TouchableOpacity
+      onPress={onPress}
       style={{
         backgroundColor: COLOR_SCHEME.GREEN,
         padding: 13,
@@ -33,19 +34,32 @@ export default MEButton;
 
 const LinkButton = ({
   children,
-  icon = 'long-arrow-right',
+  icon,
   iconStyle,
   style,
   containerStyle,
+  noArrow = false,
+  onPress,
 }) => {
   return (
     <TouchableOpacity
+      onPress={onPress}
       style={{
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
         ...(containerStyle || {}),
       }}>
+      {icon && (
+        <FontAwesomeIcon
+          name={icon}
+          style={{
+            color: COLOR_SCHEME.GREEN,
+            marginRight: 10,
+            ...(iconStyle || {}),
+          }}
+        />
+      )}
       <Text
         style={{
           textDecorationStyle: 'solid',
@@ -55,13 +69,13 @@ const LinkButton = ({
         }}>
         {children}
       </Text>
-      {icon && (
+      {!noArrow && (
         <FontAwesomeIcon
-          name={icon}
+          name="long-arrow-right"
           style={{
             color: COLOR_SCHEME.GREEN,
             marginLeft: 10,
-            ...(iconStyle || {}),
+            ...(style || {}),
           }}
         />
       )}
