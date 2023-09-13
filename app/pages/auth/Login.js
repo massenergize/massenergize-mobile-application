@@ -30,19 +30,7 @@ const Login = ({
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const signInWithGoogle = async () => {
-    try {
-      await GoogleSignin.hasPlayServices();
-      const userInfo = await GoogleSignin.signIn();
-      const googleCredential = auth.GoogleAuthProvider.credential(
-        userInfo.idToken,
-      );
-      const response = await auth().signInWithCredential(googleCredential);
-      // setFireAuth(response?.user);
-    } catch (error) {
-      console.error('Google Sign-In Error:', error);
-    }
-  };
+
 
   const notReadyToSubmit = () => {
     if (!email || !password) return true;

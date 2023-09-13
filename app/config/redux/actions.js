@@ -49,7 +49,7 @@ export const fetchUserProfile = (idToken, cb) => dispatch => {
         cb & cb(null, response.error);
         return;
       }
-      cb && cb(user);
+      cb && cb(response.data);
       dispatch(setUserProfile(response.data));
     })
     .catch(err => {

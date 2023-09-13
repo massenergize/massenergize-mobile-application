@@ -31,6 +31,7 @@ const CustomDrawerContent = ({
   signMeOut,
   user,
 }) => {
+  console.log("Lets see user", user)
   const getDrawerItems = () => {
     const drawerItems = [
       {
@@ -229,7 +230,7 @@ const MEDrawerNavigator = ({
   signMeOut,
   user,
 }) => {
-  const renderProfileIcon = () => {
+  const renderProfileIcon = ({navigation}) => {
     const {profile_picture} = user || {};
     if (profile_picture?.url)
       return (
@@ -271,7 +272,7 @@ const MEDrawerNavigator = ({
       );
     },
 
-    headerRight: () => renderProfileIcon(),
+    headerRight: () => renderProfileIcon({navigation}),
   });
 
   return (

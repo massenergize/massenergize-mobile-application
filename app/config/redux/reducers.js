@@ -28,7 +28,7 @@ export const testReducer = (state = {name: 'Just A Test!'}, action) => {
   return state;
 };
 
-export const reducerForUserProfile = (state = {isVisible: false}, action) => {
+export const reducerForUserProfile = (state = null, action) => {
   if (action?.type === SET_ME_USER_PROFILE) return action.payload;
   return state;
 };

@@ -4,9 +4,35 @@ import React from 'react';
 import {FontAwesomeIcon} from '../../components/icons';
 import {COLOR_SCHEME} from '../../stylesheet';
 import {useNavigation} from '@react-navigation/native';
+import {bindActionCreators} from 'redux';
+import {authenticateWithGmail} from '../../config/firebase';
+import {connect} from 'react-redux';
+import {showError} from '../../utils/common';
+import {
+  fetchUserProfile,
+  setFirebaseAuthenticationAction,
+} from '../../config/redux/actions';
 
-const AuthOptions = ({closeModal}) => {
+const AuthOptions = ({closeModal, fetchMEUser, putFirebaseUserInRedux}) => {
   const navigation = useNavigation();
+
+  const doGoogleAuth = () => {
+    authenticateWithGmail((response, error) => {
+      if (error && !response) return showError(error?.toString());
+      const firebaseUser = response?.user;
+      putFirebaseUserInRedux(firebaseUser);
+      firebaseUser
+        ?.getIdToken()
+        .then(token => {
+          fetchMEUser(token, (user, error) => {
+            closeModal();
+            if (!user) return showError(error);
+            navigation.navigate('Community');
+          });
+        })
+        .catch(e => showError(e?.toString()));
+    });
+  };
   const options = [
     {
       key: 'email-only',
@@ -20,6 +46,7 @@ const AuthOptions = ({closeModal}) => {
       name: 'Gmail',
       icon: 'google',
       theme: {text: {color: 'red'}, icon: {color: 'red'}},
+      onPress: doGoogleAuth,
     },
     {
       key: 'facbeook',
@@ -79,4 +106,13 @@ const AuthOptions = ({closeModal}) => {
   );
 };
 
-export default AuthOptions;
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators(
+    {
+      fetchMEUser: fetchUserProfile,
+      putFirebaseUserInRedux: setFirebaseAuthenticationAction,
+    },
+    dispatch,
+  );
+};
+export default connect(null, mapDispatchToProps)(AuthOptions);
