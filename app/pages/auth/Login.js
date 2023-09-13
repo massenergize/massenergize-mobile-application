@@ -31,7 +31,6 @@ const Login = ({
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-
   const notReadyToSubmit = () => {
     if (!email || !password) return true;
   };
@@ -43,10 +42,11 @@ const Login = ({
       const user = response.user;
       putFirebaseUserInRedux(user);
       user?.getIdToken().then(token => {
-        fetchMEUser(token, (_, error));
-        if (error) return;
-        // console.log('LOGIN_TOKEN:', token);
-        navigation.navigate('Community');
+        fetchMEUser(token, (_, error) => {
+          if (error) return;
+          // console.log('LOGIN_TOKEN:', token);
+          navigation.navigate('Community');
+        });
       });
     });
   };

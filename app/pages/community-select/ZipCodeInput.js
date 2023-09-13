@@ -37,7 +37,7 @@ const ZipCodeInput = ({
   return (
     <View style={{padding: 20}}>
       <Textbox
-        generics={{keyboardType: 'number-pad', maxLength: 5}}
+        generics={{keyboardType: 'decimal-pad', maxLength: 5}}
         onChange={code => doUpdate('zipcode', code)}
         label="What's your community's zipcode? *"
         placholder="Enter zipcode here..."

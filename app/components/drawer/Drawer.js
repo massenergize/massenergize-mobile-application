@@ -31,7 +31,6 @@ const CustomDrawerContent = ({
   signMeOut,
   user,
 }) => {
-  console.log("Lets see user", user)
   const getDrawerItems = () => {
     const drawerItems = [
       {
@@ -277,7 +276,7 @@ const MEDrawerNavigator = ({
 
   return (
     <Drawer.Navigator
-      initialRouteName="Login"
+      initialRouteName="Community"
       drawerContent={props => (
         <CustomDrawerContent
           {...props}
