@@ -22,13 +22,13 @@
 		<string>Zocial.ttf</string>
 	</array>
 	<key>GIDClientID</key>
-	<string>WEB_CLIENT_ID_HERE</string>
+	<string>738582671182-6b94m9ot6jq3srhglag94atpjrhnhc7g.apps.googleusercontent.com</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 	<dict>
 		<key>CFBundleURLSchemes</key>
 		<array>
-		<string>REVERSED_DOT_WEB_CLIENT_ID_HERE</string>
+		<string>com.googleusercontent.apps.738582671182-p7v08tmta7rk1kvlsrlqvqa3v53at1mk</string>
 		</array>
 	</dict>
 	</array>
