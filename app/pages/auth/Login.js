@@ -12,6 +12,8 @@ import {
 import Textbox from '../../components/textbox/Textbox';
 import {COLOR_SCHEME} from '../../stylesheet';
 import MEButton from '../../components/button/MEButton';
+import Snackbar from 'react-native-snackbar';
+import {showError, showSnackBar, showSuccess} from '../../utils/common';
 
 const Login = ({
   toggleModal,
@@ -25,13 +27,9 @@ const Login = ({
     try {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
-
-      // Create a Firebase credential with the Google Sign-In token
       const googleCredential = auth.GoogleAuthProvider.credential(
         userInfo.idToken,
       );
-
-      // Sign-in to Firebase with the Google credential
       const response = await auth().signInWithCredential(googleCredential);
       setFireAuth(response?.user);
     } catch (error) {
@@ -78,7 +76,10 @@ const Login = ({
           />
         </TouchableOpacity> */}
 
-        <MEButton>LOGIN</MEButton>
+        <MEButton
+          onPress={() => showSuccess('This is the pinnacle of all errors!')}>
+          LOGIN
+        </MEButton>
 
         <MEButton
           containerStyle={{marginVertical: 5}}
