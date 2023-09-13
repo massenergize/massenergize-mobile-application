@@ -14,13 +14,23 @@ import {FontAwesomeIcon} from '../icons';
 import UserProfile from '../../pages/user-profile/UserProfile';
 import AuthOptions from '../../pages/auth/AuthOptions';
 import {bindActionCreators} from 'redux';
-import {toggleUniversalModalAction} from '../../config/redux/actions';
+import {
+  signOutAction,
+  toggleUniversalModalAction,
+} from '../../config/redux/actions';
 import {connect} from 'react-redux';
 import Register from '../../pages/auth/Register';
 
 const Drawer = createDrawerNavigator();
 
-const CustomDrawerContent = ({navigation, toggleModal, activeCommunity}) => {
+const CustomDrawerContent = ({
+  navigation,
+  toggleModal,
+  activeCommunity,
+  fireAuth,
+  signMeOut,
+  user,
+}) => {
   const getDrawerItems = () => {
     const drawerItems = [
       {
@@ -63,6 +73,8 @@ const CustomDrawerContent = ({navigation, toggleModal, activeCommunity}) => {
     return drawerItems;
   };
 
+  const {preferred_name} = user || {};
+
   return (
     <>
       <DrawerContentScrollView>
@@ -80,6 +92,25 @@ const CustomDrawerContent = ({navigation, toggleModal, activeCommunity}) => {
               style={{width: 120, height: 120, objectFit: 'contain'}}
             />
           </View>
+          {preferred_name ? (
+            <View
+              style={{
+                backgroundColor: COLOR_SCHEME.GREEN,
+                paddingVertical: 5,
+              }}>
+              <Text
+                style={{
+                  color: 'white',
+                  fontWeight: 'bold',
+                  textAlign: 'center',
+                  fontSize: 10,
+                }}>
+                {preferred_name}
+              </Text>
+            </View>
+          ) : (
+            <></>
+          )}
           <View
             style={{
               padding: 15,
@@ -138,37 +169,97 @@ const CustomDrawerContent = ({navigation, toggleModal, activeCommunity}) => {
             SWITCH COMMUNITIES
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => {
-            toggleModal({
-              isVisible: true,
-              Component: AuthOptions,
-              title: 'How would you like to sign in or Join ?',
-            });
-          }}
-          style={{
-            backgroundColor: COLOR_SCHEME.GREEN,
-            borderColor: COLOR_SCHEME.GREEN,
-            padding: 12,
-            borderRadius: 5,
-            borderWidth: 2,
-          }}>
-          <Text
+        {fireAuth ? (
+          <TouchableOpacity
+            onPress={() => signMeOut()}
             style={{
-              color: 'white',
-              fontWeight: 'bold',
-              fontSize: 13,
-              textAlign: 'center',
+              backgroundColor: 'red',
+              borderColor: 'red',
+              padding: 12,
+              borderRadius: 5,
+              borderWidth: 2,
             }}>
-            LOGIN
-          </Text>
-        </TouchableOpacity>
+            <Text
+              style={{
+                color: 'white',
+                fontWeight: 'bold',
+                fontSize: 13,
+                textAlign: 'center',
+              }}>
+              SIGN OUT
+            </Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            onPress={() => {
+              toggleModal({
+                isVisible: true,
+                Component: AuthOptions,
+                title: 'How would you like to sign in or Join ?',
+              });
+            }}
+            style={{
+              backgroundColor: COLOR_SCHEME.GREEN,
+              borderColor: COLOR_SCHEME.GREEN,
+              padding: 12,
+              borderRadius: 5,
+              borderWidth: 2,
+            }}>
+            <Text
+              style={{
+                color: 'white',
+                fontWeight: 'bold',
+                fontSize: 13,
+                textAlign: 'center',
+              }}>
+              LOGIN
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
     </>
   );
 };
+// ------------------------------------------ NAVIGATOR ------------------------------
 
-const MEDrawerNavigator = ({toggleModal, activeCommunity}) => {
+const MEDrawerNavigator = ({
+  toggleModal,
+  activeCommunity,
+  fireAuth,
+  signMeOut,
+  user,
+}) => {
+  const renderProfileIcon = () => {
+    const {profile_picture} = user || {};
+    if (profile_picture?.url)
+      return (
+        <Image
+          src={profile_picture?.url}
+          // src="https://massenergize-prod-files.s3.amazonaws.com/media/energizewayland_resized.jpg"
+          style={{
+            height: 27,
+            width: 27,
+            borderRadius: 10000,
+            borderWidth: 2,
+            borderColor: COLOR_SCHEME.ORANGE,
+            marginRight: 15,
+            objectFit: 'scale-down',
+          }}
+        />
+      );
+
+    return (
+      <TouchableOpacity
+        style={{marginRight: 15}}
+        onPress={() => navigation.navigate('Profile')}>
+        <FontAwesomeIcon
+          name="user-circle"
+          size={21}
+          color={user ? COLOR_SCHEME.ORANGE : 'black'}
+        />
+      </TouchableOpacity>
+    );
+  };
   const options = ({navigation}) => ({
     headerLeft: () => {
       return (
@@ -180,15 +271,7 @@ const MEDrawerNavigator = ({toggleModal, activeCommunity}) => {
       );
     },
 
-    headerRight: () => {
-      return (
-        <TouchableOpacity
-          style={{marginRight: 15}}
-          onPress={() => navigation.navigate('Profile')}>
-          <FontAwesomeIcon name="user-circle" size={21} />
-        </TouchableOpacity>
-      );
-    },
+    headerRight: () => renderProfileIcon(),
   });
 
   return (
@@ -199,6 +282,9 @@ const MEDrawerNavigator = ({toggleModal, activeCommunity}) => {
           {...props}
           toggleModal={toggleModal}
           activeCommunity={activeCommunity}
+          fireAuth={fireAuth}
+          signMeOut={signMeOut}
+          user={user}
         />
       )}
       drawerStyle={{width: 250}}>
@@ -234,11 +320,13 @@ const MEDrawerNavigator = ({toggleModal, activeCommunity}) => {
 const mapSateToProps = state => {
   return {
     activeCommunity: state.activeCommunity,
+    fireAuth: state.fireAuth,
+    user: state.user,
   };
 };
 const mapDispatchToProps = dispatch => {
   return bindActionCreators(
-    {toggleModal: toggleUniversalModalAction},
+    {toggleModal: toggleUniversalModalAction, signMeOut: signOutAction},
     dispatch,
   );
 };

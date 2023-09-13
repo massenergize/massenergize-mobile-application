@@ -6,6 +6,7 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {
   fetchCommunities,
+  fetchUserProfile,
   setActiveCommunityAction,
   setFirebaseAuthenticationAction,
   toggleUniversalModalAction,
@@ -37,6 +38,7 @@ const RootWrapper = ({
   // communities,
   activeCommunity,
   setActiveCommunity,
+  fetchMEUser,
 }) => {
   const navigation = useNavigation();
   useEffect(() => {
@@ -75,8 +77,13 @@ const RootWrapper = ({
 
   useEffect(() => {
     isUserAuthenticated((yes, user) => {
-      if (yes) setFirebaseAuth(user);
-      else console.log('User is not signed in yet!');
+      console.log('USER IS FIREBASE_AUTHENTICATED: ', user?.email);
+      if (yes) {
+        setFirebaseAuth(user);
+        user?.getIdToken().then(token => {
+          fetchMEUser(token);
+        });
+      } else console.log('User is not signed in yet!');
     });
   }, []);
 
@@ -122,6 +129,7 @@ const mapDispatchToProps = dispatch => {
       setFirebaseAuth: setFirebaseAuthenticationAction,
       fetchCommunitiesFromBackend: fetchCommunities,
       setActiveCommunity: setActiveCommunityAction,
+      fetchMEUser: fetchUserProfile,
     },
     dispatch,
   );

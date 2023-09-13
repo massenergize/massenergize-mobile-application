@@ -20,7 +20,6 @@ const Textbox = ({
       )}
       <TextInput
         onChangeText={text => onChange && onChange(text)}
-        
         style={{
           width: '100%',
           borderWidth: 2,

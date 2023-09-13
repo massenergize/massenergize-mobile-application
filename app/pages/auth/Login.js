@@ -5,6 +5,7 @@ import {connect} from 'react-redux';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import auth from '@react-native-firebase/auth';
 import {
+  fetchUserProfile,
   setFirebaseAuthenticationAction,
   signOutAction,
   toggleUniversalModalAction,
@@ -14,6 +15,7 @@ import {COLOR_SCHEME} from '../../stylesheet';
 import MEButton from '../../components/button/MEButton';
 import Snackbar from 'react-native-snackbar';
 import {showError, showSnackBar, showSuccess} from '../../utils/common';
+import {authenticateWithEmailAndPassword} from '../../config/firebase';
 
 const Login = ({
   toggleModal,
@@ -22,7 +24,12 @@ const Login = ({
   setFireAuth,
   navigation,
   activeCommunity,
+  putFirebaseUserInRedux,
+  fetchMEUser,
 }) => {
+  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const signInWithGoogle = async () => {
     try {
       await GoogleSignin.hasPlayServices();
@@ -31,10 +38,29 @@ const Login = ({
         userInfo.idToken,
       );
       const response = await auth().signInWithCredential(googleCredential);
-      setFireAuth(response?.user);
+      // setFireAuth(response?.user);
     } catch (error) {
       console.error('Google Sign-In Error:', error);
     }
+  };
+
+  const notReadyToSubmit = () => {
+    if (!email || !password) return true;
+  };
+  const signUserIn = () => {
+    setLoading(true);
+    authenticateWithEmailAndPassword(email, password, (response, error) => {
+      setLoading(false);
+      if (!response) return showError(error);
+      const user = response.user;
+      putFirebaseUserInRedux(user);
+      user?.getIdToken().then(token => {
+        fetchMEUser(token, (_, error));
+        if (error) return;
+        // console.log('LOGIN_TOKEN:', token);
+        navigation.navigate('Community');
+      });
+    });
   };
 
   return (
@@ -57,8 +83,20 @@ const Login = ({
         Sign in with email & password
       </Text>
       <View style={{width: '100%', paddingHorizontal: '10%'}}>
-        <Textbox label="Email" placholder="Enter email here..." />
-        <Textbox label="Password" placholder="Enter your password here..." />
+        <Textbox
+          value={email}
+          generics={{keyboardType: 'email-address'}}
+          onChange={text => setEmail(text)}
+          label="Email"
+          placholder="Enter email here..."
+        />
+        <Textbox
+          value={password}
+          onChange={text => setPassword(text)}
+          generics={{keyboardType: 'visible-password', secureTextEntry: true}}
+          label="Password"
+          placholder="Enter your password here..."
+        />
         <MEButton asLink>Forgot Password</MEButton>
         {/* <TouchableOpacity
           style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
@@ -77,7 +115,9 @@ const Login = ({
         </TouchableOpacity> */}
 
         <MEButton
-          onPress={() => showSuccess('This is the pinnacle of all errors!')}>
+          disabled={notReadyToSubmit()}
+          loading={loading}
+          onPress={() => signUserIn()}>
           LOGIN
         </MEButton>
 
@@ -103,7 +143,9 @@ const mapDispatchToProps = dispatch => {
     {
       toggleModal: toggleUniversalModalAction,
       signMeOut: signOutAction,
-      setFireAuth: setFirebaseAuthenticationAction,
+      // setFireAuth: setFirebaseAuthenticationAction,
+      putFirebaseUserInRedux: setFirebaseAuthenticationAction,
+      fetchMEUser: fetchUserProfile,
     },
     dispatch,
   );

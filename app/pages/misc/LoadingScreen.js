@@ -51,6 +51,7 @@ const LoadingScreen = ({route, fetchAll, navigation}) => {
   );
 };
 
+
 const mapDispatch = dispatch => {
   return bindActionCreators(
     {

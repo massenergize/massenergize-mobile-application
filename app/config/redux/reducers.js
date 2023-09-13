@@ -10,6 +10,7 @@ import {
   SET_FIREBASE_AUTH,
   SET_GRAPHS_DATA,
   SET_HOMEPAGE_INFO,
+  SET_ME_USER_PROFILE,
   SET_TEAMS_STATS,
   SET_TESTIMONIALS_LIST,
   SET_TESTIMONIALS_PAGE_INFO,
@@ -27,11 +28,15 @@ export const testReducer = (state = {name: 'Just A Test!'}, action) => {
   return state;
 };
 
+export const reducerForUserProfile = (state = {isVisible: false}, action) => {
+  if (action?.type === SET_ME_USER_PROFILE) return action.payload;
+  return state;
+};
 export const universalModalReducer = (state = {isVisible: false}, action) => {
   if (action?.type === TOGGLE_UNIVERSAL_MODAL) return action.payload;
   return state;
 };
-export const firebaseAuthReducer = (state = {isVisible: false}, action) => {
+export const firebaseAuthReducer = (state = null, action) => {
   if (action?.type === SET_FIREBASE_AUTH) return action.payload;
   return state;
 };

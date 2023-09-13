@@ -1,4 +1,5 @@
 import {apiCall} from '../../api/functions';
+import {showError} from '../../utils/common';
 import {firebaseSignOut} from '../firebase';
 import {
   ACTIVE_COMMUNITY,
@@ -11,6 +12,7 @@ import {
   SET_FIREBASE_AUTH,
   SET_GRAPHS_DATA,
   SET_HOMEPAGE_INFO,
+  SET_ME_USER_PROFILE,
   SET_TEAMSPAGE_INFO,
   SET_TEAMS_STATS,
   SET_TESTIMONIALS_LIST,
@@ -37,6 +39,25 @@ export const setCommunitiesAction = payload => {
   return {type: COMMUNITIES, payload};
 };
 
+export const fetchUserProfile = (idToken, cb) => dispatch => {
+  const body = {idToken};
+  apiCall('auth.login', body)
+    .then(response => {
+      console.log('ME USER LOADED IN!');
+      if (!response.success) {
+        showError(response.error);
+        cb & cb(null, response.error);
+        return;
+      }
+      cb && cb(user);
+      dispatch(setUserProfile(response.data));
+    })
+    .catch(err => {
+      const error = err?.toString();
+      cb && cb(null, error);
+      showError(error);
+    });
+};
 export const fetchCommunities = (data, cb) => dispatch => {
   apiCall('communities.list', data)
     .then(response => {
@@ -53,6 +74,9 @@ export const fetchCommunities = (data, cb) => dispatch => {
 
 export const setActiveCommunityAction = payload => {
   return {type: ACTIVE_COMMUNITY, payload};
+};
+export const setUserProfile = payload => {
+  return {type: SET_ME_USER_PROFILE, payload};
 };
 
 export const setActionWithValue = (type, payload) => {
@@ -124,6 +148,7 @@ export const fetchAllCommunityData = (body, cb) => dispatch => {
 export const signOutAction = () => dispatch => {
   return firebaseSignOut(() => {
     console.log('Yes we just signed out!');
-    dispatch({type: SIGN_OUT, payload: null});
+    dispatch({type: SET_FIREBASE_AUTH, payload: null});
+    dispatch({type: SET_ME_USER_PROFILE, payload: null});
   });
 };

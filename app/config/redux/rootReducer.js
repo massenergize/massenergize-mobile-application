@@ -14,6 +14,7 @@ import {
   reducerForTeamsStats,
   reducerForTestimonialList,
   reducerForTestimonialsPageInfo,
+  reducerForUserProfile,
   reducerForVendorList,
   reducerForVendorsPageInfo,
   reducerForZipCodeOptions,
@@ -23,7 +24,8 @@ import {
 
 const rootReducer = combineReducers({
   test: testReducer,
-  modalOptions: universalModalReducer, //
+  modalOptions: universalModalReducer, 
+  user: reducerForUserProfile,// Profile object that we collect from ME Backend... (very different from the firebase objedt)
   fireAuth: firebaseAuthReducer, // the firebaser user object that is returned after every auth
   zipcodeOptions: reducerForZipCodeOptions, // content from the zipcode bottom sheet that users use is sotred here
   communities: reducerForSettingCommunties, // list of communities loaded for community selection page,
@@ -40,6 +42,7 @@ const rootReducer = combineReducers({
   homePage: reducerForHomepageInfo,
   vendorsPage: reducerForVendorsPageInfo,
   testimonialsPage: reducerForTestimonialsPageInfo,
+ 
 });
 
 export default rootReducer;

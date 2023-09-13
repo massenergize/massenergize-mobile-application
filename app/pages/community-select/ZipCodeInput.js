@@ -8,7 +8,6 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {fetchCommunities, setZipCodeOptions} from '../../config/redux/actions';
 
-
 const ZipCodeInput = ({
   updateOptions,
   zipcodeOptions,
@@ -38,7 +37,7 @@ const ZipCodeInput = ({
   return (
     <View style={{padding: 20}}>
       <Textbox
-        generics={{keyboardType: 'numeric', maxLength: 5}}
+        generics={{keyboardType: 'number-pad', maxLength: 5}}
         onChange={code => doUpdate('zipcode', code)}
         label="What's your community's zipcode? *"
         placholder="Enter zipcode here..."

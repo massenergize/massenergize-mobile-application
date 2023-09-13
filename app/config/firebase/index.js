@@ -8,6 +8,15 @@ export const isUserAuthenticated = cb => {
   return subscriber;
 };
 
+export const authenticateWithEmailAndPassword = (email, password, cb) => {
+  auth()
+    .signInWithEmailAndPassword(email, password)
+    .then(response => cb && cb(response))
+    .catch(e => cb && cb(null, e?.toString()));
+};
+
+export const authenticateWithGmail = () => { }
+
 export const firebaseSignOut = cb => {
   auth().signOut().then(cb);
 };
