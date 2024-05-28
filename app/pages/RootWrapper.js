@@ -21,6 +21,7 @@ import {SafeAreaProvider} from 'react-native-safe-area-context';
 import LoadingScreen from './misc/LoadingScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {COMMUNITY_CHOICE} from '../utils/values';
+import ActionDetails from './actions/ActionDetails';
 
 GoogleSignin.configure({
   webClientId:
@@ -28,6 +29,12 @@ GoogleSignin.configure({
 });
 
 const MainStack = createStackNavigator();
+
+const screenOptions = {
+  // headerShown: false,
+  headerTintColor: "black", 
+  headerBackTitleVisible: false,
+};
 
 const RootWrapper = ({
   zipcodeOptions,
@@ -90,7 +97,7 @@ const RootWrapper = ({
   return (
     // <NavigationContainer>
     <>
-      <MainStack.Navigator initialRouteName="CommunitySelectionPage">
+      <MainStack.Navigator screenOptions={screenOptions} initialRouteName="CommunitySelectionPage">
         <MainStack.Screen
           options={{headerShown: false}}
           name="CommunitySelectionPage"
@@ -105,6 +112,10 @@ const RootWrapper = ({
           options={{headerShown: false}}
           name="Loading"
           component={LoadingScreen}
+        />
+        <MainStack.Screen
+          name="ActionDetails"
+          component={ActionDetails}
         />
       </MainStack.Navigator>
       <MEBottomSheet
