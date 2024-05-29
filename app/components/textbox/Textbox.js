@@ -7,7 +7,7 @@ const Textbox = ({
   onChange,
   style,
   labelStyle,
-  placholder,
+  placeholder,
   generics,
   value,
   defaultValue,
@@ -31,7 +31,7 @@ const Textbox = ({
         }}
         value={_value}
         {...(generics || {})}
-        placeholder={placholder}
+        placeholder={placeholder}
       />
     </View>
   );

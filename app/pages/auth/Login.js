@@ -113,8 +113,11 @@ const Login = ({
           containerStyle={{marginVertical: 5}}
           style={{color: COLOR_SCHEME.ORANGE, fontSize: 16}}
           iconStyle={{color: COLOR_SCHEME.ORANGE}}
-          asLink>
+          asLink
+          onPress={() => navigation.navigate('Register')}
+        >
           Haven't joined yet? Join{' '}
+          
         </MEButton>
       </View>
     </View>
