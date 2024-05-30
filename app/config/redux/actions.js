@@ -107,7 +107,7 @@ export const fetchAllCommunityData = (body, cb) => dispatch => {
         testimonials,
         graphs,
         completedActions,
-        aboutAsPage,
+        aboutUsPage,
         teamsStats,
         homePageSettings,
         teamsPageSettings,
@@ -125,7 +125,7 @@ export const fetchAllCommunityData = (body, cb) => dispatch => {
         setActionWithValue(SET_COMPLETED_ACTIONS, completedActions.data),
       );
 
-      dispatch(setActionWithValue(SET_ABOUT_US_INFO, aboutAsPage.data));
+      dispatch(setActionWithValue(SET_ABOUT_US_INFO, aboutUsPage.data));
       dispatch(setActionWithValue(SET_TEAMS_STATS, teamsStats.data));
       dispatch(setActionWithValue(SET_HOMEPAGE_INFO, homePageSettings.data));
       dispatch(setActionWithValue(SET_TEAMSPAGE_INFO, teamsPageSettings.data));
