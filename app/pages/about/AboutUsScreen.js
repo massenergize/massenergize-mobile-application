@@ -14,7 +14,7 @@
 import React, { useEffect } from 'react';
 import { View, Image, ScrollView, Text, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
-import HTMLParser from '../../components/htmlparser/HTMLParser';
+import HTMLParser from '../../utils/HTMLParser';
 import { fetchAllCommunityData } from '../../config/redux/actions';
 
 
