@@ -38,5 +38,3 @@ const mapStateToProps = (state) => {
 }
 
 export default connect(mapStateToProps)(EventsScreen);
-
-// export default EventsScreen;
