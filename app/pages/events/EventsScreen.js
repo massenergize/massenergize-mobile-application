@@ -4,6 +4,7 @@ import TopTabsComponent from '../../components/tab/TopTabsComponent';
 import Upcoming from './Upcoming';
 import PastEvents from './PastEvents';
 import Campaigns from './Campaigns';
+import { connect } from 'react-redux';
 
 const EventsScreen = () => {
   const tabs = [
@@ -30,4 +31,12 @@ const EventsScreen = () => {
   );
 };
 
-export default EventsScreen;
+const mapStateToProps = (state) => {
+  return {
+    actions: state.events,
+  };
+}
+
+export default connect(mapStateToProps)(EventsScreen);
+
+// export default EventsScreen;

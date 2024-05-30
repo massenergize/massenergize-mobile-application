@@ -22,6 +22,7 @@ import LoadingScreen from './misc/LoadingScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {COMMUNITY_CHOICE} from '../utils/values';
 import ActionDetails from './actions/ActionDetails';
+import EventDetails from './events/EventDetails';
 
 GoogleSignin.configure({
   webClientId:
@@ -116,6 +117,10 @@ const RootWrapper = ({
         <MainStack.Screen
           name="ActionDetails"
           component={ActionDetails}
+        />
+        <MainStack.Screen
+          name="EventDetails"
+          component={EventDetails}
         />
       </MainStack.Navigator>
       <MEBottomSheet

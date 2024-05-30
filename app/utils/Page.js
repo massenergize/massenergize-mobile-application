@@ -1,17 +1,10 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { View } from "native-base";
 
-const Page = ({ children }) => {
-    return <View style={styles.page}> {children} </View>;
-};
-
-const styles = StyleSheet.create({
-    page: {
-        flex: 1,
-        backgroundColor: 'white',
-        // paddingHorizontal: 10,
-        // paddingVertical: 20,
-    },
-});
-
-export default Page;
+export default function Page({ children, ...props }) {
+  return (
+    <View backgroundColor="white" flex={1} {...props}>
+      {children}
+    </View>
+  );
+}
