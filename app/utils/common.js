@@ -7,8 +7,8 @@ export const isValidZipCode = zipCode => {
 
 export const groupCommunities = communities => {
   communities = communities.filter(c => c.is_geographically_focused);
-  const matches = communities.filter(c => c.location.distance === 0);
-  const near = communities
+  const matches = communities;//.filter(c => c.location.distance === 0);
+  const near = communities;
     .filter(c => c.location.distance !== 0)
     .sort((a, b) => a.location.distance - b.location.distance);
   return {matches, near};
@@ -53,3 +53,18 @@ export const showSuccess = message => {
     },
   });
 };
+
+/**
+ * get the metric of an action
+ * @param {Object} action
+ * @param {String} metric
+ * @returns {String} the metric of the action
+ */
+export function getActionMetric(action, metric) {
+  for (let i = 0; i < action.tags.length; i++) {
+    if (action.tags[i].tag_collection_name === metric) {
+      return action.tags[i].name;
+    }
+  }
+  return "-";
+}
