@@ -3,10 +3,10 @@ import React from 'react';
 import {Image} from 'react-native';
 import Textbox from '../../components/textbox/Textbox';
 import MEButton from '../../components/button/MEButton';
-import CompletProfile from './CompleteProfile';
+import CompleteProfile from './CompleteProfile';
 
 const Register = () => {
-  return <CompletProfile />;
+  return <CompleteProfile />;
   return (
     // <ScrollView vertical style={{height: '100%'}}>
     <View
@@ -37,11 +37,11 @@ const Register = () => {
       </Text>
 
       <View style={{width: '100%', paddingHorizontal: '10%'}}>
-        <Textbox label="Email" placholder="Enter email address..." />
-        <Textbox label="Password" placholder="Enter password here..." />
+        <Textbox label="Email" placeholder="Enter email address..." />
+        <Textbox label="Password" placeholder="Enter password here..." />
         <Textbox
           label="Confirm Password"
-          placholder="Re-enter password here..."
+          placeholder="Re-enter password here..."
         />
         <MEButton containerStyle={{width: '100%'}}>REGISTER</MEButton>
         <MEButton asLink style={{marginLeft: 'auto'}}>

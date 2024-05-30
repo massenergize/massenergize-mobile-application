@@ -1,10 +1,30 @@
-import {View, Text, ScrollView} from 'react-native';
-import React from 'react';
+import {View, Text, Alert} from 'react-native';
+import React, { useState } from 'react';
 import {Image} from 'react-native';
 import Textbox from '../../components/textbox/Textbox';
 import MEButton from '../../components/button/MEButton';
 
-const CompletProfile = () => {
+const CompleteProfile = () => {
+  const [preferredName, setPreferredName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [zipcode, setZipcode] = useState('');
+
+  const isValidZipCode = (zip) => {
+    return zip.length === 5 && !isNaN(zip);
+  }
+
+  const onSubmit = () => {
+    if (!preferredName || !firstName || !lastName || !zipcode) {
+      Alert.alert('Please fill out all fields');
+      return;
+    } else if (!isValidZipCode(zipcode)) {
+      Alert.alert('Please enter a valid zipcode');
+      return;
+    }
+    console.log('Submitting...');
+  }
+
   return (
     // <ScrollView vertical style={{height: '100%'}}>
     <View
@@ -37,16 +57,35 @@ const CompletProfile = () => {
       <View style={{width: '100%', paddingHorizontal: '10%'}}>
         <Textbox
           label="Preferred Name (unique)"
-          placholder="Enter preferred name..."
+          placeholder="Enter preferred name..."
+          value={preferredName}
+          onChange={(text) => setPreferredName(text)}
         />
-        <Textbox label="First Name" placholder="Enter firstname here..." />
-        <Textbox label="Last Name" placholder="Enter last Name here..." />
-        <Textbox label="Zipcode" placholder="Enter your zipcode here......" />
-        <MEButton containerStyle={{width: '100%'}}>COMPLETE</MEButton>
+        <Textbox
+          label="First Name"
+          placeholder="Enter firstname here..."
+          value={firstName}
+          onChange={(text) => setFirstName(text)}
+        />
+        <Textbox
+          label="Last Name"
+          placeholder="Enter last Name here..."
+          value={lastName}
+          onChange={(text) => setLastName(text)}  
+        />
+        <Textbox 
+          label="Zipcode" 
+          placeholder="Enter your zipcode here......"
+          value={zipcode}
+          onChange={(text) => setZipcode(text)}
+        />
+        <MEButton containerStyle={{width: '100%'}} onPress={onSubmit}>
+          COMPLETE
+        </MEButton>
       </View>
     </View>
     // </ScrollView>
   );
 };
 
-export default CompletProfile;
+export default CompleteProfile;

@@ -40,7 +40,7 @@ const ZipCodeInput = ({
         generics={{keyboardType: 'decimal-pad', maxLength: 5}}
         onChange={code => doUpdate('zipcode', code)}
         label="What's your community's zipcode? *"
-        placholder="Enter zipcode here..."
+        placeholder="Enter zipcode here..."
         value={zipcode}
       />
       <Text>Include nearby communities (Optional) </Text>

@@ -3,43 +3,11 @@ import React from 'react';
 
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
-import AboutUsScreen from '../../pages/about/AboutUsScreen';
 import {FontAwesomeIcon, IonicIcon} from '../icons';
 import {COLOR_SCHEME} from '../../stylesheet';
-import EventsScreen from '../../pages/events/EventsScreen';
-import CommunityHomeScreen from '../../pages/home/CommunityHomeScreen';
-import ActionsScreen from '../../pages/actions/ActionsScreen';
-import TeamsScreen from '../../pages/teams/TeamsScreen';
 
-// TODO: When there is time, lets make this a component that can accept any dynamic list of tab items
-const TABS = {
-  Home: {
-    name: 'Home',
-    icon: 'home',
-    key: 'home',
-    component: CommunityHomeScreen,
-  },
-  Actions: {
-    name: 'Actions',
-    icon: 'flash',
-    key: 'actions',
-    component: ActionsScreen,
-  },
-  Events: {
-    name: 'Events',
-    icon: 'calendar',
-    key: 'events',
-    component: EventsScreen,
-  },
-  Teams: {
-    name: 'Teams',
-    icon: 'users',
-    key: 'teams',
-    component: TeamsScreen,
-  },
-};
 
-const CustomTabBar = ({state, descriptors, navigation}) => {
+const CustomTabBar = ({state, descriptors, navigation, tabs}) => {
   return (
     <View
       style={{
@@ -53,7 +21,7 @@ const CustomTabBar = ({state, descriptors, navigation}) => {
         const isFocused = state.index === index;
         const tintColor = isFocused ? COLOR_SCHEME.GREEN : 'grey';
 
-        let tab = TABS[route.name];
+        let tab = tabs[route.name];
         const icon = tab?.icon;
 
         return (
@@ -88,7 +56,7 @@ const CustomTabBar = ({state, descriptors, navigation}) => {
   );
 };
 
-const TabNavigator = () => {
+const TabNavigator = ({tabs, initialRoute}) => {
   const Tab = createBottomTabNavigator();
 
   return (
@@ -98,14 +66,14 @@ const TabNavigator = () => {
         //   showLabel: false,
         //   style: {backgroundColor: 'white'},
         // }}
-        initialRouteName="Events"
-        tabBar={props => <CustomTabBar {...props} />}
+        initialRouteName={initialRoute || Object.values(tabs)[0]?.name}
+        tabBar={props => <CustomTabBar {...props} tabs={tabs} />}
         screenOptions={({}) => ({
           tabBarShowLabel: false,
           tabBarStyle: [{backgroundColor: 'white'}, null],
           headerShown: false,
         })}>
-        {Object.entries(TABS).map(([key, value]) => {
+        {Object.entries(tabs).map(([key, value]) => {
           return (
             <Tab.Screen
               key={key}

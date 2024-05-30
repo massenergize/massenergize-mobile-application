@@ -149,26 +149,6 @@ const CustomDrawerContent = ({
         </View>
       </DrawerContentScrollView>
       <View style={{width: '100%', marginBottom: 20, padding: 20}}>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('CommunitySelectionPage')}
-          style={{
-            // backgroundColor: ME_ORANGE,
-            padding: 12,
-            borderWidth: 2,
-            borderColor: ME_ORANGE,
-            marginBottom: 10,
-            borderRadius: 5,
-          }}>
-          <Text
-            style={{
-              color: ME_ORANGE,
-              fontWeight: 'bold',
-              fontSize: 13,
-              textAlign: 'center',
-            }}>
-            SWITCH COMMUNITIES
-          </Text>
-        </TouchableOpacity>
         {fireAuth ? (
           <TouchableOpacity
             onPress={() => signMeOut()}
@@ -216,6 +196,26 @@ const CustomDrawerContent = ({
             </Text>
           </TouchableOpacity>
         )}
+        <TouchableOpacity
+          onPress={() => navigation.navigate('CommunitySelectionPage')}
+          style={{
+            // backgroundColor: ME_ORANGE,
+            padding: 12,
+            borderWidth: 2,
+            borderColor: COLOR_SCHEME.GREEN,
+            marginTop: 10,
+            borderRadius: 5,
+          }}>
+          <Text
+            style={{
+              color: COLOR_SCHEME.GREEN,
+              fontWeight: 'bold',
+              fontSize: 13,
+              textAlign: 'center',
+            }}>
+            SWITCH COMMUNITIES
+          </Text>
+        </TouchableOpacity>
       </View>
     </>
   );
@@ -288,31 +288,44 @@ const MEDrawerNavigator = ({
         />
       )}
       drawerStyle={{width: 250}}>
-      <Drawer.Screen options={options} name="Login" component={Login} />
-      <Drawer.Screen options={options} name="Register" component={Register} />
-      <Drawer.Screen
-        options={options}
-        name="Community"
-        component={HomeScreen}
-      />
-      <Drawer.Screen options={options} name="About" component={AboutUsScreen} />
-      <Drawer.Screen
-        options={options}
-        name="Testimonials"
-        component={HomeScreen}
-      />
-      <Drawer.Screen options={options} name="Teams" component={HomeScreen} />
-      <Drawer.Screen
-        options={options}
-        name="Service Providers"
-        component={HomeScreen}
-      />
-      <Drawer.Screen
-        options={options}
-        name="Contact Us"
-        component={ContactUsScreen}
-      />
-      <Drawer.Screen options={options} name="Profile" component={UserProfile} />
+
+      {/* Main navigation options */}
+      <Drawer.Screen 
+        options={options} 
+        name="Login" 
+        component={Login} />
+      <Drawer.Screen 
+        options={options} 
+        name="Register" 
+        component={Register} />
+      <Drawer.Screen 
+        options={options} 
+        name="Community" 
+        component={HomeScreen} />
+      <Drawer.Screen 
+        options={options} 
+        name="About" 
+        component={AboutUsScreen} />
+      <Drawer.Screen 
+        options={options} 
+        name="Testimonials" 
+        component={HomeScreen} />
+      <Drawer.Screen 
+        options={options} 
+        name="Teams" 
+        component={HomeScreen} />
+      <Drawer.Screen 
+        options={options} 
+        name="Service Providers" 
+        component={HomeScreen} />
+      <Drawer.Screen 
+        options={options} 
+        name="Contact Us" 
+        component={ContactUsScreen} />
+      <Drawer.Screen 
+        options={options} 
+        name="Profile" 
+        component={UserProfile} />
     </Drawer.Navigator>
   );
 };
