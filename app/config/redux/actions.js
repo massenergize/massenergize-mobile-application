@@ -46,6 +46,7 @@ export const fetchUserProfile = (idToken, cb) => dispatch => {
       console.log('ME USER LOADED IN!');
       if (!response.success) {
         showError(response.error);
+        console.error('ERROR_FETCHING_USER_PROFILE', response.error);
         cb & cb(null, response.error);
         return;
       }

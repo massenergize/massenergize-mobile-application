@@ -24,6 +24,8 @@ import {COMMUNITY_CHOICE} from '../utils/values';
 import ActionDetails from './actions/ActionDetails';
 import EventDetails from './events/EventDetails';
 import OnboardingPage from './onboarding/Onboarding';
+import Login from './auth/Login';
+import Register from './auth/Register';
 
 GoogleSignin.configure({
   webClientId:
@@ -121,12 +123,21 @@ const RootWrapper = ({
           component={LoadingScreen}
         />
         <MainStack.Screen
+          options={{headerTitle: ''}}
           name="ActionDetails"
           component={ActionDetails}
         />
         <MainStack.Screen
           name="EventDetails"
           component={EventDetails}
+        />
+        <MainStack.Screen 
+          name="Login" 
+          component={Login}
+        />
+        <MainStack.Screen 
+          name="Register" 
+          component={Register}
         />
       </MainStack.Navigator>
       <MEBottomSheet

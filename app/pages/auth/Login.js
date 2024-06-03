@@ -39,6 +39,7 @@ const Login = ({
     authenticateWithEmailAndPassword(email, password, (response, error) => {
       setLoading(false);
       if (!response) return showError(error);
+      console.log("LOGIN_RESPONSE:", response);
       const user = response.user;
       putFirebaseUserInRedux(user);
       user?.getIdToken().then(token => {
@@ -76,14 +77,14 @@ const Login = ({
           generics={{keyboardType: 'email-address'}}
           onChange={text => setEmail(text)}
           label="Email"
-          placholder="Enter email here..."
+          placeholder="Enter email here..."
         />
         <Textbox
           value={password}
           onChange={text => setPassword(text)}
           generics={{keyboardType: 'visible-password', secureTextEntry: true}}
           label="Password"
-          placholder="Enter your password here..."
+          placeholder="Enter your password here..."
         />
         <MEButton asLink>Forgot Password</MEButton>
         {/* <TouchableOpacity

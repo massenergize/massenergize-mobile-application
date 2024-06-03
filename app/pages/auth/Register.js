@@ -1,56 +1,58 @@
-import {View, Text, ScrollView} from 'react-native';
-import React from 'react';
-import {Image} from 'react-native';
-import Textbox from '../../components/textbox/Textbox';
-import MEButton from '../../components/button/MEButton';
+import React, { useState } from 'react';
+import {connect} from 'react-redux';
+import EmailInput from './EmailInput';
+import ConfirmEmail from './ConfirmEmail';
 import CompleteProfile from './CompleteProfile';
+import {Text, View} from 'react-native';
+import { Button } from 'native-base';
+import { StyleSheet } from 'react-native';
 
-const Register = () => {
-  return <CompleteProfile />;
+const Register = ({ navigation }) => {
+
+  const [step, setStep] = useState(0);
+
   return (
-    // <ScrollView vertical style={{height: '100%'}}>
-    <View
-      style={{
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        backgroundColor: 'white',
-      }}>
-      <Image
-        src="https://massenergize-prod-files.s3.amazonaws.com/media/energizewayland_resized.jpg"
-        alt="Community Logo"
-        style={{width: 120, height: 120, objectFit: 'contain'}}
-      />
-      <Text style={{fontWeight: '600', fontSize: 18, marginBottom: 20}}>
-        Welcome!
-      </Text>
-      <Text
-        style={{
-          fontWeight: '500',
-          paddingHorizontal: 25,
-          fontSize: 14,
-          marginBottom: 20,
-        }}>
-        When you join, we can count your impact. We do not collect sensitive
-        personal data and do not share data.
-      </Text>
+    <View style={{height: '100%', backgroundColor: 'white'}}>
+      {step === 0 && <EmailInput nextStep={() => setStep(1)} navigation={navigation}/>}
+      {step === 1 && <ConfirmEmail nextStep={() => setStep(2)} />}
+      {step === 2 && <CompleteProfile navigation={navigation} />}
 
-      <View style={{width: '100%', paddingHorizontal: '10%'}}>
-        <Textbox label="Email" placeholder="Enter email address..." />
-        <Textbox label="Password" placeholder="Enter password here..." />
-        <Textbox
-          label="Confirm Password"
-          placeholder="Re-enter password here..."
-        />
-        <MEButton containerStyle={{width: '100%'}}>REGISTER</MEButton>
-        <MEButton asLink style={{marginLeft: 'auto'}}>
-          Login Instead
-        </MEButton>
+      {/* Step indicator */}
+      <View style={styles.stepIndicator}>
+        <View style={[styles.dot, { backgroundColor: step === 0 ? 'gray' : 'white' }]}></View>
+        <View style={[styles.dot, { backgroundColor: step === 1 ? 'gray' : 'white' }]}></View>
+        <View style={[styles.dot, { backgroundColor: step === 2 ? 'gray' : 'white' }]}></View>
       </View>
     </View>
-    // </ScrollView>
   );
 };
 
-export default Register;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'flex-start', // Ensure other content is at the top
+  },
+  stepIndicator: {
+    position: 'absolute',
+    bottom: 30,
+    left: 0,
+    right: 0,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 20,
+  },
+  dot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    borderColor: 'gray',
+    borderWidth: 1,
+    margin: 5,
+  },
+});
+
+const mapStateToProps = state => ({
+  activeCommunity: state.activeCommunity,
+});
+
+export default connect(mapStateToProps)(Register);
