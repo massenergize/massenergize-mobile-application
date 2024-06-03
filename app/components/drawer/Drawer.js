@@ -18,6 +18,7 @@ import {
   toggleUniversalModalAction,
 } from '../../config/redux/actions';
 import {connect} from 'react-redux';
+import ServiceProvidersScreen from '../../pages/service-providers/ServiceProvidersScreen';
 
 const Drawer = createDrawerNavigator();
 
@@ -307,7 +308,7 @@ const MEDrawerNavigator = ({
       <Drawer.Screen 
         options={options} 
         name="Service Providers" 
-        component={HomeScreen} />
+        component={ServiceProvidersScreen} />
       <Drawer.Screen 
         options={options} 
         name="Contact Us" 

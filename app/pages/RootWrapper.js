@@ -26,6 +26,7 @@ import EventDetails from './events/EventDetails';
 import OnboardingPage from './onboarding/Onboarding';
 import Login from './auth/Login';
 import Register from './auth/Register';
+import ServiceProviderDetails from './service-providers/ServiceProviderDetails';
 
 GoogleSignin.configure({
   webClientId:
@@ -138,6 +139,10 @@ const RootWrapper = ({
         <MainStack.Screen 
           name="Register" 
           component={Register}
+        />
+        <MainStack.Screen
+          name="ServiceProviderDetails"
+          component={ServiceProviderDetails}
         />
       </MainStack.Navigator>
       <MEBottomSheet

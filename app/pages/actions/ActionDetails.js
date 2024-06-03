@@ -16,7 +16,7 @@ import {
 } from "@gluestack-ui/themed-native-base";
 
 import HTMLParser from "../../utils/HTMLParser";
-// import ServiceProviderCard from "../ServiceProvidersPage/ServiceProviderCard";
+import ServiceProviderCard from "../service-providers/ServiceProviderCard";
 import { useDetails } from "../../utils/hooks";
 // import { TestimonialCard } from "../TestimonialsPage/TestimonialsCard";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -61,7 +61,6 @@ const ActionDetails = ({
     }
   });
 
-  // TODO: Check these when sign-in working
   const handleAddToDo = async (email) => {
     try {
 
@@ -79,7 +78,6 @@ const ActionDetails = ({
     console.log("Added object to", email);
   };
 
-  // TODO: Check these when sign-in working
   const handleCompleted = async (email) => {
     try {
       
@@ -161,16 +159,15 @@ const ActionDetails = ({
     }
     return action.vendors.map((vendor, index) => {
       return (
-        // <ServiceProviderCard
-        //   id={vendor.id}
-        //   direction="row"
-        //   description=""
-        //   imageURI={vendor.logo.url}
-        //   name={vendor.name}
-        //   navigation={navigation}
-        //   key={index}
-        // /> TODO: uncomment this when vendors implemented
-        <Text>Vendor</Text>
+        <ServiceProviderCard
+          id={vendor.id}
+          direction="row"
+          description=""
+          imageURI={vendor.logo.url}
+          name={vendor.name}
+          navigation={navigation}
+          key={index}
+        />
       );
     });
   };
@@ -318,12 +315,12 @@ const ActionDetails = ({
                     {/* {testimonialsSettings.is_published ? (
                       <TabButton label="Testimonials" name="testimonials" />
                     ) : null} TODO: uncomment when testimonials implemented*/}
-                    {/* {vendorsSettings.is_published ? (
+                    {(vendorsSettings.is_published && action.vendors.length > 0) ? (
                       <TabButton
                         label="Service Providers"
                         name="service_providers"
                       />
-                    ) : null} TODO: uncomment when vendors implemented */}
+                    ) : null}
                     <Container width={5}></Container>
                   </ScrollView>
                   {/* Display the tab content */}

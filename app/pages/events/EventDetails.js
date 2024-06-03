@@ -67,7 +67,7 @@ const EventDetails = ({ route }) => {
 
   /* Displays the community event information */
   return (
-    <View py="5">
+    <View py="5" style={{backgroundColor: 'white'}}>
       {isEventLoading
         ? 
         <Center width="100%" height="100%">
