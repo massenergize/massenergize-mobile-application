@@ -23,6 +23,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {COMMUNITY_CHOICE} from '../utils/values';
 import ActionDetails from './actions/ActionDetails';
 import EventDetails from './events/EventDetails';
+import OnboardingPage from './onboarding/Onboarding';
 
 GoogleSignin.configure({
   webClientId:
@@ -99,6 +100,11 @@ const RootWrapper = ({
     // <NavigationContainer>
     <>
       <MainStack.Navigator screenOptions={screenOptions} initialRouteName="CommunitySelectionPage">
+        <MainStack.Screen 
+          options={{headerShown: false}}
+          name="Onboarding"
+          component={OnboardingPage}
+        />
         <MainStack.Screen
           options={{headerShown: false}}
           name="CommunitySelectionPage"

@@ -366,7 +366,7 @@ PODS:
     - glog
   - react-native-render-html (6.3.4):
     - React-Core
-  - react-native-safe-area-context (4.7.2):
+  - react-native-safe-area-context (4.10.1):
     - React-Core
   - react-native-slider (4.4.3):
     - React-Core
@@ -528,12 +528,16 @@ PODS:
     - React-RCTText
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNScreens (3.25.0):
+  - RNScreens (3.31.1):
+    - RCT-Folly (= 2021.07.22.00)
     - React-Core
     - React-RCTImage
   - RNSnackbar (2.6.2):
     - React-Core
-  - RNVectorIcons (10.0.0):
+  - RNSVG (15.3.0):
+    - React-Core
+  - RNVectorIcons (10.1.0):
+    - RCT-Folly (= 2021.07.22.00)
     - React-Core
   - SocketRocket (0.6.1)
   - Yoga (1.14.0)
@@ -592,6 +596,7 @@ DEPENDENCIES:
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSnackbar (from `../node_modules/react-native-snackbar`)
+  - RNSVG (from `../node_modules/react-native-svg`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
@@ -717,6 +722,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-screens"
   RNSnackbar:
     :path: "../node_modules/react-native-snackbar"
+  RNSVG:
+    :path: "../node_modules/react-native-svg"
   RNVectorIcons:
     :path: "../node_modules/react-native-vector-icons"
   Yoga:
@@ -758,7 +765,7 @@ SPEC CHECKSUMS:
   React-jsinspector: aaed4cf551c4a1c98092436518c2d267b13a673f
   React-logger: da1ebe05ae06eb6db4b162202faeafac4b435e77
   react-native-render-html: 984dfe2294163d04bf5fe25d7c9f122e60e05ebe
-  react-native-safe-area-context: 7aa8e6d9d0f3100a820efb1a98af68aa747f9284
+  react-native-safe-area-context: dcab599c527c2d7de2d76507a523d20a0b83823d
   react-native-slider: 1cdd6ba29675df21f30544253bf7351d3c2d68c4
   react-native-splash-screen: 4312f786b13a81b5169ef346d76d33bc0c6dc457
   React-NativeModulesApple: 0aed2c228763db766a8d707c44355a62403debee
@@ -786,9 +793,10 @@ SPEC CHECKSUMS:
   RNGestureHandler: c0d04458598fcb26052494ae23dda8f8f5162b13
   RNGoogleSignin: ccaa4a81582cf713eea562c5dd9dc1961a715fd0
   RNReanimated: 726395a2fa2f04cea340274ba57a4e659bc0d9c1
-  RNScreens: 85d3880b52d34db7b8eeebe2f1a0e807c05e69fa
+  RNScreens: 396c07678c1c35614bc5feba74a56df387bf1965
   RNSnackbar: 3727b42bf6c4314a53c18185b5203e915a4ab020
-  RNVectorIcons: 8b5bb0fa61d54cd2020af4f24a51841ce365c7e9
+  RNSVG: a48668fd382115bc89761ce291a81c4ca5f2fd2e
+  RNVectorIcons: 084c5c365eca594f94fda0192d8a380b2b40f9b5
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   Yoga: 3efc43e0d48686ce2e8c60f99d4e6bd349aff981
 

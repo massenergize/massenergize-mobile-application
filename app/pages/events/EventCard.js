@@ -44,7 +44,7 @@ export default EventCard = React.memo(
     /* Displays the community's events as a EventCard */
     return (
         <Pressable
-            onPress={() => navigation.navigate("eventDetails", { event_id: id })}
+            onPress={() => navigation.navigate('EventDetails', { event_id: id })}
             backgroundColor="white"
             width={events.cardWidth}
             rounded="lg"
