@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Text, Pressable } from "react-native";
-import { Box, Heading, Image, Stack } from "native-base";
+import { Box, Heading, Image, Stack } from "@gluestack-ui/themed-native-base";
 
 const ActionCard = ({
   navigation,

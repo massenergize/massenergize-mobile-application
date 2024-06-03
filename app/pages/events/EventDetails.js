@@ -26,7 +26,7 @@ import {
   Spinner,
   Center,
   View
-} from 'native-base';
+} from '@gluestack-ui/themed-native-base';
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '../../components/icons';
 import HTMLParser from '../../utils/HTMLParser';

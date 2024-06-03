@@ -1,5 +1,5 @@
 import React from "react";
-import { View } from "native-base";
+import { View } from "@gluestack-ui/themed-native-base";
 
 export default function Page({ children, ...props }) {
   return (

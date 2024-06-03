@@ -13,7 +13,7 @@ import {
   Spinner,
   Center,
   Modal,
-} from "native-base";
+} from "@gluestack-ui/themed-native-base";
 
 import HTMLParser from "../../utils/HTMLParser";
 // import ServiceProviderCard from "../ServiceProvidersPage/ServiceProviderCard";

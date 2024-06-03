@@ -22,7 +22,7 @@ import {
     Flex,
     Center,
     Button,
-} from "native-base";
+} from "@gluestack-ui/themed-native-base";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import events from "../../stylesheet/events";
 

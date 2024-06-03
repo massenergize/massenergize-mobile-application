@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import {View, Text} from 'react-native';
-import { showError } from '../../utils/common';
-import { Button } from 'native-base';
+import { showError, showSuccess } from '../../utils/common';
+import MEButton from '../../components/button/MEButton';
 import { connect } from 'react-redux';
 import firebase from '@react-native-firebase/app';
 
 const ConfirmEmail = ({ fireAuth, nextStep }) => {
+
+
 
   const [loading, setLoading] = useState(false);
 
@@ -32,6 +34,18 @@ const ConfirmEmail = ({ fireAuth, nextStep }) => {
       });
   }
 
+  const resendEmail = () => {
+    fireAuth.sendEmailVerification()
+      .then(() => {
+        console.log('EMAIL_RESENT:');
+        showSuccess('Email verification sent');
+      })
+      .catch(error => {
+        console.error('ERROR_RESENDING_EMAIL:', error);
+        showError('Error resending email. Please try again');
+      });
+  }
+
   return (
     <View style={{
       display: 'flex',
@@ -50,13 +64,20 @@ const ConfirmEmail = ({ fireAuth, nextStep }) => {
         We sent a link to {fireAuth?.email}. Please click that link to continue.
         Not in your inbox? Please check your SPAM and Promotions folders.
       </Text>
-      <Button
+      <MEButton
+        onPress={resendEmail}
+        style={{marginTop: 20, width: '80%', justifyContent: 'center'}}
+        asLink
+      >
+        Resend email
+      </MEButton>
+      <MEButton
         onPress={confirmEmail}
         style={{marginTop: 20, width: '80%', justifyContent: 'center'}}
         loading={loading}
       >
         I've confirmed my email
-      </Button>
+      </MEButton>
       
     </View>
   );

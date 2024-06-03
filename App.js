@@ -4,7 +4,7 @@ import {Provider} from 'react-redux';
 import store from './app/config/redux/store';
 import RootWrapper from './app/pages/RootWrapper';
 import {NavigationContainer} from '@react-navigation/native';
-import { NativeBaseProvider } from 'native-base';
+import { NativeBaseProvider } from '@gluestack-ui/themed-native-base';
 import Theme from './app/stylesheet/Theme';
 
 export default function App() {

@@ -3,8 +3,7 @@ import {connect} from 'react-redux';
 import EmailInput from './EmailInput';
 import ConfirmEmail from './ConfirmEmail';
 import CompleteProfile from './CompleteProfile';
-import {Text, View} from 'react-native';
-import { Button } from 'native-base';
+import { View } from 'react-native';
 import { StyleSheet } from 'react-native';
 
 const Register = ({ navigation }) => {

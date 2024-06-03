@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import ActionCard from './ActionCard';
 import { connect } from 'react-redux';
 import { StyleSheet } from "react-native";
-import { ScrollView, HStack, Text, Spinner, Center } from "native-base";
+import { ScrollView, HStack, Text, Spinner, Center } from "@gluestack-ui/themed-native-base";
 import { getActionMetric } from "../../utils/common";
 
 const ActionsScreen = ({navigation, actions}) => {
