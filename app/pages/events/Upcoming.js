@@ -5,7 +5,7 @@
  *      of each specific community.
  * 
  *      Written by: Moizes Almeida
- *      Last edited: May 30, 2024
+ *      Last edited: June 3, 2024
  * 
  *****************************************************************************/
 
@@ -54,7 +54,7 @@ const Upcoming = ({ navigation, communityInfo, events, fetchAllCommunityData }) 
       {isLoading ? (
         <ActivityIndicator size={"large"} color="#DC4E34" style={styles.activity}/>
       ) : (upcomingEvents.length === 0 ? (
-        <View style={styles.noEventsContainer}>
+        <View style={{justifyContent: 'center', alignItems: 'center', marginTop: 300}}>
           <Text style={styles.noEventsText}>No upcoming events</Text>
         </View>
       ) : (
@@ -103,6 +103,7 @@ const styles = StyleSheet.create({
   noEventsText: {
     fontSize: 18,
     fontWeight: 'bold',
+    color: '#64B058'
   }
 });
 

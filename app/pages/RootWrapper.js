@@ -24,6 +24,7 @@ import {COMMUNITY_CHOICE} from '../utils/values';
 import ActionDetails from './actions/ActionDetails';
 import EventDetails from './events/EventDetails';
 import OnboardingPage from './onboarding/Onboarding';
+import TeamDetails from './teams/TeamDetails';
 
 GoogleSignin.configure({
   webClientId:
@@ -99,7 +100,7 @@ const RootWrapper = ({
   return (
     // <NavigationContainer>
     <>
-      <MainStack.Navigator screenOptions={screenOptions} initialRouteName="CommunitySelectionPage">
+      <MainStack.Navigator screenOptions={screenOptions} initialRouteName="Onboarding">
         <MainStack.Screen 
           options={{headerShown: false}}
           name="Onboarding"
@@ -127,6 +128,14 @@ const RootWrapper = ({
         <MainStack.Screen
           name="EventDetails"
           component={EventDetails}
+        />
+        <MainStack.Screen
+          name="SubteamDetails"
+          component={TeamDetails}
+        />
+        <MainStack.Screen
+          name="TeamDetails"
+          component={TeamDetails}
         />
       </MainStack.Navigator>
       <MEBottomSheet

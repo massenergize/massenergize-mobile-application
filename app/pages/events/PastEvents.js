@@ -5,7 +5,7 @@
  *      of each specific community.
  * 
  *      Written by: Moizes Almeida
- *      Last edited: May 31, 2024
+ *      Last edited: June 3, 2024
  * 
  *****************************************************************************/
 
@@ -95,13 +95,14 @@ const styles = StyleSheet.create({
     marginTop: 300
   },
   noEventsContainer: {
-    flex: 1,
+    marginTop: 300,
     justifyContent: 'center',
     alignItems: 'center',
   },
   noEventsText: {
     fontSize: 18,
     fontWeight: 'bold',
+    color: '#64B058'
   },
 });
 

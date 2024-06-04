@@ -5,7 +5,7 @@
  *      of each specific community.
  * 
  *      Written by: Moizes Almeida
- *      Last edited: May 31, 2024
+ *      Last edited: June 3, 2024
  * 
  *****************************************************************************/
 
@@ -19,7 +19,7 @@ const Campaigns = () => {
   /* Displays the campaigns of the community */
   return (
     <Center style={{marginTop: 300}}>
-      <Text style={{color: 'black', fontSize: 16, fontWeight: 'bold',}}>
+      <Text style={{color: '#64B058', fontSize: 18, fontWeight: 'bold',}}>
         No campaigns
       </Text>
     </Center>
