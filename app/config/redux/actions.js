@@ -12,7 +12,9 @@ import {
   SET_FIREBASE_AUTH,
   SET_GRAPHS_DATA,
   SET_HOMEPAGE_INFO,
+  SET_ME_USER_COMPLETED,
   SET_ME_USER_PROFILE,
+  SET_ME_USER_TODO,
   SET_TEAMSPAGE_INFO,
   SET_TEAMS_STATS,
   SET_TESTIMONIALS_LIST,
@@ -153,3 +155,20 @@ export const signOutAction = () => dispatch => {
     dispatch({type: SET_ME_USER_PROFILE, payload: null});
   });
 };
+
+export const fetchAllUserInfo = cb => dispatch => {
+  Promise.all([
+    apiCall('users.actions.todo.list'),
+    apiCall('users.actions.completed.list'),
+  ])
+    .then(response => {
+      const [todo, completed] = response;
+      dispatch(setActionWithValue(SET_ME_USER_TODO, todo.data));
+      dispatch(setActionWithValue(SET_ME_USER_COMPLETED, completed.data));
+      cb && cb(response);
+    })
+    .catch(error => {
+      console.log('ERROR_FETCHING_USER_INFO', error);
+      cb && cb(null, error?.toString());
+    });
+}

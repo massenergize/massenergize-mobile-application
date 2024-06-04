@@ -26,7 +26,7 @@ function TestimonialDetails({ route, navigation, vendorsSettings }) {
             <Spinner size="lg" />
           </Center>
           :
-          <ScrollView>
+          <ScrollView showsVerticalScrollIndicator={false}>
             <VStack bg="white" px="3" pb="20">
               <MEImage
                 source={{

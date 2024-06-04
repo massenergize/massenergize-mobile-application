@@ -18,7 +18,7 @@ import {
 import HTMLParser from "../../utils/HTMLParser";
 import ServiceProviderCard from "../service-providers/ServiceProviderCard";
 import { useDetails } from "../../utils/hooks";
-// import { TestimonialCard } from "../TestimonialsPage/TestimonialsCard";
+import { TestimonialCard } from "../testimonials/TestimonialsCard";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { getActionMetric } from "../../utils/common";
 import { apiCall } from "../../api/functions";
@@ -141,13 +141,12 @@ const ActionDetails = ({
     ) : (
       actionTestimonials.map((testimonial, index) => {
         return (
-          // <TestimonialCard
-          //   navigation={navigation}
-          //   data={testimonial}
-          //   key={index}
-          //   picture={testimonial.file != null}
-          // /> TODO: uncomment this when testimonials implemented
-          <Text>Testimonial</Text>
+          <TestimonialCard
+            navigation={navigation}
+            data={testimonial}
+            key={index}
+            picture={testimonial.file != null}
+          />
         );
       })
     );
@@ -309,10 +308,16 @@ const ActionDetails = ({
                     {action.deep_dive !== "" ? (
                       <TabButton label="Deep Dive" name="deep_dive" />
                     ) : null}
-                    {/* {testimonialsSettings.is_published ? (
+                    {(
+                      testimonialsSettings.is_published
+                      && actionTestimonials.length > 0
+                    ) ? (
                       <TabButton label="Testimonials" name="testimonials" />
-                    ) : null} TODO: uncomment when testimonials implemented*/}
-                    {(vendorsSettings.is_published && action.vendors.length > 0) ? (
+                    ) : null }
+                    {(
+                      vendorsSettings.is_published 
+                      && action.vendors.length > 0
+                    ) ? (
                       <TabButton
                         label="Service Providers"
                         name="service_providers"

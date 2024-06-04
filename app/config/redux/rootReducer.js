@@ -14,7 +14,9 @@ import {
   reducerForTeamsStats,
   reducerForTestimonialList,
   reducerForTestimonialsPageInfo,
+  reducerForUserCompleted,
   reducerForUserProfile,
+  reducerForUserTodo,
   reducerForVendorList,
   reducerForVendorsPageInfo,
   reducerForZipCodeOptions,
@@ -42,7 +44,8 @@ const rootReducer = combineReducers({
   homePage: reducerForHomepageInfo,
   vendorsPage: reducerForVendorsPageInfo,
   testimonialsPage: reducerForTestimonialsPageInfo,
- 
+  userTodo: reducerForUserTodo,
+  userCompleted: reducerForUserCompleted,
 });
 
 export default rootReducer;

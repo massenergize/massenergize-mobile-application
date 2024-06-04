@@ -61,9 +61,9 @@ export const showSuccess = message => {
  * @returns {String} the metric of the action
  */
 export function getActionMetric(action, metric) {
-  for (let i = 0; i < action.tags.length; i++) {
-    if (action.tags[i].tag_collection_name === metric) {
-      return action.tags[i].name;
+  for (let i = 0; i < action?.tags?.length; i++) {
+    if (action?.tags[i]?.tag_collection_name === metric) {
+      return action?.tags[i]?.name;
     }
   }
   return "-";
