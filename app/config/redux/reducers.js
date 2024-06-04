@@ -10,7 +10,9 @@ import {
   SET_FIREBASE_AUTH,
   SET_GRAPHS_DATA,
   SET_HOMEPAGE_INFO,
+  SET_ME_USER_COMPLETED,
   SET_ME_USER_PROFILE,
+  SET_ME_USER_TODO,
   SET_TEAMS_STATS,
   SET_TESTIMONIALS_LIST,
   SET_TESTIMONIALS_PAGE_INFO,
@@ -100,3 +102,11 @@ export const reducerForTestimonialsPageInfo = (state = null, action) => {
   if (action?.type === SET_TESTIMONIALS_PAGE_INFO) return action.payload;
   return state;
 };
+export const reducerForUserTodo = (state = null, action) => {
+  if (action?.type === SET_ME_USER_TODO) return action.payload;
+  return state;
+}
+export const reducerForUserCompleted = (state = null, action) => {
+  if (action?.type === SET_ME_USER_COMPLETED) return action.payload;
+  return state;
+}

@@ -10,6 +10,7 @@ import {
   setActiveCommunityAction,
   setFirebaseAuthenticationAction,
   toggleUniversalModalAction,
+  fetchAllUserInfo
 } from '../config/redux/actions';
 import {NavigationContainer, useNavigation} from '@react-navigation/native';
 import {isUserAuthenticated} from '../config/firebase';
@@ -53,6 +54,7 @@ const RootWrapper = ({
   activeCommunity,
   setActiveCommunity,
   fetchMEUser,
+  fetchAllUserInfo
 }) => {
   const navigation = useNavigation();
   useEffect(() => {
@@ -97,6 +99,7 @@ const RootWrapper = ({
         user?.getIdToken().then(token => {
           fetchMEUser(token);
         });
+        fetchAllUserInfo(); // TODO: maybe put this somewhere else idk
       } else console.log('User is not signed in yet!');
     });
   }, []);
@@ -182,6 +185,7 @@ const mapDispatchToProps = dispatch => {
       fetchCommunitiesFromBackend: fetchCommunities,
       setActiveCommunity: setActiveCommunityAction,
       fetchMEUser: fetchUserProfile,
+      fetchAllUserInfo: fetchAllUserInfo,
     },
     dispatch,
   );

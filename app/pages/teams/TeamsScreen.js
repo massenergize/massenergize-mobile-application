@@ -21,7 +21,7 @@ import {
   Spacer,
   Center,
   Spinner
-} from 'native-base';
+} from '@gluestack-ui/themed-native-base';
 import { StyleSheet } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';

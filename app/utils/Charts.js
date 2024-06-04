@@ -18,7 +18,7 @@ import {
     Text,
     Container,
     View
-} from "native-base";
+} from "@gluestack-ui/themed-native-base";
 import { Dimensions } from 'react-native';
 import { 
     VictoryPie, 

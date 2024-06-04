@@ -23,7 +23,7 @@ import {
     Pressable,
     AspectRatio,
     Icon,
-} from 'native-base';
+} from '@gluestack-ui/themed-native-base';
 import { FontAwesomeIcon } from "../../components/icons";
 
 /* Component that displays the logo of the team or sub-team */
