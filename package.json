@@ -11,6 +11,8 @@
     "xcode": "xed ios"
   },
   "dependencies": {
+    "@gluestack-style/react": "^1.0.56",
+    "@gluestack-ui/themed": "^1.1.28",
     "@gluestack-ui/themed-native-base": "^0.1.108",
     "@react-native-async-storage/async-storage": "^1.19.3",
     "@react-native-community/masked-view": "^0.1.11",
@@ -22,10 +24,12 @@
     "@react-navigation/drawer": "^6.6.3",
     "@react-navigation/native": "^6.1.17",
     "@react-navigation/stack": "^6.3.17",
+    "@reduxjs/toolkit": "^2.2.5",
     "moment": "^2.30.1",
+    "native-base": "^3.4.28",
     "pinar": "^0.12.2",
     "react": "18.2.0",
-    "react-native": "0.72.4",
+    "react-native": "^0.72.4",
     "react-native-gesture-handler": "^2.12.1",
     "react-native-paper": "^5.10.4",
     "react-native-reanimated": "^3.4.2",

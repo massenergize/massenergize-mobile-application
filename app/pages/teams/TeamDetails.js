@@ -24,7 +24,7 @@ import {
     View,
     Spinner,
     Spacer
-} from 'native-base'
+} from 'native-base';
 import React, { useState } from 'react';
 import TeamCard from './TeamCard';
 import Ionicons from "react-native-vector-icons/Ionicons";
