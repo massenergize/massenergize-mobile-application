@@ -20,7 +20,7 @@ import {
     Button,
     AspectRatio,
     HStack
-} from 'native-base';
+} from '@gluestack-ui/themed-native-base';
 import HTMLParser from "../../utils/HTMLParser";
 
 /* Creates each step of the onboarding pages the user is going to see */

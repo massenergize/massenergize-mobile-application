@@ -26,7 +26,7 @@ import {
   Spinner,
   Center,
   View
-} from 'native-base';
+} from '@gluestack-ui/themed-native-base';
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '../../components/icons';
 import HTMLParser from '../../utils/HTMLParser';
@@ -67,7 +67,7 @@ const EventDetails = ({ route }) => {
 
   /* Displays the community event information */
   return (
-    <View py="5">
+    <View py="5" style={{backgroundColor: 'white'}}>
       {isEventLoading
         ? 
         <Center width="100%" height="100%">

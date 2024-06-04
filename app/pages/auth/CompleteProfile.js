@@ -1,28 +1,79 @@
 import {View, Text, Alert} from 'react-native';
 import React, { useState } from 'react';
-import {Image} from 'react-native';
+import { Image } from 'react-native';
 import Textbox from '../../components/textbox/Textbox';
 import MEButton from '../../components/button/MEButton';
+import { createUserProfile } from '../../config/firebase';
+import {
+  fetchUserProfile,
+  setFirebaseAuthenticationAction,
+} from '../../config/redux/actions';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { firebase } from '@react-native-firebase/auth';
 
-const CompleteProfile = () => {
+const CompleteProfile = ({
+  navigation,
+  fireAuth,
+  activeCommunity,
+  putFirebaseUserInRedux,
+  fetchMEUser,
+}) => {
   const [preferredName, setPreferredName] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [zipcode, setZipcode] = useState('');
+
+  const [loading, setLoading] = useState(false);
 
   const isValidZipCode = (zip) => {
     return zip.length === 5 && !isNaN(zip);
   }
 
   const onSubmit = () => {
-    if (!preferredName || !firstName || !lastName || !zipcode) {
-      Alert.alert('Please fill out all fields');
-      return;
-    } else if (!isValidZipCode(zipcode)) {
-      Alert.alert('Please enter a valid zipcode');
-      return;
-    }
     console.log('Submitting...');
+    setLoading(true);
+
+    const profile = {
+      full_name: firstName + " " + lastName,
+      preferred_name: preferredName,
+      email: fireAuth.email,
+      location: ", , " + zipcode,
+      is_vendor: false,
+      accepts_terms_and_conditions: true,
+      subdomain: activeCommunity?.subdomain,
+      color: "#000000",
+    };
+
+    const errorAndExit = (error) => {
+      console.error('ERROR_CREATING_PROFILE:', error);
+      Alert.alert('Error creating profile. Please try again');
+      navigation.navigate('Login');
+    };
+
+    createUserProfile(profile, (response, error) => {
+      setLoading(false);
+      if (error) {
+        errorAndExit(error);
+        return;
+      }
+
+      fireAuth.reload().then(() => {
+        const user = firebase.auth().currentUser;
+      
+        console.log('USER:', user);
+        putFirebaseUserInRedux(user);
+        user?.getIdToken().then(token => {
+          fetchMEUser(token, (_, error) => {
+            if (error) {
+              errorAndExit(error);
+              return;
+            };
+            navigation.navigate('Community');
+          });
+        });
+      });
+    })
   }
 
   return (
@@ -79,7 +130,15 @@ const CompleteProfile = () => {
           value={zipcode}
           onChange={(text) => setZipcode(text)}
         />
-        <MEButton containerStyle={{width: '100%'}} onPress={onSubmit}>
+        <MEButton
+          containerStyle={{width: '100%'}}
+          onPress={onSubmit}
+          disabled={
+            !preferredName || !firstName || !lastName
+            || !zipcode || !isValidZipCode(zipcode)
+          }
+          loading={loading}
+        >
           COMPLETE
         </MEButton>
       </View>
@@ -88,4 +147,21 @@ const CompleteProfile = () => {
   );
 };
 
-export default CompleteProfile;
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators(
+    {
+      // setFireAuth: setFirebaseAuthenticationAction,
+      putFirebaseUserInRedux: setFirebaseAuthenticationAction,
+      fetchMEUser: fetchUserProfile,
+    },
+    dispatch,
+  );
+};
+
+
+const mapStateToProps = state => ({
+  fireAuth: state.fireAuth,
+  activeCommunity: state.activeCommunity,
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(CompleteProfile);

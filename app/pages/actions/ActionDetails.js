@@ -13,10 +13,10 @@ import {
   Spinner,
   Center,
   Modal,
-} from "native-base";
+} from "@gluestack-ui/themed-native-base";
 
 import HTMLParser from "../../utils/HTMLParser";
-// import ServiceProviderCard from "../ServiceProvidersPage/ServiceProviderCard";
+import ServiceProviderCard from "../service-providers/ServiceProviderCard";
 import { useDetails } from "../../utils/hooks";
 // import { TestimonialCard } from "../TestimonialsPage/TestimonialsCard";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -26,6 +26,7 @@ import AuthOptions from '../../pages/auth/AuthOptions';
 import { connect } from "react-redux";
 import { bindActionCreators } from 'redux';
 import { test, toggleUniversalModalAction } from '../../config/redux/actions';
+import MEImage from "../../components/image/MEImage";
 
 const ActionDetails = ({
   route,
@@ -48,7 +49,6 @@ const ActionDetails = ({
   const [completedActions, setCompletedActions] = useState([])
   const [toDoActions, setToDoActions] = useState([])
   const [userEmail, setUserEmail] = useState("");
-  const [imageFailed, setImageFailed] = useState(false);
 
   apiCall("users.info").then((json) => {
     if (json.success) {
@@ -61,7 +61,6 @@ const ActionDetails = ({
     }
   });
 
-  // TODO: Check these when sign-in working
   const handleAddToDo = async (email) => {
     try {
 
@@ -79,7 +78,6 @@ const ActionDetails = ({
     console.log("Added object to", email);
   };
 
-  // TODO: Check these when sign-in working
   const handleCompleted = async (email) => {
     try {
       
@@ -161,16 +159,15 @@ const ActionDetails = ({
     }
     return action.vendors.map((vendor, index) => {
       return (
-        // <ServiceProviderCard
-        //   id={vendor.id}
-        //   direction="row"
-        //   description=""
-        //   imageURI={vendor.logo.url}
-        //   name={vendor.name}
-        //   navigation={navigation}
-        //   key={index}
-        // /> TODO: uncomment this when vendors implemented
-        <Text>Vendor</Text>
+        <ServiceProviderCard
+          id={vendor.id}
+          direction="row"
+          description=""
+          imageURI={vendor.logo.url}
+          name={vendor.name}
+          navigation={navigation}
+          key={index}
+        />
       );
     });
   };
@@ -215,20 +212,17 @@ const ActionDetails = ({
         <View>
           <ScrollView showsVerticalScrollIndicator={false}>
             <VStack style={{ flex: 1 }}>
-
               {/* Header image */}
-              { imageFailed ? null :
-                (<Image
-                  source={{
-                    uri: action.image != null ? action.image.url : null,
-                  }}
-                  m={3}
-                  h={250}
-                  alt="image"
-                  resizeMode="contain"
-                  onError={() => setImageFailed(true)}
-                />)
-              }
+              <MEImage
+                source={{
+                  uri: action.image?.url,
+                }}
+                m={3}
+                h={250}
+                alt="image"
+                resizeMode="contain"
+                altComponent={<></>}
+              />
               <Box bg="white" height="100%" mx={10}>
                 <VStack>
                   <Text bold fontSize="2xl" my={10}>
@@ -318,12 +312,12 @@ const ActionDetails = ({
                     {/* {testimonialsSettings.is_published ? (
                       <TabButton label="Testimonials" name="testimonials" />
                     ) : null} TODO: uncomment when testimonials implemented*/}
-                    {/* {vendorsSettings.is_published ? (
+                    {(vendorsSettings.is_published && action.vendors.length > 0) ? (
                       <TabButton
                         label="Service Providers"
                         name="service_providers"
                       />
-                    ) : null} TODO: uncomment when vendors implemented */}
+                    ) : null}
                     <Container width={5}></Container>
                   </ScrollView>
                   {/* Display the tab content */}

@@ -12,7 +12,7 @@
 /* Imports and set up */
 import { View, Text } from 'react-native'
 import React from 'react'
-import { Center } from 'native-base'
+import { Center } from '@gluestack-ui/themed-native-base'
 
 const Campaigns = () => {
   /* TO-DO */

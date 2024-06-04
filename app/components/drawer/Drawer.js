@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, {useEffect, useRef} from 'react';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import HomeScreen from '../../pages/home/HomeScreen';
 import {DrawerItem, DrawerContentScrollView} from '@react-navigation/drawer';
@@ -9,7 +9,6 @@ import {Text, View, TouchableOpacity, Image, Button} from 'react-native';
 import {COLOR_SCHEME, ME_ORANGE} from '../../stylesheet';
 import AboutUsScreen from '../../pages/about/AboutUsScreen';
 import ContactUsScreen from '../../pages/contact-us/ContactUsScreen';
-import Login from '../../pages/auth/Login';
 import {FontAwesomeIcon} from '../icons';
 import UserProfile from '../../pages/user-profile/UserProfile';
 import AuthOptions from '../../pages/auth/AuthOptions';
@@ -19,7 +18,8 @@ import {
   toggleUniversalModalAction,
 } from '../../config/redux/actions';
 import {connect} from 'react-redux';
-import Register from '../../pages/auth/Register';
+import ServiceProvidersScreen from '../../pages/service-providers/ServiceProvidersScreen';
+import TestimonialsScreen from '../../pages/testimonials/TestimonialsScreen';
 
 const Drawer = createDrawerNavigator();
 
@@ -292,14 +292,6 @@ const MEDrawerNavigator = ({
       {/* Main navigation options */}
       <Drawer.Screen 
         options={options} 
-        name="Login" 
-        component={Login} />
-      <Drawer.Screen 
-        options={options} 
-        name="Register" 
-        component={Register} />
-      <Drawer.Screen 
-        options={options} 
         name="Community" 
         component={HomeScreen} />
       <Drawer.Screen 
@@ -309,7 +301,7 @@ const MEDrawerNavigator = ({
       <Drawer.Screen 
         options={options} 
         name="Testimonials" 
-        component={HomeScreen} />
+        component={TestimonialsScreen} />
       <Drawer.Screen 
         options={options} 
         name="Teams" 
@@ -317,7 +309,7 @@ const MEDrawerNavigator = ({
       <Drawer.Screen 
         options={options} 
         name="Service Providers" 
-        component={HomeScreen} />
+        component={ServiceProvidersScreen} />
       <Drawer.Screen 
         options={options} 
         name="Contact Us" 

@@ -25,6 +25,10 @@ import ActionDetails from './actions/ActionDetails';
 import EventDetails from './events/EventDetails';
 import OnboardingPage from './onboarding/Onboarding';
 import TeamDetails from './teams/TeamDetails';
+import Login from './auth/Login';
+import Register from './auth/Register';
+import ServiceProviderDetails from './service-providers/ServiceProviderDetails';
+import TestimonialDetails from './testimonials/TestimonialDetails';
 
 GoogleSignin.configure({
   webClientId:
@@ -122,8 +126,17 @@ const RootWrapper = ({
           component={LoadingScreen}
         />
         <MainStack.Screen
+          options={{headerTitle: ''}}
           name="ActionDetails"
           component={ActionDetails}
+        />
+        <MainStack.Screen
+          name="ServiceProviderDetails"
+          component={ServiceProviderDetails}
+        />
+        <MainStack.Screen
+          name="TestimonialDetails"
+          component={TestimonialDetails}
         />
         <MainStack.Screen
           name="EventDetails"
@@ -136,6 +149,14 @@ const RootWrapper = ({
         <MainStack.Screen
           name="TeamDetails"
           component={TeamDetails}
+        />
+        <MainStack.Screen 
+          name="Login" 
+          component={Login}
+        />
+        <MainStack.Screen 
+          name="Register" 
+          component={Register}
         />
       </MainStack.Navigator>
       <MEBottomSheet

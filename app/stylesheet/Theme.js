@@ -1,5 +1,5 @@
 // Customize Native Base Theme to match the app theme
-import { extendTheme } from "native-base";
+import { extendTheme } from "@gluestack-ui/themed-native-base";
 
 export default Theme = extendTheme({
   colors: {
