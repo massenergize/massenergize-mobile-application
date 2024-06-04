@@ -86,7 +86,9 @@ const Login = ({
           label="Password"
           placeholder="Enter your password here..."
         />
-        <MEButton asLink>Forgot Password</MEButton>
+        <MEButton asLink onPress={() => navigation.navigate("ForgotPassword")}>
+          Forgot password
+        </MEButton>
         {/* <TouchableOpacity
           style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
           <Text
