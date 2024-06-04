@@ -30,6 +30,7 @@ import Login from './auth/Login';
 import Register from './auth/Register';
 import ServiceProviderDetails from './service-providers/ServiceProviderDetails';
 import TestimonialDetails from './testimonials/TestimonialDetails';
+import ForgotPassword from './auth/ForgotPassword';
 
 GoogleSignin.configure({
   webClientId:
@@ -160,6 +161,10 @@ const RootWrapper = ({
         <MainStack.Screen 
           name="Register" 
           component={Register}
+        />
+        <MainStack.Screen 
+          name="ForgotPassword" 
+          component={ForgotPassword}
         />
       </MainStack.Navigator>
       <MEBottomSheet

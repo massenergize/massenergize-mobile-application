@@ -31,7 +31,7 @@ import { connect } from "react-redux";
 // import { convertAbsoluteToRem } from "native-base/lib/typescript/theme/tools";
 
 
-const ProfileName = ({ navigation, communityInfo, userName }) => {
+const ProfileName = ({ navigation, communityInfo, user }) => {
   return (
     <Flex
       flexDirection="row"
@@ -47,7 +47,8 @@ const ProfileName = ({ navigation, communityInfo, userName }) => {
         rounded="full"
       />
       <Box alignItems="center">
-        <Text fontSize="xl">{userName || "Your Name"}</Text>
+        <Text fontSize="xl">{user.preferred_name || "Your Name"}</Text>
+        <Text>{user.full_name}</Text>
         <Text>{communityInfo.name}</Text>
       </Box>
       <Pressable onPress={() => navigation.navigate("settings")}>
@@ -277,6 +278,22 @@ function DashboardPage({
   todoList,
   user
 }) {
+  if (!user) {
+    return (
+      <View style={{
+        display: 'flex',
+        backgroundColor: 'white',
+        height: '100%',
+        justifyContent: 'center'
+      }}>
+        <Center>
+          <Spinner />
+          <Text>Sign in to view profile</Text>
+        </Center>
+      </View>
+    );
+  }
+
   const isFocused = useIsFocused();
 
   const [refreshing, setRefreshing] = useState(false);
@@ -291,7 +308,7 @@ function DashboardPage({
       // refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}
       >
         <VStack space={10} mb="20">
-          <ProfileName navigation={navigation} communityInfo={communityInfo} userName={userName}/*userInfo={userInfo}*/ />
+          <ProfileName navigation={navigation} communityInfo={communityInfo} user={user} />
           <SustainScore CompletedList={completedList} />
           <CarbonSaved CompletedList={completedList} />
 
