@@ -158,12 +158,14 @@ export const signOutAction = () => dispatch => {
 
 export const fetchAllUserInfo = cb => dispatch => {
   Promise.all([
+    apiCall('users.info'),
     apiCall('users.actions.todo.list'),
     apiCall('users.actions.completed.list'),
   ])
     .then(response => {
-      const [todo, completed] = response;
-
+      const [profile, todo, completed] = response;
+      
+      dispatch(setActionWithValue(SET_ME_USER_PROFILE, profile.data));
       dispatch(setActionWithValue(SET_ME_USER_TODO, todo.data));
       dispatch(setActionWithValue(SET_ME_USER_COMPLETED, completed.data));
       cb && cb(response);

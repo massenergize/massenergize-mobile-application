@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { StyleSheet } from "react-native";
 import { useEffect, useContext, useCallback } from "react";
-import { useIsFocused } from "@react-navigation/native";
+import { useFocusEffect, useIsFocused } from "@react-navigation/native";
 import {
   Button,
   View,
@@ -28,6 +28,8 @@ import { RefreshControl } from "react-native-gesture-handler";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { apiCall } from "../../api/functions";
 import { connect } from "react-redux";
+import { fetchAllUserInfo, fetchUserProfile } from "../../config/redux/actions";
+import { bindActionCreators } from "redux";
 // import { convertAbsoluteToRem } from "native-base/lib/typescript/theme/tools";
 
 
@@ -276,7 +278,9 @@ function DashboardPage({
   actions, 
   completedList, 
   todoList,
-  user
+  user,
+  fetchAllUserInfo,
+
 }) {
   if (!user) {
     return (
@@ -294,18 +298,41 @@ function DashboardPage({
     );
   }
 
-  const isFocused = useIsFocused();
+  
+
 
   const [refreshing, setRefreshing] = useState(false);
-  const [userName, setUserName] = useState("");
-  const carbonSaved = completedList.length;
+
+  useFocusEffect(
+    useCallback(() => {
+      setRefreshing(true);
+      fetchAllUserInfo(() => setRefreshing(false));
+      
+    }, [])
+  );
+
+
+  if (refreshing) {
+    return (
+      <View style={{
+        display: 'flex',
+        backgroundColor: 'white',
+        height: '100%',
+        justifyContent: 'center'
+      }}>
+        <Center>
+          <Spinner />
+          <Text>Loading...</Text>
+        </Center>
+      </View>
+    );
+  }
 
   return (
     <GestureHandlerRootView backgroundColor="white" flex="1">
       <ScrollView padding="5"
         nestedScrollEnabled={true}
         showsVerticalScrollIndicator={false}
-      // refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}
       >
         <VStack space={10} mb="20">
           <ProfileName navigation={navigation} communityInfo={communityInfo} user={user} />
@@ -353,4 +380,14 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(DashboardPage);
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators(
+    {
+      fetchAllUserInfo: fetchAllUserInfo,
+      fetchUserProfile: fetchUserProfile
+    },
+    dispatch,
+  );
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(DashboardPage);
