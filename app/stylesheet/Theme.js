@@ -1,7 +1,6 @@
-// Customize Native Base Theme to match the app theme
 import { extendTheme } from "@gluestack-ui/themed-native-base";
 
-export default Theme = extendTheme({
+const Theme = extendTheme({
   colors: {
     primary: {
       50: "#89cd7f",
@@ -28,16 +27,15 @@ export default Theme = extendTheme({
       900: "#934736",
     },
   },
-  // customize breakpoints
-  // reference:https://github.com/GeekyAnts/NativeBase/issues/5217#issuecomment-1194435310
   breakpoints: {
-    'base': 0,
-    'sm': 376,
-    'md': 481,
-    'lg': 769,
-    'xl': 993,
+    base: 0,
+    sm: 376,
+    md: 481,
+    lg: 769,
+    xl: 993,
     '2xl': 1281,
   },
-  components: {
-  },
+  components: {},
 });
+
+export default Theme;

@@ -37,7 +37,7 @@ const TABS = {
   },
 };
 
-const Home = ({}) => {
+const Home = ({ navigation }) => {
   return (
     <View>
       {/* <Text>This is meant to be the home page</Text>  */}

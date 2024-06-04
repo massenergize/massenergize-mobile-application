@@ -28,9 +28,10 @@ import { connect } from 'react-redux';
 import { fetchAllCommunityData } from '../../config/redux/actions';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import TeamCard from './TeamCard';
+import { NativeBaseConfigProvider } from 'native-base';
 
 
-const TeamsScreen = ({ navigation, communityInfo, teams, fetchAllCommunityData }) => {
+const TeamsScreen = ({ navigation, teams }) => {
   /*
    * Uses local state to determine wheter the information about the community
    * is still loading, if the sub-team expland button is selected, and gets 
@@ -41,14 +42,15 @@ const TeamsScreen = ({ navigation, communityInfo, teams, fetchAllCommunityData }
   const [teamsList, setTeamsList] = useState([]);
 
   /* Fetch the information from the community */
-  useEffect(() => {
-    fetchAllCommunityData({ community_id: communityInfo.id });
-  }, [fetchAllCommunityData, communityInfo.id]);
+  // useEffect(() => {
+  //   fetchAllCommunityData({ community_id: communityInfo.id });
+  // }, [fetchAllCommunityData, communityInfo.id]);
 
   /* Fetch the information from each team/sub-team */
   useEffect(() => {
     if (teams) {
       getTeams();
+      setIsLoading(false);
     }
   }, [teams]);
 
@@ -97,6 +99,7 @@ const TeamsScreen = ({ navigation, communityInfo, teams, fetchAllCommunityData }
 
   /* Displays the community's team/sub-teams information */
   return (
+    // <NativeBaseConfigProvider config={config}>
     <View>
       {isLoading ? (
         <Center flex={1}>
@@ -172,21 +175,28 @@ const styles = StyleSheet.create({
   },
 });
 
+const config = {
+  // Define your configurations here
+  initialColorMode: "dark", // Example configuration
+};
+
 /* 
  * Transforms the local state of the app into the properties of the 
  * TeamsScreen function, in which it is got from the API.
  */
-const mapStateToProps = (state) => ({
-  communityInfo: state.communityInfo,
-  teams: state.teamsStats,
-});
+const mapStateToProps = (state) => {
+  // communityInfo: state.communityInfo,
+  return {
+    teams: state.teamsStats,
+  };
+};
 
 /* 
  * Transforms the dispatch function from the API in order to get the information
  * of the current community and sends it to the Upcoming properties.
  */
-const mapDispatchToProps = {
-  fetchAllCommunityData,
-};
+// const mapDispatchToProps = {
+//   fetchAllCommunityData,
+// };
 
-export default connect(mapStateToProps, mapDispatchToProps)(TeamsScreen);
+export default connect(mapStateToProps)(TeamsScreen);
