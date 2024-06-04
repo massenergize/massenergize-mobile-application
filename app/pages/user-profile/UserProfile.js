@@ -57,11 +57,12 @@ const ProfileName = ({ navigation, communityInfo, userName }) => {
   );
 };
 
-const SustainScore = (CarbonSaved) => {
+const SustainScore = ({CompletedList}) => {
+  const CarbonSaved = CompletedList.length; // TODO: make this a real formula
   return (
     <Box>
       <Text fontSize="4xl" color="primary.400" textAlign="center">
-        {parseFloat(50.0 + (Math.sqrt(100 + CarbonSaved.CarbonSaved.length * 20))).toFixed(1)}
+        {parseFloat(50.0 + (Math.sqrt(100 + CarbonSaved * 20))).toFixed(1)}
       </Text>
       <Text fontSize="lg" fontWeight="light" textAlign="center">
         Sustainability Score
@@ -70,26 +71,28 @@ const SustainScore = (CarbonSaved) => {
   );
 };
 
-const CarbonSaved = (CarbonSaved) => {
+const CarbonSaved = ({ CompletedList }) => {
+  const CarbonSaved = CompletedList.length; // TODO: Make this a real formula
+
   return (
     <Flex flexDirection="row" justifyContent="space-evenly" width="full">
       <Box alignItems="center">
         <Text fontSize="lg" fontWeight="medium">
-          {CarbonSaved.CarbonSaved.length}
+          {CarbonSaved}
         </Text>
         <Text>CO2 Saved</Text>
       </Box>
       <Divider orientation="vertical" />
       <Box alignItems="center">
         <Text fontSize="lg" fontWeight="medium">
-          {CarbonSaved.CarbonSaved.length / 10}
+          {CarbonSaved / 10}
         </Text>
         <Text>Trees</Text>
       </Box>
       <Divider orientation="vertical" />
       <Box alignItems="center">
         <Text fontSize="lg" fontWeight="medium">
-          {CarbonSaved.CarbonSaved.length * 10}
+          {CarbonSaved * 10}
         </Text>
         <Text>Points</Text>
       </Box>
@@ -202,63 +205,78 @@ const BadgesList = () => {
   );
 };
 
-const TeamsList = () => {
+const TeamsList = ({ teams }) => {
   return (
     <Center>
       <Text fontWeight="bold" fontSize="lg" mb="5">
         My Teams
       </Text>
-      <Flex width="full">
-        <Flex flexDirection="row" alignItems="center">
-          <Icon as={FontAwesome} name="home" size="sm" />
-          <Text px="2" flexGrow={1}>
-            Team 1
-          </Text>
-          <Icon as={FontAwesome} name="pencil" size="sm" />
+      {teams.length === 0 && <Text>No teams yet!</Text>}
+      {teams.map((team, index) => (
+        <Flex width="full" key={index}>
+          <Flex flexDirection="row" alignItems="center">
+            <Icon as={FontAwesome} name="home" size="sm" />
+            <Text px="2" flexGrow={1}>
+              {team.name}
+            </Text>
+            <Icon as={FontAwesome} name="pencil" size="sm" />
+          </Flex>
         </Flex>
-      </Flex>
+      ))}
     </Center>
   );
 };
 
-const HousesList = () => {
+const HousesList = ({ households }) => {
   return (
     <Center>
       <Text fontWeight="bold" fontSize="lg" mb="5">
         My Households
       </Text>
-      <Flex width="full">
-        <Flex flexDirection="row" alignItems="center">
-          <Icon as={FontAwesome} name="home" size="sm" />
-          <Text px="2" flexGrow={1}>
-            Household 1
-          </Text>
-          <Icon as={FontAwesome} name="pencil" size="sm" />
+      {households.map((household, index) => (
+        <Flex width="full" key={index}>
+          <Flex flexDirection="row" alignItems="center">
+            <Icon as={FontAwesome} name="home" size="sm" />
+            <Text px="2" flexGrow={1}>
+              {household.name}
+            </Text>
+            <Icon as={FontAwesome} name="pencil" size="sm" />
+          </Flex>
         </Flex>
-      </Flex>
+      ))}
     </Center>
   );
 };
 
-const CommunitiesList = ({ communityInfo }) => {
-  const [communities, setCommunities] = useState([communityInfo]);
+const CommunitiesList = ({ communities }) => {
 
   return (
     <Center>
       <Text fontWeight="bold" fontSize="lg" mb="5">
         My Communities
       </Text>
-      <VStack space={2}>
-        {communities &&
-          communities.map((community, index) => {
-            return <CommunityCard community={community} key={index} />;
-          })}
-      </VStack>
+      <View>
+        {communities.length === 0 && <Text>No communities yet!</Text>}
+        {communities.map((community, index) => (
+          <CommunityCard
+            key={index}
+            {...community}
+          />
+        ))}
+      </View>
     </Center>
   );
 };
 
-function DashboardPage({ navigation, route, communityInfo, actions, completedList, todoList }) {
+function DashboardPage({
+  navigation, 
+  route, 
+  communityInfo, 
+  actions, 
+  completedList, 
+  todoList,
+  user
+}) {
   const isFocused = useIsFocused();
 
   const [refreshing, setRefreshing] = useState(false);
@@ -274,8 +292,8 @@ function DashboardPage({ navigation, route, communityInfo, actions, completedLis
       >
         <VStack space={10} mb="20">
           <ProfileName navigation={navigation} communityInfo={communityInfo} userName={userName}/*userInfo={userInfo}*/ />
-          <SustainScore CarbonSaved={completedList} />
-          <CarbonSaved CarbonSaved={completedList} />
+          <SustainScore CompletedList={completedList} />
+          <CarbonSaved CompletedList={completedList} />
 
           {/* Todo and completed list */}
           <Text style={styles.category}>Todo list</Text>
@@ -284,9 +302,9 @@ function DashboardPage({ navigation, route, communityInfo, actions, completedLis
           <ActionsList navigation={navigation} list={completedList} actions={actions} />
 
           {/* <BadgesList /> */}
-          <TeamsList />
-          <HousesList />
-          <CommunitiesList communityInfo={communityInfo} />
+          <TeamsList teams={user.teams} />
+          <HousesList households={user.households} />
+          <CommunitiesList communities={user.communities} />
         </VStack>
       </ScrollView>
     </GestureHandlerRootView>
@@ -312,6 +330,9 @@ const mapStateToProps = (state) => {
     communityInfo: state.communityInfo,
     todoList: state.userTodo,
     completedList: state.userCompleted,
+    householdList: state.userHouseholds,
+    teamList: state.userTeams,
+    user: state.user,
   };
 };
 

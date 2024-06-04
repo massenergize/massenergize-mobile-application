@@ -163,12 +163,13 @@ export const fetchAllUserInfo = cb => dispatch => {
   ])
     .then(response => {
       const [todo, completed] = response;
+
       dispatch(setActionWithValue(SET_ME_USER_TODO, todo.data));
       dispatch(setActionWithValue(SET_ME_USER_COMPLETED, completed.data));
       cb && cb(response);
     })
     .catch(error => {
-      console.log('ERROR_FETCHING_USER_INFO', error);
+      console.error('ERROR_FETCHING_USER_INFO', error);
       cb && cb(null, error?.toString());
     });
 }
