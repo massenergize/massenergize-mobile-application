@@ -26,6 +26,7 @@ import AuthOptions from '../../pages/auth/AuthOptions';
 import { connect } from "react-redux";
 import { bindActionCreators } from 'redux';
 import { test, toggleUniversalModalAction } from '../../config/redux/actions';
+import MEImage from "../../components/image/MEImage";
 
 const ActionDetails = ({
   route,
@@ -48,7 +49,6 @@ const ActionDetails = ({
   const [completedActions, setCompletedActions] = useState([])
   const [toDoActions, setToDoActions] = useState([])
   const [userEmail, setUserEmail] = useState("");
-  const [imageFailed, setImageFailed] = useState(false);
 
   apiCall("users.info").then((json) => {
     if (json.success) {
@@ -212,20 +212,17 @@ const ActionDetails = ({
         <View>
           <ScrollView showsVerticalScrollIndicator={false}>
             <VStack style={{ flex: 1 }}>
-
               {/* Header image */}
-              { imageFailed ? null :
-                (<Image
-                  source={{
-                    uri: action.image != null ? action.image.url : null,
-                  }}
-                  m={3}
-                  h={250}
-                  alt="image"
-                  resizeMode="contain"
-                  onError={() => setImageFailed(true)}
-                />)
-              }
+              <MEImage
+                source={{
+                  uri: action.image?.url,
+                }}
+                m={3}
+                h={250}
+                alt="image"
+                resizeMode="contain"
+                altComponent={<></>}
+              />
               <Box bg="white" height="100%" mx={10}>
                 <VStack>
                   <Text bold fontSize="2xl" my={10}>

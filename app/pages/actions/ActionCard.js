@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Text, Pressable } from "react-native";
-import { Box, Heading, Image, Stack } from "@gluestack-ui/themed-native-base";
+import { Box, Heading, Stack } from "@gluestack-ui/themed-native-base";
+import MEImage from "../../components/image/MEImage";
 
 const ActionCard = ({
   navigation,
@@ -11,12 +12,6 @@ const ActionCard = ({
   costMetric = "0",
   ...props
 }) => {
-  const [imageValid, setImageValid] = useState(true);
-
-  useEffect(() => {
-    setImageValid(true);
-  }, [imgUrl]);
-
   return (
     <Pressable
       onPress={() => {
@@ -27,19 +22,15 @@ const ActionCard = ({
     >
       <Box bg="white" borderRadius="xl" shadow={2} width={180} {...props}>
         <Box>
-          {imgUrl && imageValid ? (
-            <Image
-              source={{ uri: imgUrl }}
-              alt="image"
-              borderTopRadius="xl"
-              resizeMode="cover"
-              height={120}
-              bg="gray.300"
-              onError={() => setImageValid(false)}
-            />
-          ) : (
-            <Box height={120} bg="gray.300" borderTopRadius="xl" />
-          )}
+          <MEImage
+            source={{ uri: imgUrl }}
+            alt="image"
+            borderTopRadius="xl"
+            resizeMode="cover"
+            height={120}
+            bg="gray.300"
+            altComponent={<Box height={120} bg="gray.300" borderTopRadius="xl" />}
+          />
         </Box>
         <Stack p={3} space={3}>
           <Stack space={2}>

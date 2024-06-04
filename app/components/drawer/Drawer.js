@@ -19,6 +19,7 @@ import {
 } from '../../config/redux/actions';
 import {connect} from 'react-redux';
 import ServiceProvidersScreen from '../../pages/service-providers/ServiceProvidersScreen';
+import TestimonialsScreen from '../../pages/testimonials/TestimonialsScreen';
 
 const Drawer = createDrawerNavigator();
 
@@ -300,7 +301,7 @@ const MEDrawerNavigator = ({
       <Drawer.Screen 
         options={options} 
         name="Testimonials" 
-        component={HomeScreen} />
+        component={TestimonialsScreen} />
       <Drawer.Screen 
         options={options} 
         name="Teams" 
