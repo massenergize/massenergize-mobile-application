@@ -1,3 +1,17 @@
+/******************************************************************************
+ *                       CommunityHomeScreen
+ * 
+ *      This page is responsible for rendering the Community home
+ *      screen of the app. It features the actions taken by the
+ *      community through graphs and displays the featured events
+ *      of the community.
+ * 
+ *      Written by: Moizes Almeida
+ *      Last edited: June 5, 2024
+ * 
+ *****************************************************************************/
+
+/* Imports and set up */
 import React, { useState, useCallback, useEffect } from 'react';
 import {
   VStack,
@@ -12,7 +26,7 @@ import {
   Heading,
   Image,
   AspectRatio,
-} from 'native-base';
+} from '@gluestack-ui/themed-native-base';
 import { RefreshControl } from 'react-native-gesture-handler';
 import Carousel from 'pinar';
 import ActionCard from '../actions/ActionCard';
@@ -26,12 +40,16 @@ import { useDetails } from '../../utils/hooks';
 import { ActivityIndicator } from 'react-native-paper';
 import { StyleSheet } from 'react-native';
 
+/* Defines the colors of the three charts of the impact of the community */
 const colors = ["#DC4E34", "#64B058", "#000000"];
 
+/* Card that shows up to three goals on the community page */
 function GoalsCard({ navigation, goals, community_id }) {
+  /* Creates the list of progress charts to display */
   const getGoalsList = () => {
     let goalsList = [];
 
+    /* Don't display a chart if the goal is 0 */
     if (goals.target_number_of_actions != 0) {
       goalsList.push({
         nameLong: "Individual Actions Completed",
@@ -62,10 +80,11 @@ function GoalsCard({ navigation, goals, community_id }) {
     return goalsList;
   }
 
+  /* Render a pressable card with progress charts for the available goals */
   if (getGoalsList().length != 0) {
     return (
       <Pressable
-        onPress={() => navigation.navigate("impact", {
+        onPress={() => navigation.navigate("Impact", {
           goalsList: getGoalsList(),
           community_id: community_id
         })}
@@ -86,7 +105,11 @@ function GoalsCard({ navigation, goals, community_id }) {
           >
             {
               getGoalsList().map((goal, index) => {
-                return <SmallChart goal={goal} color={colors[index]} key={index}/>
+                return <SmallChart 
+                          goal={goal}
+                          color={colors[index]} 
+                          key={index}
+                        />
               })
             }
           </HStack>
@@ -107,6 +130,7 @@ function GoalsCard({ navigation, goals, community_id }) {
   }
 }
 
+/* Component that displays a Header in the app, similar to a HTML <h1/> */
 function HeaderText({ text }) {
   return (
     <Text
@@ -119,6 +143,7 @@ function HeaderText({ text }) {
   );
 }
 
+/* 'Show More' button displayed next to header */
 function ShowMore({ navigation, page, text }) {
   return (
     <Text
@@ -132,12 +157,13 @@ function ShowMore({ navigation, page, text }) {
   );
 }
 
+/* 
+ * Component that creates a Carousel that displays images of actions 
+ * and events hosted by the community
+ */
 function BackgroundCarousel({ data }) {
   return (
-    <Box
-      height="100%"
-      bgColor={"amber.100"}
-    >
+    <Box height="100%" bgColor={"amber.100"}>
       <Carousel
         showsControls={false}
         showsDots={false}
@@ -145,24 +171,21 @@ function BackgroundCarousel({ data }) {
         loop={true}
       >
         {data.map((item) => (
-          <View
-            key={item.id}
-            flex={1}
-            backgroundColor={"amber.400"}
-          >
+          <View key={item.id} flex={1} backgroundColor={"amber.400"}>
             <AspectRatio width="100%" backgroundColor={"amber.700"}>
               <Image source={{ uri: item.url }} alt={item.name} />
             </AspectRatio>
           </View>
         ))}
       </Carousel>
+
       {/* Background Overlay */}
       <Box
         position="absolute"
         width="100%"
         height="100%"
-        backgroundColor={"black"}
-        opacity="30"
+        backgroundColor="black"
+        opacity={0.3}
       ></Box>
     </Box>
   );
@@ -174,7 +197,9 @@ const CommunityHomeScreen = ({
   actions,
   fetchAllCommunityData
 }) => {
-  const community_id = communityInfo.id;  // Correctly reference community_id
+  /* Saves the community's ID into a variable */
+  const community_id = communityInfo.id;
+  /* Uses local state to determine if the app is refreshing or no */
   const [refreshing, setRefreshing] = useState(false);
 
   /* Fetch the information from the community */
@@ -182,27 +207,27 @@ const CommunityHomeScreen = ({
     fetchAllCommunityData({ community_id: communityInfo.id });
   }, [fetchAllCommunityData, communityInfo.id]); 
 
+  /* Fetches the community information when the app is refreshing */
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     fetchAllCommunityData({ community_id: communityInfo.id }, () => setRefreshing(false));
   }, [communityInfo.id, fetchAllCommunityData]);
 
+  /* Gets the homeSettings information from the API */
   const [homeSettings, isLoading] = useDetails('home_page_settings.info', { community_id });
 
-  console.log('communityInfo: ', communityInfo);
-  console.log('homeSettings: ', homeSettings);
-  console.log('actions: ', actions);
-
+  /* When the app is loading, display an activity indicator */
   if (isLoading) {
     return <ActivityIndicator size={"large"} color="#DC4E34" style={styles.activity} />
   }
 
+  /* Displays the community home screen and its information */
   return (
     <View>
       <ScrollView 
       nestedScrollEnabled = {true} 
       showsVerticalScrollIndicator={false}
-      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}>
+      >
           <Box maxHeight={[200, 300]} width="100%">
             <Center position="absolute" zIndex={1} height="100%" width="100%" px="2">
               <Heading color="white" fontWeight="bold" size="xl" textAlign="center">{communityInfo.name}</Heading>
@@ -215,12 +240,15 @@ const CommunityHomeScreen = ({
           <HStack alignItems="center" pb={2} pt={3}>
             <HeaderText text="Recommended Actions"/>
             <Spacer/>
-            <ShowMore navigation={navigation} page="ACTIONS" text={"Show More"}/>
+            <ShowMore navigation={navigation} page="Actions" text={"Show More"}/>
           </HStack>
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
             <HStack space={2} justifyContent="center" mx={15} marginBottom={15}>
             {
-              // displaay all low cost actions for v1 (recommended in the future)
+              /* 
+               * Displays all low cost actions for v1 (recommended in 
+               * the future) 
+               */
               actions
               .filter((action) => getActionMetric(action, "Cost") === "$" || getActionMetric(action, "Cost") === "0")
               .map((action, index) => {
@@ -244,7 +272,7 @@ const CommunityHomeScreen = ({
               <HStack alignItems="center" pb={2} pt={3}>
                 <HeaderText text="Featured Events"/>
                 <Spacer/>
-                <ShowMore navigation={navigation} page="EVENTS" text={"Show More"}/>
+                <ShowMore navigation={navigation} page="Events" text={"Show More"}/>
               </HStack>
               <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
                 <HStack space={3} mx={15}>
@@ -296,7 +324,7 @@ const mapStateToProps = (state) => ({
 
 /* 
  * Transforms the dispatch function from the API in order to get the information
- * of the current community and sends it to the Upcoming properties.
+ * of the current community and sends it to the CommunityHomeScreen properties.
  */
 const mapDispatchToProps = {
 	fetchAllCommunityData,

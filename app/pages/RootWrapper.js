@@ -31,6 +31,9 @@ import Register from './auth/Register';
 import ServiceProviderDetails from './service-providers/ServiceProviderDetails';
 import TestimonialDetails from './testimonials/TestimonialDetails';
 import ForgotPassword from './auth/ForgotPassword';
+import ActionsScreen from './actions/ActionsScreen';
+import EventsScreen from './events/EventsScreen';
+import ImpactPage from './home/ImpactPage';
 
 GoogleSignin.configure({
   webClientId:
@@ -125,6 +128,11 @@ const RootWrapper = ({
           component={MEDrawerNavigator}
         />
         <MainStack.Screen
+          options={{headerTitle: ''}}
+          name="Impact"
+          component={ImpactPage}
+        />
+        <MainStack.Screen
           options={{headerShown: false}}
           name="Loading"
           component={LoadingScreen}
@@ -133,6 +141,10 @@ const RootWrapper = ({
           options={{headerTitle: ''}}
           name="ActionDetails"
           component={ActionDetails}
+        />
+        <MainStack.Screen 
+          name='Actions'
+          component={ActionsScreen}
         />
         <MainStack.Screen
           name="ServiceProviderDetails"
@@ -145,6 +157,10 @@ const RootWrapper = ({
         <MainStack.Screen
           name="EventDetails"
           component={EventDetails}
+        />
+        <MainStack.Screen
+          name="Events"
+          component={EventsScreen}
         />
         <MainStack.Screen
           name="SubteamDetails"
