@@ -285,7 +285,7 @@ const CommunityHomeScreen = ({
                         new Date(event.end_date_and_time)
                       )}
                       location = {event.location}
-                      imageUrl={event.image?.url}
+                      imgUrl={event.image?.url}
                       canRSVP={event.rsvp_enabled}
                       isRSVPED={event.is_rsvped}
                       isShared={event.is_shared}
