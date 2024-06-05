@@ -291,7 +291,6 @@ function DashboardPage({
         justifyContent: 'center'
       }}>
         <Center>
-          <Spinner />
           <Text>Sign in to view profile</Text>
         </Center>
       </View>

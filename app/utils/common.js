@@ -1,4 +1,7 @@
 import Snackbar from 'react-native-snackbar';
+import { apiCall } from '../api/functions';
+import store from '../config/redux/store';
+import { fetchAllUserInfo } from '../config/redux/actions';
 
 export const isValidZipCode = zipCode => {
   const zipCodePattern = /^\d{5}(?:[-\s]\d{4})?$/;
@@ -67,4 +70,23 @@ export function getActionMetric(action, metric) {
     }
   }
   return "-";
+}
+
+/**
+ * update the user in the backend then update the user in the redux store
+ * @param {String} endpoint
+ * @param {Object} body
+ * @param {Function} callback
+ */
+export const updateUser = (endpoint, body, callback) => {
+  apiCall(endpoint, body) // update the user in the backend
+    .then(response => {
+      if (!response.success) {
+        callback && callback(null, response.error);
+        return;
+      }
+      store.dispatch(fetchAllUserInfo(
+        () => callback && callback(response.data)
+      )); // update the user in the redux store
+    });
 }

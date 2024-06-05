@@ -34,10 +34,10 @@ import HTMLParser from '../../utils/HTMLParser';
 import { connect } from 'react-redux';
 import { apiCall } from '../../api/functions';
 import { bindActionCreators } from 'redux';
-import { fetchAllUserInfo } from '../../config/redux/actions';
 import MEButton from '../../components/button/MEButton';
+import { updateUser } from '../../utils/common';
 
-function TeamDetails({ route, navigation, user, fetchAllUserInfo }) {
+function TeamDetails({ route, navigation, user }) {
   // console.log(user);
   /* Gets the parameters passed when the function was called */
   const { team_id } = route.params;
@@ -67,13 +67,15 @@ function TeamDetails({ route, navigation, user, fetchAllUserInfo }) {
     if (!team || !user) return;
     setIsJoinLoading(true);
   
-    apiCall('teams.join', { team_id: team.id, user_id: user.id })
-      .then((response) => {
-        if (!response.success) return console.error("Failed to join team", response);
-        fetchAllUserInfo();
-        console.log("Joined team");
+    updateUser(
+      "teams.join",
+      { team_id: team.id, user_id: user.id },
+      (response, error) => {
+        if (error) return console.error("Failed to join team", error);
+        console.log("Joined team", response);
         setIsJoinLoading(false);
-      });
+      }
+    );
   };
   
   /* Allows the user to leave the team */
@@ -81,13 +83,15 @@ function TeamDetails({ route, navigation, user, fetchAllUserInfo }) {
     if (!team || !user) return;
     setIsJoinLoading(true);
 
-    apiCall('teams.leave', { team_id: team.id, user_id: user.id })
-      .then((response) => {
-        if (!response.success) return console.error("Failed to leave team", response);
-        fetchAllUserInfo();
-        console.log("Left team");
+    updateUser(
+      "teams.leave",
+      { team_id: team.id, user_id: user.id },
+      (response, error) => {
+        if (error) return console.error("Failed to leave team", error);
+        console.log("Left team", response);
         setIsJoinLoading(false);
-      });
+      }
+    );
   };
 
 
@@ -366,13 +370,4 @@ const mapStateToProps = state => ({
   user: state.user,
 });
 
-const mapDispatchToProps = dispatch => {
-  return bindActionCreators(
-    {
-      fetchAllUserInfo: fetchAllUserInfo,
-    },
-    dispatch,
-  );
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(TeamDetails);
+export default connect(mapStateToProps)(TeamDetails);
