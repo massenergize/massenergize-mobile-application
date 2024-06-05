@@ -1,9 +1,20 @@
+/******************************************************************************
+ *                            TestimonialsScreen
+ * 
+ *      This page is responsible for rendering a list of testimonials.
+ * 
+ *      Written by: William Soylemez
+ *      Last edited: June 5, 2023
+ * 
+ *****************************************************************************/
+
+
 import React, { useContext } from "react";
 import { Container } from "@gluestack-ui/themed-native-base";
 import { View, ScrollView } from "react-native";
 import { connect } from "react-redux";
 
-import { TestimonialCard } from "./TestimonialsCard.js";
+import { TestimonialCard } from "./TestimonialCard";
 
 function TestimonialsPage({ navigation, testimonials }) {
 

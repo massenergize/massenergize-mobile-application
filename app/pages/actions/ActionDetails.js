@@ -1,3 +1,14 @@
+/******************************************************************************
+ *                            ActionDetails
+ * 
+ *      This page is responsible for rendering details about
+ *      a single action
+ * 
+ *      Written by: William Soylemez
+ *      Last edited: June 5, 2023
+ * 
+ *****************************************************************************/
+
 import React, { useState, useEffect } from "react";
 import {
   View,
@@ -18,15 +29,16 @@ import {
 import HTMLParser from "../../utils/HTMLParser";
 import ServiceProviderCard from "../service-providers/ServiceProviderCard";
 import { useDetails } from "../../utils/hooks";
-import { TestimonialCard } from "../testimonials/TestimonialsCard";
+import { TestimonialCard } from "../testimonials/TestimonialCard";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { getActionMetric } from "../../utils/common";
+import { getActionMetric, updateUser } from "../../utils/common";
 import { apiCall } from "../../api/functions";
 import AuthOptions from '../../pages/auth/AuthOptions';
 import { connect } from "react-redux";
 import { bindActionCreators } from 'redux';
-import { test, toggleUniversalModalAction } from '../../config/redux/actions';
+import { fetchAllUserInfo, test, toggleUniversalModalAction } from '../../config/redux/actions';
 import MEImage from "../../components/image/MEImage";
+
 
 const ActionDetails = ({
   route,
@@ -36,64 +48,116 @@ const ActionDetails = ({
   vendorsSettings,
   fireAuth,
   toggleModal,
+  fetchAllUserInfo,
+  user,
+  todoList,
+  completedList
 }) => {
   const { action_id } = route.params;
-  const [activeTab, setActiveTab] = useState("description");
 
+  const [activeTab, setActiveTab] = useState("description");
   const [action, isActionLoading] = useDetails("actions.info", {
     action_id: action_id,
   });
-
   const [isDoneOpen, setIsDoneOpen] = useState(false)
   const [isToDoOpen, setIsToDoOpen] = useState(false)
   const [completedActions, setCompletedActions] = useState([])
-  const [toDoActions, setToDoActions] = useState([])
-  const [userEmail, setUserEmail] = useState("");
+  const userEmail = user?.email;
 
-  apiCall("users.info").then((json) => {
-    if (json.success) {
-      setUserEmail(json.data.email);
-      console.log("Fetched email: ", userEmail, " Completed")
-    } else {
-      console.log("User Info Failed");
-      console.log(json);
-      // if (callBackFn) callBackFn(null, json.error);
-    }
-  });
+  const actionInToDo = () => {
+    return todoList?.some((todo) => todo.action.id === action.id);
+  }
 
-  const handleAddToDo = async (email) => {
-    try {
+  const actionCompleted = () => {
+    return completedList?.some((completed) => completed.action.id === action.id);
+  }
 
-      const response = await apiCall('users.actions.todo.add', { action_id: action_id, hid: 1 });
-      if (response.success) {
-        // Update the todoList in context with the new item
-        console.log("Added object to", email);
-        setToDoActions([...toDoActions, response.data]);
+  // Handles a todo press, adding/removing the action to the user's todo list
+  const handleTodoPress = async () => {
+    if (fireAuth) {
+      if (actionInToDo()) return; // TODO: figure out why removing from todo list is not working
+      // Action depends on whether the action is already in the user's todo list
+      if (actionInToDo()) { 
+        // Updates the backend, redux, and displays a success message
+        updateUser(
+          "users.actions.remove",
+          { action_id: action_id, hid: 1 },
+          (response, error) => {
+            if (error) return console.log("Failed to remove item from todo list:", error);
+            console.log("Successfully removed item from todo list");
+            setIsToDoOpen(false);
+            console.log("Removed " + action.title + " from To-do");
+          }
+        );
+
       } else {
-        console.log('Failed to add item to todo list:', response.error);
+        // Updates the backend, redux, and displays a success message
+        updateUser(
+          "users.actions.todo.add",
+          { action_id: action_id, hid: 1 },
+          (response, error) => {
+            if (error) return console.log("Failed to add item to todo list:", error);
+            console.log("Successfully added item to todo list");
+            setIsToDoOpen(true);
+            console.log("Added " + action.title + " to To-do");
+          }
+        );
       }
-    } catch (error) {
-      console.log('API Error:', error);
+    } else { // if user is not logged in, prompt them to sign in
+      toggleModal({
+        isVisible: true,
+        Component: AuthOptions,
+        title: 'How would you like to sign in or Join ?',
+      });
     }
-    console.log("Added object to", email);
   };
 
-  const handleCompleted = async (email) => {
-    try {
-      
-      const response = await apiCall('users.actions.completed.add', { action_id: action_id, hid: 1 });
-      if (response.success) {
-        // Update the todoList in context with the new item
-        console.log("Completed object to", email);
-        setCompletedActions([...toDoActions, response.data]);
+  // Handles a completed press, adding/removing the action to the user's
+  // completed list
+  const handleCompletedPress = async () => {
+    if (fireAuth) {
+      if (actionCompleted()) return; // TODO: figure out why removing from completed list is not working
+
+      // Action depends on whether the action is already in the user's completed list
+      if (actionCompleted() && false) { // TODO: figure out why removing from completed list is not working
+        // Updates the backend, redux, and displays a success message
+        updateUser(
+          "users.actions.remove",
+          { action_id: action_id, hid: 1 },
+          (response, error) => {
+            if (error) return console.log("Failed to remove item from completed list:", error);
+            setIsDoneOpen(true);
+            console.log("Successfully removed item from completed list");
+          }
+        );
       } else {
-        console.log('Failed to add item to todo list:', response.error);
+        // Updates the backend, redux, and displays a success message
+        updateUser(
+          "users.actions.completed.add",
+          { action_id: action_id, hid: 1 },
+          (response, error) => {
+            if (error) return console.log("Failed to add item to completed list:", error);
+            setIsDoneOpen(true);
+            console.log("Successfully added item to completed list");
+          }
+        );
       }
-    } catch (error) {
-      console.log('API Error:', error);
+    } else { // if user is not logged in, prompt them to sign in
+      toggleModal({
+        isVisible: true,
+        Component: AuthOptions,
+        title: 'How would you like to sign in or Join ?',
+      });
     }
-    console.log("Completed object to", email);
   };
+  
+  // get testimonials related to this action
+  const actionTestimonials = (
+    testimonialsSettings.is_published
+      ? testimonials.filter(testimonial => testimonial.action?.id === action_id)
+      : []
+  );
+
   // individual functions to render the context for each tab in the action details page
   const generateDescriptionTab = () => {
     return <HTMLParser htmlString={action.about} baseStyle={textStyle} />;
@@ -112,28 +176,6 @@ const ActionDetails = ({
       return <HTMLParser htmlString={action.deep_dive} baseStyle={textStyle} />;
     }
   };
-
-  // for the testimonials associated with this action
-  const [actionTestimonials, setActionTestimonials] = useState([]);
-
-  // get testimonials related to this action
-  const getTestimonials = () => {
-    if (testimonialsSettings.is_published) {
-      const relatedTestimonials = [];
-      for (let i = 0; i < testimonials.length; i++) {
-        if (testimonials[i].action?.id === action_id) {
-          relatedTestimonials.push(testimonials[i]);
-        }
-      }
-      console.log(relatedTestimonials);
-      setActionTestimonials(relatedTestimonials);
-    }
-  };
-
-  // only retrieve associated testimonials once
-  useEffect(() => {
-    getTestimonials();
-  }, []);
 
   const generateTestimonialsTab = () => {
     return actionTestimonials.length === 0 ? (
@@ -201,16 +243,21 @@ const ActionDetails = ({
     }
   };
 
+  // Main render function
   return (
     <View style={{height: '100%', backgroundColor: 'white'}}>
+      {/* Loading indicator */}
       {isActionLoading ? (
         <Center width="100%" height="100%">
           <Spinner size="lg" />
         </Center>
       ) : (
+
+        // Main content
         <View>
           <ScrollView showsVerticalScrollIndicator={false}>
             <VStack style={{ flex: 1 }}>
+
               {/* Header image */}
               <MEImage
                 source={{
@@ -222,6 +269,8 @@ const ActionDetails = ({
                 resizeMode="contain"
                 altComponent={<></>}
               />
+
+              {/* Action details and buttons */}
               <Box bg="white" height="100%" mx={10}>
                 <VStack>
                   <Text bold fontSize="2xl" my={10}>
@@ -246,55 +295,29 @@ const ActionDetails = ({
                   <HStack justifyContent="space-between" width="100%" mb={5}>
                     <Button
                       size="md"
-                      variant="solid"
+                      variant={actionInToDo() ? "outline" : "solid" }
+                      key={actionInToDo()}
                       _text={{
-                        color: "white",
+                        color: actionInToDo() ? "green" : "white",
                         fontWeight: "bold",
                       }}
-                      onPress={() => {
-                        if (fireAuth) {
-                          handleAddToDo(userEmail, action);
-                          setIsToDoOpen(true);
-                          toDoActions.push({ name: action });
-                          console.log("Added " + action.title + " to To-do");
-                        }
-                        else 
-                        {
-                          toggleModal({
-                            isVisible: true,
-                            Component: AuthOptions,
-                            title: 'How would you like to sign in or Join ?',
-                          });
-                        }
-                      }}>
-                      Add to To-Do
+                      onPress={handleTodoPress}>
+                      {actionInToDo() ? "Action in To-Do list!" : "Add to To-Do"}
                     </Button>
                     <Button
                       size="md"
-                      variant="solid"
+                      variant={actionCompleted() ? "outline" : "solid"}
+                      key={actionCompleted()}
                       _text={{
-                        color: "white",
+                        color: actionCompleted() ? "primary.600" : "white",
                         fontWeight: "bold",
                       }}
-                      onPress={() => {
-                        if (fireAuth) { // Replace "condition" with your actual condition
-                          handleCompleted(userEmail, action);
-                          setIsDoneOpen(true);
-                          completedActions.push({name: action});
-                          console.log("Added " + action.title + " Completed");
-                        }
-                        else 
-                        {
-                          toggleModal({
-                            isVisible: true,
-                            Component: AuthOptions,
-                            title: 'How would you like to sign in or Join ?',
-                          });
-                        }
-                      }}>
-                      Done
+                      onPress={handleCompletedPress}>
+                      {actionCompleted() ? "Action Completed!" : "Mark as Done"}
                     </Button>
                   </HStack>
+
+                  {/* Tab buttons */}
                   <ScrollView
                     horizontal={true}
                     showsHorizontalScrollIndicator={false}
@@ -325,6 +348,7 @@ const ActionDetails = ({
                     ) : null}
                     <Container width={5}></Container>
                   </ScrollView>
+
                   {/* Display the tab content */}
                   <Box>{renderTabContent()}</Box>
                 </VStack>
@@ -332,6 +356,7 @@ const ActionDetails = ({
             </VStack>
             <Container height={20}></Container>
           </ScrollView>
+
           {/* Modal for when the user marks the action as done */}
           <Modal isOpen={isDoneOpen} onClose={() => {}}>
             <Modal.Content maxWidth="400px">
@@ -350,6 +375,7 @@ const ActionDetails = ({
                   </Text>
                 </Center>
                 <HStack width="100%" justifyContent={"center"}>
+
                   {/* Testimonial button temporarily disabled while waiting for user funcitonality */}
                   <Button 
                     color={"primary.600"} 
@@ -369,7 +395,8 @@ const ActionDetails = ({
               </Modal.Body>
             </Modal.Content>
           </Modal>
-      
+          
+          {/* Modal for when the user adds the action to their to-do list */}
           <Modal isOpen={isToDoOpen} onClose={() => {}}>
             <Modal.Content maxWidth="400px">
               <Modal.Body>
@@ -405,11 +432,17 @@ const mapStateToProps = (state) => ({
   testimonialsSettings: state.testimonialsPage,
   vendorsSettings: state.vendorsPage,
   fireAuth: state.fireAuth,
+  user: state.user,
+  todoList: state.userTodo,
+  completedList: state.userCompleted,
 });
 
 const mapDispatchToProps = dispatch => {
   return bindActionCreators(
-    {toggleModal: toggleUniversalModalAction},
+    {
+      toggleModal: toggleUniversalModalAction,
+      fetchAllUserInfo: fetchAllUserInfo
+    },
     dispatch,
   );
 };

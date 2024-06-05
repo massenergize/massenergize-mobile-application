@@ -1,3 +1,15 @@
+/******************************************************************************
+ *                            ActionCard
+ * 
+ *      This page handles the registration process for the user. It is responsible
+ *      for rendering the email input, email confirmation, and complete profile
+ *      screens.
+ * 
+ *      Written by: William Soylemez
+ *      Last edited: June 5, 2023
+ * 
+ *****************************************************************************/
+
 import React, { useState } from 'react';
 import {connect} from 'react-redux';
 import EmailInput from './EmailInput';
@@ -12,6 +24,8 @@ const Register = ({ navigation }) => {
 
   return (
     <View style={{height: '100%', backgroundColor: 'white'}}>
+
+      {/* Render the appropriate screen based on the step */}
       {step === 0 && <EmailInput nextStep={() => setStep(1)} navigation={navigation}/>}
       {step === 1 && <ConfirmEmail nextStep={() => setStep(2)} />}
       {step === 2 && <CompleteProfile navigation={navigation} />}

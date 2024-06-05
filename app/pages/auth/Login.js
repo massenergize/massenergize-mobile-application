@@ -1,3 +1,14 @@
+/******************************************************************************
+ *                            Login
+ * 
+ *      This page is responsible for allowing the user to login with their email
+ *      and password
+ * 
+ *      Written by: William Soylemez and Frimpong Opoku-Agyemang
+ *      Last edited: June 5, 2023
+ * 
+ *****************************************************************************/
+
 import {View, Text, TouchableOpacity, Image} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {bindActionCreators} from 'redux';
@@ -18,10 +29,6 @@ import {showError, showSnackBar, showSuccess} from '../../utils/common';
 import {authenticateWithEmailAndPassword} from '../../config/firebase';
 
 const Login = ({
-  toggleModal,
-  fireAuth,
-  signMeOut,
-  setFireAuth,
   navigation,
   activeCommunity,
   putFirebaseUserInRedux,
@@ -31,9 +38,13 @@ const Login = ({
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  // Check form validity
   const notReadyToSubmit = () => {
     if (!email || !password) return true;
   };
+
+  // Authenticates, retrieves user profile and puts user in redux,
+  // then navigates to community page
   const signUserIn = () => {
     setLoading(true);
     authenticateWithEmailAndPassword(email, password, (response, error) => {
@@ -60,17 +71,20 @@ const Login = ({
         flexDirection: 'column',
         alignItems: 'center',
         backgroundColor: 'white',
-      }}>
+      }}
+    >
+
+      {/* Title and logo */}
       <Image
         src={activeCommunity?.logo?.url}
-        // src="https://massenergize-prod-files.s3.amazonaws.com/media/energizewayland_resized.jpg"
         alt="Community Logo"
         style={{width: 120, height: 120, objectFit: 'contain'}}
       />
-
       <Text style={{fontWeight: '600', fontSize: 18, marginBottom: 20}}>
         Sign in with email & password
       </Text>
+      
+      {/* Email and password input */}
       <View style={{width: '100%', paddingHorizontal: '10%'}}>
         <Textbox
           value={email}
@@ -86,25 +100,13 @@ const Login = ({
           label="Password"
           placeholder="Enter your password here..."
         />
+
+        {/* Forgot password */}
         <MEButton asLink onPress={() => navigation.navigate("ForgotPassword")}>
           Forgot password
         </MEButton>
-        {/* <TouchableOpacity
-          style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
-          <Text
-            style={{
-              textDecorationStyle: 'solid',
-              color: COLOR_SCHEME.GREEN,
-              fontWeight: 'bold',
-            }}>
-            Forgot Password
-          </Text>
-          <FontAwesomeIcon
-            name="long-arrow-right"
-            style={{color: COLOR_SCHEME.GREEN, marginLeft: 10}}
-          />
-        </TouchableOpacity> */}
 
+        {/* Login button */}
         <MEButton
           disabled={notReadyToSubmit()}
           loading={loading}
@@ -112,6 +114,7 @@ const Login = ({
           LOGIN
         </MEButton>
 
+        {/* Register */}
         <MEButton
           containerStyle={{marginVertical: 5}}
           style={{color: COLOR_SCHEME.ORANGE, fontSize: 16}}
@@ -120,7 +123,6 @@ const Login = ({
           onPress={() => navigation.navigate('Register')}
         >
           Haven't joined yet? Join{' '}
-          
         </MEButton>
       </View>
     </View>

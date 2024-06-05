@@ -1,3 +1,13 @@
+/******************************************************************************
+ *                            ServiceProviderScreen
+ * 
+ *      This page is responsible for rendering a list of service providers.
+ * 
+ *      Written by: William Soylemez
+ *      Last edited: June 5, 2023
+ * 
+ *****************************************************************************/
+
 import React from "react";
 import { VStack, Box, Heading, ScrollView, HStack } from "@gluestack-ui/themed-native-base";
 import { connect } from "react-redux";
@@ -10,6 +20,7 @@ function ServiceProvidersPage({ navigation, vendors }) {
     <View>
       <ScrollView px="5" showsVerticalScrollIndicator={false}>
         <VStack mt="5">
+
           <Box>
             <Heading>Suggested</Heading>
             {/* render cards horizontally */}
@@ -34,6 +45,7 @@ function ServiceProvidersPage({ navigation, vendors }) {
               )}
             </ScrollView>
           </Box>
+
           <Box>
             <Heading>All</Heading>
             {/* render cards vertically */}

@@ -1,3 +1,15 @@
+/******************************************************************************
+ *                            UserProfile
+ * 
+ *      This page is responsible for rendering the user's profile. It displays
+ *      the user's name, sustainability score, carbon saved, todo list, completed
+ *      actions, teams, households, and communities.
+ * 
+ *      Written by: William Soylemez
+ *      Last edited: June 5, 2023
+ * 
+ *****************************************************************************/
+
 import React, { useState } from "react";
 import { StyleSheet } from "react-native";
 import { useEffect, useContext, useCallback } from "react";
@@ -30,9 +42,8 @@ import { apiCall } from "../../api/functions";
 import { connect } from "react-redux";
 import { fetchAllUserInfo, fetchUserProfile } from "../../config/redux/actions";
 import { bindActionCreators } from "redux";
-// import { convertAbsoluteToRem } from "native-base/lib/typescript/theme/tools";
 
-
+// Component to display the user's name, preferred name, and community
 const ProfileName = ({ navigation, communityInfo, user }) => {
   return (
     <Flex
@@ -40,6 +51,7 @@ const ProfileName = ({ navigation, communityInfo, user }) => {
       alignItems="center"
       justifyContent="space-between"
     >
+      {/* Profile picture */}
       <Image
         source={{
           uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRir06bApyiBCEsxHMGNWtcxEZGCLYj5vdcxQ&usqp=CAU",
@@ -48,11 +60,15 @@ const ProfileName = ({ navigation, communityInfo, user }) => {
         size="20"
         rounded="full"
       />
+
+      {/* User's name, preferred name, and community */}
       <Box alignItems="center">
         <Text fontSize="xl">{user.preferred_name || "Your Name"}</Text>
         <Text>{user.full_name}</Text>
         <Text>{communityInfo.name}</Text>
       </Box>
+
+      {/* Settings button */}
       <Pressable onPress={() => navigation.navigate("settings")}>
         <Icon as={FontAwesome} name="cog" size="lg" />
       </Pressable>
@@ -60,6 +76,7 @@ const ProfileName = ({ navigation, communityInfo, user }) => {
   );
 };
 
+// Component to display the user's sustainability score
 const SustainScore = ({CompletedList}) => {
   const CarbonSaved = CompletedList.length; // TODO: make this a real formula
   return (
@@ -74,6 +91,7 @@ const SustainScore = ({CompletedList}) => {
   );
 };
 
+// Component to display the user's carbon saved, trees saved, and points
 const CarbonSaved = ({ CompletedList }) => {
   const CarbonSaved = CompletedList.length; // TODO: Make this a real formula
 
@@ -85,6 +103,7 @@ const CarbonSaved = ({ CompletedList }) => {
         </Text>
         <Text>CO2 Saved</Text>
       </Box>
+
       <Divider orientation="vertical" />
       <Box alignItems="center">
         <Text fontSize="lg" fontWeight="medium">
@@ -92,6 +111,7 @@ const CarbonSaved = ({ CompletedList }) => {
         </Text>
         <Text>Trees</Text>
       </Box>
+
       <Divider orientation="vertical" />
       <Box alignItems="center">
         <Text fontSize="lg" fontWeight="medium">
@@ -103,17 +123,10 @@ const CarbonSaved = ({ CompletedList }) => {
   );
 };
 
+// Component to display a list of actions, either in the todo list or completed list
 const ActionsList = ({ navigation, list, actions }) => {
 
-  const todoList = list.map(item => item.action);
-
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    if (todoList) {
-      setIsLoading(false);
-    }
-  }, []);
+  const actionList = list.map(item => item.action);
 
   return (
     <Box>
@@ -121,7 +134,7 @@ const ActionsList = ({ navigation, list, actions }) => {
       <ScrollView>
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
           <HStack space={2} justifyContent="center" mx={15} marginBottom={15}>
-            {todoList.map((action, index) => {
+            {actionList.map((action, index) => {
               return (
                 <ActionCard
                   key={index}
@@ -141,6 +154,7 @@ const ActionsList = ({ navigation, list, actions }) => {
   );
 };
 
+// Component to display a list of badges (not currently used)
 const BadgesList = () => {
   return (
     <Center>
@@ -208,13 +222,17 @@ const BadgesList = () => {
   );
 };
 
+// Component to display a list of teams
 const TeamsList = ({ teams }) => {
   return (
     <Center>
+
       <Text fontWeight="bold" fontSize="lg" mb="5">
         My Teams
       </Text>
+
       {teams.length === 0 && <Text>No teams yet!</Text>}
+
       {teams.map((team, index) => (
         <Flex width="full" key={index}>
           <Flex flexDirection="row" alignItems="center">
@@ -230,12 +248,17 @@ const TeamsList = ({ teams }) => {
   );
 };
 
+// Component to display a list of houses
 const HousesList = ({ households }) => {
   return (
     <Center>
+
       <Text fontWeight="bold" fontSize="lg" mb="5">
         My Households
       </Text>
+
+      {households.length === 0 && <Text>No households yet!</Text>}
+
       {households.map((household, index) => (
         <Flex width="full" key={index}>
           <Flex flexDirection="row" alignItems="center">
@@ -251,8 +274,8 @@ const HousesList = ({ households }) => {
   );
 };
 
+// Component to display a list of communities
 const CommunitiesList = ({ communities }) => {
-
   return (
     <Center>
       <Text fontWeight="bold" fontSize="lg" mb="5">
@@ -271,6 +294,7 @@ const CommunitiesList = ({ communities }) => {
   );
 };
 
+// Main component
 function DashboardPage({
   navigation, 
   route, 
@@ -282,6 +306,7 @@ function DashboardPage({
   fetchAllUserInfo,
 
 }) {
+  // If user is not logged in, display a message
   if (!user) {
     return (
       <View style={{
@@ -291,16 +316,13 @@ function DashboardPage({
         justifyContent: 'center'
       }}>
         <Center>
-          <Spinner />
           <Text>Sign in to view profile</Text>
         </Center>
       </View>
     );
   }
 
-  
-
-
+  // Reloads the user's info when the page is opened
   const [refreshing, setRefreshing] = useState(false);
 
   useFocusEffect(
@@ -311,8 +333,8 @@ function DashboardPage({
     }, [])
   );
 
-
-  if (refreshing) {
+  // If the page is still loading, display a loading message
+  if (refreshing) { 
     return (
       <View style={{
         display: 'flex',
@@ -346,9 +368,12 @@ function DashboardPage({
           <ActionsList navigation={navigation} list={completedList} actions={actions} />
 
           {/* <BadgesList /> */}
+
+          {/* Other lists */}
           <TeamsList teams={user.teams} />
           <HousesList households={user.households} />
           <CommunitiesList communities={user.communities} />
+          
         </VStack>
       </ScrollView>
     </GestureHandlerRootView>

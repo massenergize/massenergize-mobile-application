@@ -1,6 +1,17 @@
-import {View, Text, ScrollView} from 'react-native';
+/******************************************************************************
+ *                            EmailInput
+ * 
+ *      This page is responsible for allowing the user to input their email
+ *      address and password to create an account.
+ * 
+ *      Written by: William Soylemez
+ *      Last edited: June 5, 2023
+ * 
+ *****************************************************************************/
+
+import { View, Text } from 'react-native';
 import React, { useState } from 'react';
-import {Image} from 'react-native';
+import { Image } from 'react-native';
 import Textbox from '../../components/textbox/Textbox';
 import MEButton from '../../components/button/MEButton';
 import { connect } from 'react-redux';
@@ -8,12 +19,13 @@ import { registerWithEmailAndPassword } from '../../config/firebase';
 import { showError } from '../../utils/common';
 
 
-const EmailInput = ({navigation, activeCommunity, nextStep}) => {
+const EmailInput = ({ navigation, activeCommunity, nextStep }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
+  // Functions for checking form validity
   const isValidPassword = (password) => {
     return password.length >= 8;
   }
@@ -30,9 +42,10 @@ const EmailInput = ({navigation, activeCommunity, nextStep}) => {
     );
   }
 
+  // Function to register user with email and password in Firebase
   const registerUser = () => {
     if (!readyToSubmit()) return;
-    
+
     setLoading(true);
 
     registerWithEmailAndPassword(email, password, (error) => {
@@ -47,6 +60,7 @@ const EmailInput = ({navigation, activeCommunity, nextStep}) => {
     });
   }
 
+
   return (
     // <ScrollView vertical style={{height: '100%'}}>
     <View
@@ -57,12 +71,14 @@ const EmailInput = ({navigation, activeCommunity, nextStep}) => {
         backgroundColor: 'white',
         paddingBottom: 50
       }}>
+
+      {/* Logo and title */}
       <Image
         src={activeCommunity?.logo?.url}
         alt="Community Logo"
-        style={{width: 120, height: 120, objectFit: 'contain'}}
+        style={{ width: 120, height: 120, objectFit: 'contain' }}
       />
-      <Text style={{fontWeight: '600', fontSize: 18, marginBottom: 20}}>
+      <Text style={{ fontWeight: '600', fontSize: 18, marginBottom: 20 }}>
         Welcome!
       </Text>
       <Text
@@ -76,9 +92,10 @@ const EmailInput = ({navigation, activeCommunity, nextStep}) => {
         personal data and do not share data.
       </Text>
 
-      <View style={{width: '100%', paddingHorizontal: '10%'}}>
-        { email.length > 0 && !isValidEmail(email) &&
-          <Text style={{color: 'red'}}>
+      {/* Email and password inputs */}
+      <View style={{ width: '100%', paddingHorizontal: '10%' }}>
+        {email.length > 0 && !isValidEmail(email) &&
+          <Text style={{ color: 'red' }}>
             Please enter a valid email address
           </Text>
         }
@@ -88,22 +105,22 @@ const EmailInput = ({navigation, activeCommunity, nextStep}) => {
           value={email}
           onChange={(text) => setEmail(text)}
         />
-        { password.length > 0 && !isValidPassword(password) &&
-          <Text style={{color: 'red'}}>
+        {password.length > 0 && !isValidPassword(password) &&
+          <Text style={{ color: 'red' }}>
             Password must have at least 8 characters
-            </Text>
+          </Text>
         }
-        <Textbox 
+        <Textbox
           label="Password"
           placeholder="Enter password here..."
           value={password}
           onChange={(text) => setPassword(text)}
           generics={
-            {keyboardType: 'visible-password', secureTextEntry: true}
+            { keyboardType: 'visible-password', secureTextEntry: true }
           }
         />
-        { confirmPassword.length > 0 && password !== confirmPassword &&
-          <Text style={{color: 'red'}}>Passwords don't match</Text>
+        {confirmPassword.length > 0 && password !== confirmPassword &&
+          <Text style={{ color: 'red' }}>Passwords don't match</Text>
         }
         <Textbox
           label="Confirm Password"
@@ -111,20 +128,24 @@ const EmailInput = ({navigation, activeCommunity, nextStep}) => {
           value={confirmPassword}
           onChange={(text) => setConfirmPassword(text)}
           generics={
-            {keyboardType: 'visible-password', secureTextEntry: true}
+            { keyboardType: 'visible-password', secureTextEntry: true }
           }
         />
+
+        {/* Register button */}
         <MEButton
-          containerStyle={{width: '100%'}}
+          containerStyle={{ width: '100%' }}
           onPress={registerUser}
           disabled={!readyToSubmit()}
           loading={loading}
         >
           REGISTER
         </MEButton>
+
+        {/* Login link */}
         <MEButton
           asLink
-          style={{marginVertical: 5}}
+          style={{ marginVertical: 5 }}
           onPress={() => navigation.navigate("Login")}
         >
           Login Instead

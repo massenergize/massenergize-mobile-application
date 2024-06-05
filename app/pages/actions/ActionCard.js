@@ -1,3 +1,14 @@
+/******************************************************************************
+ *                            ActionCard
+ * 
+ *      This page is responsible for rendering the card that displays
+ *      a single action
+ * 
+ *      Written by: William Soylemez
+ *      Last edited: June 5, 2023
+ * 
+ *****************************************************************************/
+
 import React, { useState, useEffect } from "react";
 import { Text, Pressable } from "react-native";
 import { Box, Heading, Stack } from "@gluestack-ui/themed-native-base";
@@ -13,6 +24,8 @@ const ActionCard = ({
   ...props
 }) => {
   return (
+
+    /* On press, navigate to the ActionDetails screen with the action_id */
     <Pressable
       onPress={() => {
         navigation.navigate("ActionDetails", { action_id: id });
@@ -20,7 +33,11 @@ const ActionCard = ({
       }}
       {...props}
     >
+
+      {/* Action Card */}
       <Box bg="white" borderRadius="xl" shadow={2} width={180} {...props}>
+        
+        {/* Image */}
         <Box>
           <MEImage
             source={{ uri: imgUrl }}
@@ -32,6 +49,8 @@ const ActionCard = ({
             altComponent={<Box height={120} bg="gray.300" borderTopRadius="xl" />}
           />
         </Box>
+
+        {/* Text */}
         <Stack p={3} space={3}>
           <Stack space={2}>
             <Heading size="sm" isTruncated={true} noOfLines={1}>

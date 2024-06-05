@@ -1,3 +1,15 @@
+/******************************************************************************
+ *                            TestimonialCard
+ * 
+ *      This page is responsible for rendering the card that displays
+ *      a single testimonial.
+ * 
+ *      Written by: William Soylemez
+ *      Last edited: June 5, 2023
+ * 
+ *****************************************************************************/
+
+
 import React from "react";
 import Moment from 'moment';
 import { Box, Text, Pressable, Image, Button } from "@gluestack-ui/themed-native-base";
@@ -18,6 +30,8 @@ function TestimonialCard({ navigation, data, picture }) {
           maxHeight={150}
           mt={3}
         >
+
+          {/* Image */}
           <MEImage
             source={{
               uri: data?.file?.url
@@ -26,9 +40,10 @@ function TestimonialCard({ navigation, data, picture }) {
             w="full"
             resizeMode="contain"
             h="full"
-            // altComponent={<Box h="full" bg="gray.300" />}
           />
         </Box>
+
+        {/* Content */}
         <Box p={3}>
           <Text bold fontSize="lg">{data.title}</Text>
           <Text fontSize="sm" color="#BAB9C0">By {data.preferred_name} | {Moment(data.created_at).format('l')}</Text>
