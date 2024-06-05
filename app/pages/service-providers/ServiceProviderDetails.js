@@ -1,3 +1,14 @@
+/******************************************************************************
+ *                            ServiceProviderDetails
+ * 
+ *      This page is responsible for rendering detailed information about a
+ *      single service provider.
+ * 
+ *      Written by: William Soylemez
+ *      Last edited: June 5, 2023
+ * 
+ *****************************************************************************/
+
 import React, { useEffect, useState } from "react";
 import {
   Box,
@@ -16,6 +27,7 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import HTMLParser from "../../utils/HTMLParser";
 import { useDetails } from "../../utils/hooks";
 import { Linking, View } from "react-native";
+import MEImage from "../../components/image/MEImage";
 
 export default function ServiceProviderDetails({ route, navigation }) {
   const { vendor_id } = route.params;
@@ -41,9 +53,10 @@ export default function ServiceProviderDetails({ route, navigation }) {
         </Center>
       ) : (
         <ScrollView showsVerticalScrollIndicator={false}>
+
           {/* image */}
-          { (spDetails.logo?.url && !imageError) && <Center py="20" px="5">
-            <Image
+          <Center> 
+            <MEImage
               source={{
                 uri: spDetails.logo?.url,
               }}
@@ -51,9 +64,11 @@ export default function ServiceProviderDetails({ route, navigation }) {
               alt="service provider's image"
               w="full"
               h="200"
-              onError={() => setImageError(true)}
+              py="20" px="5"
+              altComponent={<></>}
             />
-          </Center> }
+          </Center>
+
           {/* content */}
           <Box
             backgroundColor="white"
@@ -62,9 +77,12 @@ export default function ServiceProviderDetails({ route, navigation }) {
             pb="20"
             borderTopRadius="2xl"
           >
+
             <Heading size="xl" mb="5">
               {spDetails.name}
             </Heading>
+
+            {/* Description */}
             <Box mb="5">
               <Text fontSize="lg" fontWeight="bold">
                 Description
@@ -76,6 +94,8 @@ export default function ServiceProviderDetails({ route, navigation }) {
                 />
               )}
             </Box>
+
+            {/* Contact Information */}
             <Box>
               <Text fontSize="lg" fontWeight="bold">
                 Contact Information

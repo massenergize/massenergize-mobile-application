@@ -29,7 +29,7 @@ import {
 import HTMLParser from "../../utils/HTMLParser";
 import ServiceProviderCard from "../service-providers/ServiceProviderCard";
 import { useDetails } from "../../utils/hooks";
-import { TestimonialCard } from "../testimonials/TestimonialsCard";
+import { TestimonialCard } from "../testimonials/TestimonialCard";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { getActionMetric, updateUser } from "../../utils/common";
 import { apiCall } from "../../api/functions";
@@ -150,6 +150,13 @@ const ActionDetails = ({
       });
     }
   };
+  
+  // get testimonials related to this action
+  const actionTestimonials = (
+    testimonialsSettings.is_published
+      ? testimonials.filter(testimonial => testimonial.action?.id === action_id)
+      : []
+  );
 
   // individual functions to render the context for each tab in the action details page
   const generateDescriptionTab = () => {
@@ -169,28 +176,6 @@ const ActionDetails = ({
       return <HTMLParser htmlString={action.deep_dive} baseStyle={textStyle} />;
     }
   };
-
-  // for the testimonials associated with this action
-  const [actionTestimonials, setActionTestimonials] = useState([]);
-
-  // get testimonials related to this action
-  const getTestimonials = () => {
-    if (testimonialsSettings.is_published) {
-      const relatedTestimonials = [];
-      for (let i = 0; i < testimonials.length; i++) {
-        if (testimonials[i].action?.id === action_id) {
-          relatedTestimonials.push(testimonials[i]);
-        }
-      }
-      console.log(relatedTestimonials);
-      setActionTestimonials(relatedTestimonials);
-    }
-  };
-
-  // only retrieve associated testimonials once
-  useEffect(() => {
-    getTestimonials();
-  }, []);
 
   const generateTestimonialsTab = () => {
     return actionTestimonials.length === 0 ? (
@@ -258,16 +243,21 @@ const ActionDetails = ({
     }
   };
 
+  // Main render function
   return (
     <View style={{height: '100%', backgroundColor: 'white'}}>
+      {/* Loading indicator */}
       {isActionLoading ? (
         <Center width="100%" height="100%">
           <Spinner size="lg" />
         </Center>
       ) : (
+
+        // Main content
         <View>
           <ScrollView showsVerticalScrollIndicator={false}>
             <VStack style={{ flex: 1 }}>
+
               {/* Header image */}
               <MEImage
                 source={{
@@ -279,6 +269,8 @@ const ActionDetails = ({
                 resizeMode="contain"
                 altComponent={<></>}
               />
+
+              {/* Action details and buttons */}
               <Box bg="white" height="100%" mx={10}>
                 <VStack>
                   <Text bold fontSize="2xl" my={10}>
@@ -324,6 +316,8 @@ const ActionDetails = ({
                       {actionCompleted() ? "Action Completed!" : "Mark as Done"}
                     </Button>
                   </HStack>
+
+                  {/* Tab buttons */}
                   <ScrollView
                     horizontal={true}
                     showsHorizontalScrollIndicator={false}
@@ -354,6 +348,7 @@ const ActionDetails = ({
                     ) : null}
                     <Container width={5}></Container>
                   </ScrollView>
+
                   {/* Display the tab content */}
                   <Box>{renderTabContent()}</Box>
                 </VStack>
@@ -400,7 +395,8 @@ const ActionDetails = ({
               </Modal.Body>
             </Modal.Content>
           </Modal>
-      
+          
+          {/* Modal for when the user adds the action to their to-do list */}
           <Modal isOpen={isToDoOpen} onClose={() => {}}>
             <Modal.Content maxWidth="400px">
               <Modal.Body>

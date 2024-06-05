@@ -1,5 +1,17 @@
+/******************************************************************************
+ *                            ServiceProviderCard
+ * 
+ *      This page is responsible for rendering the card that displays
+ *      a single service provider.
+ * 
+ *      Written by: William Soylemez
+ *      Last edited: June 5, 2023
+ * 
+ *****************************************************************************/
+
 import { Flex, Image, Pressable, Box, Text } from '@gluestack-ui/themed-native-base';
 import React, { useState } from "react";
+import MEImage from '../../components/image/MEImage';
 
 const styles = {
   rSPImageSize: 100,
@@ -23,7 +35,6 @@ export default function ServiceProviderCard({
     <Pressable
       onPress={() =>
         navigation.navigate("ServiceProviderDetails", { vendor_id: id })
-        // console.log("service provider details", id)
       }
     >
       <Flex
@@ -35,31 +46,31 @@ export default function ServiceProviderCard({
         shadow="2"
         {...props}
       >
+
         {/* image */}
-        { (imageURI !== '' && imageLoaded) ? 
-          (<Image
-            source={{ uri: imageURI }}
-            alt="service provider's image"
-            resizeMode="contain"
-            size={
-              direction === "row" ? styles.rSPImageSize : styles.cSPImageSize
-            }
-            alignSelf="center"
-            onError={() => setImageLoaded(false)}
-          /> ) : (
+        <MEImage
+          source={{ uri: imageURI }}
+          alt="service provider's image"
+          resizeMode="contain"
+          size={
+            direction === "row" ? styles.rSPImageSize : styles.cSPImageSize
+          }
+          alignSelf="center"
+          altComponent={
             <Box
               size={
                 direction === "row" ? styles.rSPImageSize : styles.cSPImageSize
               }
               backgroundColor="gray.200"
             />
-          )
-        }
+          }
+        />
         <Box
           width={direction === "row" ? "60%" : "40"}
           pl={direction === "row" && "3"}
           pt={direction === "column" && "3"}
         >
+          
           {/* name */}
           {direction === "row" ? (
             <Text fontWeight="bold" fontSize={styles.SPNameSize}>

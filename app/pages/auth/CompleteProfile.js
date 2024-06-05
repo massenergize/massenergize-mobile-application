@@ -1,4 +1,16 @@
-import {View, Text, Alert} from 'react-native';
+/******************************************************************************
+ *                            CompleteProfile
+ * 
+ *      Displays the complete profile page for the user to fill out their
+ *      information. This page is shown after the user has authenticated
+ *      but has not yet completed their profile.
+ * 
+ *      Written by: William Soylemez
+ *      Last edited: June 5, 2023
+ * 
+ *****************************************************************************/
+
+import { View, Text, Alert } from 'react-native';
 import React, { useState } from 'react';
 import { Image } from 'react-native';
 import Textbox from '../../components/textbox/Textbox';
@@ -30,6 +42,7 @@ const CompleteProfile = ({
     return zip.length === 5 && !isNaN(zip);
   }
 
+  // Submit data to backend and update user profile in redux
   const onSubmit = () => {
     console.log('Submitting...');
     setLoading(true);
@@ -60,7 +73,7 @@ const CompleteProfile = ({
 
       fireAuth.reload().then(() => {
         const user = firebase.auth().currentUser;
-      
+
         console.log('USER:', user);
         putFirebaseUserInRedux(user);
         user?.getIdToken().then(token => {
@@ -85,13 +98,14 @@ const CompleteProfile = ({
         flexDirection: 'column',
         alignItems: 'center',
         backgroundColor: 'white',
-      }}>
+      }}
+    >
       <Image
         src="https://massenergize-prod-files.s3.amazonaws.com/media/energizewayland_resized.jpg"
         alt="Community Logo"
-        style={{width: 120, height: 120, objectFit: 'contain'}}
+        style={{ width: 120, height: 120, objectFit: 'contain' }}
       />
-      <Text style={{fontWeight: '600', fontSize: 18, marginBottom: 20}}>
+      <Text style={{ fontWeight: '600', fontSize: 18, marginBottom: 20 }}>
         Complete Your Profile!
       </Text>
       {/* <Text
@@ -105,7 +119,8 @@ const CompleteProfile = ({
         personal data and do not share data.
       </Text> */}
 
-      <View style={{width: '100%', paddingHorizontal: '10%'}}>
+      {/* Text fields */}
+      <View style={{ width: '100%', paddingHorizontal: '10%' }}>
         <Textbox
           label="Preferred Name (unique)"
           placeholder="Enter preferred name..."
@@ -122,16 +137,18 @@ const CompleteProfile = ({
           label="Last Name"
           placeholder="Enter last Name here..."
           value={lastName}
-          onChange={(text) => setLastName(text)}  
+          onChange={(text) => setLastName(text)}
         />
-        <Textbox 
-          label="Zipcode" 
+        <Textbox
+          label="Zipcode"
           placeholder="Enter your zipcode here......"
           value={zipcode}
           onChange={(text) => setZipcode(text)}
         />
+
+        {/* Complete button */}
         <MEButton
-          containerStyle={{width: '100%'}}
+          containerStyle={{ width: '100%' }}
           onPress={onSubmit}
           disabled={
             !preferredName || !firstName || !lastName
@@ -150,7 +167,6 @@ const CompleteProfile = ({
 const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
-      // setFireAuth: setFirebaseAuthenticationAction,
       putFirebaseUserInRedux: setFirebaseAuthenticationAction,
       fetchMEUser: fetchUserProfile,
     },

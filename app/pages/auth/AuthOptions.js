@@ -1,3 +1,13 @@
+/******************************************************************************
+ *                            AuthOptions
+ * 
+ *      Renders a list of authentication options for the user to choose from.
+ * 
+ *      Written by: Frimpong Opoku-Agyemang
+ *      Last edited: 
+ * 
+ *****************************************************************************/
+
 import {View, Text, TouchableOpacity, ScrollView} from 'react-native';
 import React from 'react';
 
@@ -16,6 +26,7 @@ import {
 const AuthOptions = ({closeModal, fetchMEUser, putFirebaseUserInRedux}) => {
   const navigation = useNavigation();
 
+  // Function to authenticate with Gmail
   const doGoogleAuth = () => {
     authenticateWithGmail((response, error) => {
       if (error && !response) return showError(error?.toString());
@@ -33,6 +44,8 @@ const AuthOptions = ({closeModal, fetchMEUser, putFirebaseUserInRedux}) => {
         .catch(e => showError(e?.toString()));
     });
   };
+
+  // List of authentication options
   const options = [
     {
       key: 'email-only',
@@ -56,6 +69,8 @@ const AuthOptions = ({closeModal, fetchMEUser, putFirebaseUserInRedux}) => {
       disabled: true,
     },
   ];
+
+  
   return (
     <ScrollView vertical>
       {options.map(option => {

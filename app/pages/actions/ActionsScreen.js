@@ -1,3 +1,13 @@
+/******************************************************************************
+ *                            ActionsScreen
+ * 
+ *      This page displays all action cards in a horizontal scroll view
+ * 
+ *      Written by: William Soylemez
+ *      Last edited: June 5, 2023
+ * 
+ *****************************************************************************/
+
 import { View } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import ActionCard from './ActionCard';
@@ -7,21 +17,15 @@ import { ScrollView, HStack, Text, Spinner, Center } from "@gluestack-ui/themed-
 import { getActionMetric } from "../../utils/common";
 
 const ActionsScreen = ({navigation, actions}) => {
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    if (actions) {
-      setIsLoading(false);
-    }
-  }, []);
-
+  
   return (
     <View style={{height: '100%', backgroundColor: 'white'}}>
       <ScrollView>
         {/* Header */}
         <Text style={styles.title}>Actions</Text>
 
-        {isLoading ? (
+        {/* Display loading spinner if actions are not loaded */}
+        {!actions ? (
           <Center flex="1">
             <Spinner />
           </Center>

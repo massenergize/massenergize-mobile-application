@@ -1,3 +1,15 @@
+/******************************************************************************
+ *                            ConfirmEmail
+ * 
+ *      Page that waits for the user to confirm their email address. If the
+ *      user has already confirmed their email, they can proceed to the next
+ *      step.
+ * 
+ *      Written by: William Soylemez
+ *      Last edited: June 5, 2023
+ * 
+ *****************************************************************************/
+
 import React, { useState } from 'react';
 import {View, Text} from 'react-native';
 import { showError, showSuccess } from '../../utils/common';
@@ -6,11 +18,9 @@ import { connect } from 'react-redux';
 import firebase from '@react-native-firebase/app';
 
 const ConfirmEmail = ({ fireAuth, nextStep }) => {
-
-
-
   const [loading, setLoading] = useState(false);
 
+  // Checks for email verification and proceeds to the next step
   const confirmEmail = () => {
     setLoading(true);
     fireAuth.reload()
@@ -34,6 +44,7 @@ const ConfirmEmail = ({ fireAuth, nextStep }) => {
       });
   }
 
+  // Resends the email verification
   const resendEmail = () => {
     fireAuth.sendEmailVerification()
       .then(() => {
@@ -57,6 +68,7 @@ const ConfirmEmail = ({ fireAuth, nextStep }) => {
       paddingHorizontal: 10
       }}
     >
+      {/* Title */}
       <Text style={{fontWeight: '600', fontSize: 18, marginBottom: 40}}>
         Check your email
       </Text>
@@ -64,6 +76,8 @@ const ConfirmEmail = ({ fireAuth, nextStep }) => {
         We sent a link to {fireAuth?.email}. Please click that link to continue.
         Not in your inbox? Please check your SPAM and Promotions folders.
       </Text>
+
+      {/* Resend */}
       <MEButton
         onPress={resendEmail}
         style={{marginTop: 20, width: '80%', justifyContent: 'center'}}
@@ -71,6 +85,8 @@ const ConfirmEmail = ({ fireAuth, nextStep }) => {
       >
         Resend email
       </MEButton>
+
+      {/* Confirm */}
       <MEButton
         onPress={confirmEmail}
         style={{marginTop: 20, width: '80%', justifyContent: 'center'}}

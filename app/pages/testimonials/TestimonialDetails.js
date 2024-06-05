@@ -1,4 +1,16 @@
-import React, { useContext } from "react";
+/******************************************************************************
+ *                            TestimonialDetails
+ * 
+ *      This page is responsible for rendering detailed information about a
+ *      single testimonial.
+ * 
+ *      Written by: William Soylemez
+ *      Last edited: June 5, 2023
+ * 
+ *****************************************************************************/
+
+
+import React from "react";
 import Moment from 'moment';
 import { VStack, Image, Text, Spinner, Center } from "@gluestack-ui/themed-native-base";
 import { ScrollView, View, useWindowDimensions } from "react-native";
@@ -15,72 +27,83 @@ function TestimonialDetails({ route, navigation, vendorsSettings }) {
   const { width } = useWindowDimensions();
 
   const { testimonial_id } = route.params;
-  const [testimonial, isTestimonialLoading] = useDetails("testimonials.info", { testimonial_id: testimonial_id });
+  const [testimonial, isTestimonialLoading]
+    = useDetails("testimonials.info", { testimonial_id: testimonial_id });
 
   return (
     <View style={{ height: '100%', backgroundColor: 'white' }}>
       {
         isTestimonialLoading
-          ?
-          <Center width="100%" height="100%">
-            <Spinner size="lg" />
-          </Center>
-          :
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <VStack bg="white" px="3" pb="20">
-              <MEImage
-                source={{
-                  uri: testimonial.file?.url
-                }}
-                my={3}
-                h={250}
-                w={width}
-                alt="image"
-                resizeMode="contain"
-              />
-              <Text bold fontSize="2xl" mt={3}>{testimonial.title}</Text>
-              <Text fontSize="md" color="#BAB9C0" mb={3}>By {testimonial.preferred_name} | {Moment(testimonial.created_at).format('ll')}</Text>
-              <HTMLParser
-                htmlString={testimonial.body}
-                baseStyle={textStyle} />
-              {
-                // display the action associated with the testimonial if it exists
-                testimonial.action != null
-                  ?
-                  <View>
-                    <Text bold fontSize="lg" mb={3} mt={5}>Associated Action</Text>
-                    <ActionCard
-                      navigation={navigation}
-                      id={testimonial.action?.id}
-                      title={testimonial.action?.title}
-                      imgUrl={testimonial.action?.image?.url}
-                      impactMetric={getActionMetric(testimonial.action, "Impact")}
-                      costMetric={getActionMetric(testimonial.action, "Cost")}
-                    />
-                  </View>
-                  : <></>
-              }
-              {
-                // display the vendor associated with the testimonial if it exists
-                (vendorsSettings.is_published && testimonial.vendor != null)
-                  ?
-                  <View>
-                    <Text bold fontSize="lg" mb={2} mt={7}>Related Vendor</Text>
-                    <ServiceProviderCard
-                      id={testimonial.vendor.id}
-                      direction="row"
-                      name={testimonial.vendor.name}
-                      description="This could be a brief description of the service provider."
-                      imageURI={(testimonial.vendor.logo) ? testimonial.vendor.logo.url : null}
-                      // onPress={() => navigation.navigate("serviceProviderDetails")}
-                      navigation={navigation}
-                      my="2"
-                    />
-                  </View>
-                  : <></>
-              }
-            </VStack>
-          </ScrollView>
+          ? (
+            // Loading spinner
+            <Center width="100%" height="100%">
+              <Spinner size="lg" />
+            </Center>
+          ) : (
+            <ScrollView showsVerticalScrollIndicator={false}>
+              <VStack bg="white" px="3" pb="20">
+
+                {/* Image */}
+                <MEImage
+                  source={{
+                    uri: testimonial.file?.url
+                  }}
+                  my={3}
+                  h={250}
+                  w={width}
+                  alt="image"
+                  resizeMode="contain"
+                />
+
+                {/* Header */}
+                <Text bold fontSize="2xl" mt={3}>{testimonial.title}</Text>
+                <Text fontSize="md" color="#BAB9C0" mb={3}>By {testimonial.preferred_name} | {Moment(testimonial.created_at).format('ll')}</Text>
+
+                {/* Body */}
+                <HTMLParser
+                  htmlString={testimonial.body}
+                  baseStyle={textStyle} />
+
+                {/* Associated action */}
+                {
+                  testimonial.action != null
+                    ? (
+                      <View>
+                        <Text bold fontSize="lg" mb={3} mt={5}>Associated Action</Text>
+                        <ActionCard
+                          navigation={navigation}
+                          id={testimonial.action?.id}
+                          title={testimonial.action?.title}
+                          imgUrl={testimonial.action?.image?.url}
+                          impactMetric={getActionMetric(testimonial.action, "Impact")}
+                          costMetric={getActionMetric(testimonial.action, "Cost")}
+                        />
+                      </View>
+                    ) : <></>
+                }
+
+                {/* Associated vendor */}
+                {
+                  (vendorsSettings.is_published && testimonial.vendor != null)
+                    ? (
+                      <View>
+                        <Text bold fontSize="lg" mb={2} mt={7}>Related Vendor</Text>
+                        <ServiceProviderCard
+                          id={testimonial.vendor.id}
+                          direction="row"
+                          name={testimonial.vendor.name}
+                          description="This could be a brief description of the service provider."
+                          imageURI={(testimonial.vendor.logo) ? testimonial.vendor.logo.url : null}
+                          // onPress={() => navigation.navigate("serviceProviderDetails")}
+                          navigation={navigation}
+                          my="2"
+                        />
+                      </View>
+                    ) : <></>
+                }
+              </VStack>
+            </ScrollView>
+          )
       }
     </View>
   );
