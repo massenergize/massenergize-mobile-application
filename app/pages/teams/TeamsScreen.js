@@ -6,7 +6,7 @@
  *      actions they performed, and their team members.
  * 
  *      Written by: Moizes Almeida
- *      Last edited: June 4, 2024
+ *      Last edited: June 6, 2024
  * 
  *****************************************************************************/
 
@@ -54,15 +54,6 @@ const TeamsScreen = ({ navigation, teams }) => {
     }
   }, [teams]);
 
-  /* If the information of the team is not available, display message */
-  if (!teams) {
-    return (
-      <View style={styles.noInfoContainer}>
-        <Text style={styles.noInfoText}>No Teams information :(</Text>
-      </View>
-    );
-  }
-  
   /* Gets a list of teams where subteams are nested under their parent team */
   const getTeams = () => {
     const teamsDict = {};
@@ -86,6 +77,18 @@ const TeamsScreen = ({ navigation, teams }) => {
     setSubteamsExpanded(expanded);
     setIsLoading(false);
   };
+
+  /* 
+   * If the information of the team is not available, or if there are no
+   * teams in the community, display message.
+   */
+  if (!teams || teams.length === 0) {
+    return (
+      <View style={styles.noInfoContainer}>
+        <Text style={styles.noInfoText}>No Teams information</Text>
+      </View>
+    );
+  }
 
   /* 
    * If the sub-team expand button is selected, it is possible to either
@@ -170,8 +173,7 @@ const styles = StyleSheet.create({
   },
   noInfoText: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#64B058',
+    color: '#DC4E34',
   },
 });
 
