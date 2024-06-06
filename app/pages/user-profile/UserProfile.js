@@ -69,7 +69,7 @@ const ProfileName = ({ navigation, communityInfo, user }) => {
       </Box>
 
       {/* Settings button */}
-      <Pressable onPress={() => navigation.navigate("settings")}>
+      <Pressable onPress={() => navigation.navigate("Settings")}>
         <Icon as={FontAwesome} name="cog" size="lg" />
       </Pressable>
     </Flex>
@@ -78,7 +78,7 @@ const ProfileName = ({ navigation, communityInfo, user }) => {
 
 // Component to display the user's sustainability score
 const SustainScore = ({CompletedList}) => {
-  const CarbonSaved = CompletedList.length; // TODO: make this a real formula
+  const CarbonSaved = 0 && CompletedList?.length; // TODO: make this a real formula
   return (
     <Box>
       <Text fontSize="4xl" color="primary.400" textAlign="center">
@@ -93,7 +93,7 @@ const SustainScore = ({CompletedList}) => {
 
 // Component to display the user's carbon saved, trees saved, and points
 const CarbonSaved = ({ CompletedList }) => {
-  const CarbonSaved = CompletedList.length; // TODO: Make this a real formula
+  const CarbonSaved = 0 && CompletedList?.length; // TODO: Make this a real formula
 
   return (
     <Flex flexDirection="row" justifyContent="space-evenly" width="full">
@@ -126,7 +126,7 @@ const CarbonSaved = ({ CompletedList }) => {
 // Component to display a list of actions, either in the todo list or completed list
 const ActionsList = ({ navigation, list, actions }) => {
 
-  const actionList = list.map(item => item.action);
+  const actionList = list?.map(item => item.action);
 
   return (
     <Box>
@@ -134,7 +134,7 @@ const ActionsList = ({ navigation, list, actions }) => {
       <ScrollView>
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
           <HStack space={2} justifyContent="center" mx={15} marginBottom={15}>
-            {actionList.map((action, index) => {
+            {actionList?.map((action, index) => {
               return (
                 <ActionCard
                   key={index}
@@ -231,9 +231,9 @@ const TeamsList = ({ teams }) => {
         My Teams
       </Text>
 
-      {teams.length === 0 && <Text>No teams yet!</Text>}
+      {teams?.length === 0 && <Text>No teams yet!</Text>}
 
-      {teams.map((team, index) => (
+      {teams?.map((team, index) => (
         <Flex width="full" key={index}>
           <Flex flexDirection="row" alignItems="center">
             <Icon as={FontAwesome} name="home" size="sm" />
@@ -257,9 +257,9 @@ const HousesList = ({ households }) => {
         My Households
       </Text>
 
-      {households.length === 0 && <Text>No households yet!</Text>}
+      {households?.length === 0 && <Text>No households yet!</Text>}
 
-      {households.map((household, index) => (
+      {households?.map((household, index) => (
         <Flex width="full" key={index}>
           <Flex flexDirection="row" alignItems="center">
             <Icon as={FontAwesome} name="home" size="sm" />
@@ -282,8 +282,8 @@ const CommunitiesList = ({ communities }) => {
         My Communities
       </Text>
       <View>
-        {communities.length === 0 && <Text>No communities yet!</Text>}
-        {communities.map((community, index) => (
+        {communities?.length === 0 && <Text>No communities yet!</Text>}
+        {communities?.map((community, index) => (
           <CommunityCard
             key={index}
             {...community}
@@ -373,7 +373,7 @@ function DashboardPage({
           <TeamsList teams={user.teams} />
           <HousesList households={user.households} />
           <CommunitiesList communities={user.communities} />
-          
+
         </VStack>
       </ScrollView>
     </GestureHandlerRootView>

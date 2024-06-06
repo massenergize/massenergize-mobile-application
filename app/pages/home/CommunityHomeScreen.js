@@ -113,8 +113,8 @@ function GoalsCard({ navigation, goals, community_id }) {
               })
             }
           </HStack>
-          <Text 
-            alignSelf="flex-end" 
+          <Text
+            alignSelf="flex-end"
             mr={2}
             fontSize="sm"
             color="primary.400"
@@ -192,7 +192,7 @@ function BackgroundCarousel({ data }) {
 }
 
 const CommunityHomeScreen = ({
-  navigation, 
+  navigation,
   communityInfo,
   actions,
   fetchAllCommunityData
@@ -205,7 +205,7 @@ const CommunityHomeScreen = ({
   /* Fetch the information from the community */
   useEffect(() => {
     fetchAllCommunityData({ community_id: communityInfo.id });
-  }, [fetchAllCommunityData, communityInfo.id]); 
+  }, [fetchAllCommunityData, communityInfo.id]);
 
   /* Fetches the community information when the app is refreshing */
   const onRefresh = useCallback(() => {
@@ -236,7 +236,7 @@ const CommunityHomeScreen = ({
             <BackgroundCarousel data={homeSettings.images} />
           </Box>
         <VStack alignItems="center" space={3} bg="white" top="-3%" borderTopRadius={30} pt="5">
-          <GoalsCard navigation={navigation} goals={communityInfo.goal} community_id={community_id}/>
+          <GoalsCard navigation={navigation} goals={communityInfo.goal} community_id={community_id} />
           <HStack alignItems="center" pb={2} pt={3}>
             <HeaderText text="Recommended Actions"/>
             <Spacer/>
@@ -300,7 +300,7 @@ const CommunityHomeScreen = ({
             </View>
           )}
         </VStack>
-    </ScrollView>
+      </ScrollView>
     </View>
   );
 }
@@ -317,8 +317,8 @@ const styles = StyleSheet.create({
  * Upcoming function, in which it is got from the API.
  */
 const mapStateToProps = (state) => ({
-	communityInfo: state.communityInfo,
-	events: state.events,
+  communityInfo: state.communityInfo,
+  events: state.events,
   actions: state.actions,
 });
 
@@ -327,7 +327,7 @@ const mapStateToProps = (state) => ({
  * of the current community and sends it to the CommunityHomeScreen properties.
  */
 const mapDispatchToProps = {
-	fetchAllCommunityData,
+  fetchAllCommunityData,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CommunityHomeScreen);

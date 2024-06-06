@@ -80,7 +80,7 @@ const ConfirmEmail = ({ fireAuth, nextStep }) => {
       {/* Resend */}
       <MEButton
         onPress={resendEmail}
-        style={{marginTop: 20, width: '80%', justifyContent: 'center'}}
+        style={{marginTop: 20, justifyContent: 'center'}}
         asLink
       >
         Resend email
@@ -89,7 +89,7 @@ const ConfirmEmail = ({ fireAuth, nextStep }) => {
       {/* Confirm */}
       <MEButton
         onPress={confirmEmail}
-        style={{marginTop: 20, width: '80%', justifyContent: 'center'}}
+        style={{marginTop: 0, justifyContent: 'center'}}
         loading={loading}
       >
         I've confirmed my email

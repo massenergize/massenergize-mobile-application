@@ -31,6 +31,7 @@ import Register from './auth/Register';
 import ServiceProviderDetails from './service-providers/ServiceProviderDetails';
 import TestimonialDetails from './testimonials/TestimonialDetails';
 import ForgotPassword from './auth/ForgotPassword';
+import SettingsPage from './user-profile/SettingsPage';
 import ActionsScreen from './actions/ActionsScreen';
 import EventsScreen from './events/EventsScreen';
 import ImpactPage from './home/ImpactPage';
@@ -182,6 +183,10 @@ const RootWrapper = ({
         <MainStack.Screen 
           name="ForgotPassword" 
           component={ForgotPassword}
+        />
+        <MainStack.Screen 
+          name="Settings" 
+          component={SettingsPage}
         />
       </MainStack.Navigator>
       <MEBottomSheet
