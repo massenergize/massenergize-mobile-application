@@ -5,7 +5,7 @@
  *      of each specific community.
  * 
  *      Written by: Moizes Almeida
- *      Last edited: June 3, 2024
+ *      Last edited: June 5, 2024
  * 
  *****************************************************************************/
 
@@ -50,7 +50,7 @@ const Upcoming = ({ navigation, communityInfo, events, fetchAllCommunityData }) 
    * If there are upcoming events, display them as an Event Card
    */
   return (
-    <View>
+    <View p={3}>
       {isLoading ? (
         <ActivityIndicator size={"large"} color="#DC4E34" style={styles.activity}/>
       ) : (upcomingEvents.length === 0 ? (
@@ -61,7 +61,7 @@ const Upcoming = ({ navigation, communityInfo, events, fetchAllCommunityData }) 
         <FlatList 
           data={upcomingEvents}
           keyExtractor={(item) => item.id.toString()}
-          contentContainerStyle={{ alignItems: "center", marginTop: 10 }}
+          contentContainerStyle={{ alignItems: "center" }}
           renderItem={({ item }) => (
             <EventCard
               title={item.name}
