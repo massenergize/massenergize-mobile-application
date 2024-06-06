@@ -21,6 +21,7 @@ import {
     Spacer,
     Center,
     View,
+    Spinner,
 } from '@gluestack-ui/themed-native-base';
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { BigPieChart, ActionsChart, ActionsList } from "../../utils/Charts";
@@ -62,7 +63,11 @@ export default function ImpactPage({ route, navigation }) {
      * actions hasn't loaded, display an activity indicator
      */
     if (!impactData || !actionsCompleted) {
-        return <ActivityIndicator size={"large"} color="#DC4E34" style={styles.activity} />;
+        return (
+            <Center flex="1">
+              <Spinner/>
+            </Center>
+        );
     }
 
     /* Displays the information about the community's impact */

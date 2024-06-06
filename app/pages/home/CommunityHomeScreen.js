@@ -26,6 +26,7 @@ import {
   Heading,
   Image,
   AspectRatio,
+  Spinner
 } from '@gluestack-ui/themed-native-base';
 import { RefreshControl } from 'react-native-gesture-handler';
 import Carousel from 'pinar';
@@ -218,7 +219,11 @@ const CommunityHomeScreen = ({
 
   /* When the app is loading, display an activity indicator */
   if (isLoading) {
-    return <ActivityIndicator size={"large"} color="#DC4E34" style={styles.activity} />
+    return (
+      <Center flex="1">
+        <Spinner/>
+      </Center>
+    );
   }
 
   /* Displays the community home screen and its information */

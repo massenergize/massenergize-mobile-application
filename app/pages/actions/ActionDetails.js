@@ -5,7 +5,7 @@
  *      a single action
  * 
  *      Written by: William Soylemez
- *      Last edited: June 5, 2023
+ *      Last edited: June 6, 2023 (by Moizes Almeida)
  * 
  *****************************************************************************/
 
@@ -249,7 +249,7 @@ const ActionDetails = ({
       {/* Loading indicator */}
       {isActionLoading ? (
         <Center width="100%" height="100%">
-          <Spinner size="lg" />
+          <Spinner/>
         </Center>
       ) : (
 

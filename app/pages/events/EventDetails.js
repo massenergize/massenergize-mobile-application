@@ -71,7 +71,7 @@ const EventDetails = ({ route }) => {
       {isEventLoading
         ? 
         <Center width="100%" height="100%">
-            <Spinner size="lg"/>
+            <Spinner/>
         </Center>
         : 
         <ScrollView showsVerticalScrollIndicator={false} mx="5">

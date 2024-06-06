@@ -41,7 +41,7 @@ const EventsScreen = ({navigation, events}) => {
 
   /* Displays the events screens */
   return (
-    <View style={{height: '100%', backgroundColor: 'white'}}>
+    <View style={{flex: 1, backgroundColor: 'white'}}>
       <TopTabsComponent tabs={tabs} />
     </View>
   );

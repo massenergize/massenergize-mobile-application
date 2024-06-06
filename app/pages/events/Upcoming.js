@@ -102,8 +102,7 @@ const styles = StyleSheet.create({
   },
   noEventsText: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#64B058'
+    color: '#DC4E34'
   }
 });
 
