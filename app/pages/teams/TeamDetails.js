@@ -32,12 +32,12 @@ import { TeamActionsChart, ActionsList } from '../../utils/Charts';
 import { useDetails } from '../../utils/hooks';
 import HTMLParser from '../../utils/HTMLParser';
 import { connect } from 'react-redux';
-import { apiCall } from '../../api/functions';
-import { bindActionCreators } from 'redux';
-import MEButton from '../../components/button/MEButton';
 import { updateUser } from '../../utils/common';
+import AuthOptions from '../auth/AuthOptions';
+import { toggleUniversalModalAction } from '../../config/redux/actions';
+import { bindActionCreators } from 'redux';
 
-function TeamDetails({ route, navigation, user }) {
+function TeamDetails({ route, navigation, user, toggleUniversalModalAction }) {
   // console.log(user);
   /* Gets the parameters passed when the function was called */
   const { team_id } = route.params;
@@ -64,7 +64,19 @@ function TeamDetails({ route, navigation, user }) {
   
   /* Allows the user to join  the team */
   const joinTeam = () => {
-    if (!team || !user) return;
+    if (!team) return;
+    if (!user) {
+      toggleUniversalModalAction({
+        isVisible: true,
+        Component: AuthOptions,
+        title: 'How would you like to sign in or Join ?',
+      });
+      return;
+    }
+    if (inTeam()) {
+      leaveTeam();
+      return;
+    }
     setIsJoinLoading(true);
   
     updateUser(
@@ -325,10 +337,7 @@ function TeamDetails({ route, navigation, user }) {
               <Button
                 my={2}
                 mx={4}
-                onPress={inTeam() ?
-                  () => leaveTeam()
-                  : () => joinTeam()
-                }
+                onPress={() => joinTeam()}
                 style={{ backgroundColor: inTeam() ? 'red' : '#64B058' }}
                 isDisabled={isJoinLoading}
               >
@@ -375,4 +384,8 @@ const mapStateToProps = state => ({
   user: state.user,
 });
 
-export default connect(mapStateToProps)(TeamDetails);
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators({ toggleUniversalModalAction }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(TeamDetails);

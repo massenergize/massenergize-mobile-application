@@ -16,26 +16,26 @@ const SettingOptions = [
     label: "Edit my profile",
     icon: "user",
   },
-  {
-    name: "email",
-    label: "Change my email",
-    icon: "envelope",
-  },
+  // {
+  //   name: "email",
+  //   label: "Change my email",
+  //   icon: "envelope",
+  // },
   {
     name: "password",
     label: "Change my password",
     icon: "key",
   },
-  {
-    name: "notification",
-    label: "Change communication preferences",
-    icon: "bell",
-  },
-  {
-    name: "delete",
-    label: "Delete my account",
-    icon: "trash",
-  },
+  // {
+  //   name: "notification",
+  //   label: "Change communication preferences",
+  //   icon: "bell",
+  // },
+  // {
+  //   name: "delete",
+  //   label: "Delete my account",
+  //   icon: "trash",
+  // },
 ];
 
 export default function SettingsPage({ navigation }) {

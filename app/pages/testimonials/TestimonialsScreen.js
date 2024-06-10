@@ -10,11 +10,12 @@
 
 
 import React, { useContext } from "react";
-import { Container } from "@gluestack-ui/themed-native-base";
+import { Button, Container } from "@gluestack-ui/themed-native-base";
 import { View, ScrollView } from "react-native";
 import { connect } from "react-redux";
 
 import { TestimonialCard } from "./TestimonialCard";
+import MEButton from "../../components/button/MEButton";
 
 function TestimonialsPage({ navigation, testimonials }) {
 
@@ -23,6 +24,9 @@ function TestimonialsPage({ navigation, testimonials }) {
       {
         <View>
           <ScrollView showsVerticalScrollIndicator={false}>
+            <Button title="Add Testimonial" onPress={() => navigation.navigate("AddTestimonial")} m={5}>
+              Add Testimonial
+            </Button>
             {
               testimonials.map((item, index) => {
                 return (

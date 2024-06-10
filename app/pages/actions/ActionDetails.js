@@ -379,7 +379,7 @@ const ActionDetails = ({
                   {/* Testimonial button temporarily disabled while waiting for user funcitonality */}
                   <Button 
                     color={"primary.600"} 
-                    onPress={() => {setIsDoneOpen(false), navigation.navigate("addTestimonial")}} 
+                    onPress={() => {setIsDoneOpen(false), navigation.navigate("AddTestimonial")}} 
                     mr={3}
                   >
                     Leave a Testimonial
