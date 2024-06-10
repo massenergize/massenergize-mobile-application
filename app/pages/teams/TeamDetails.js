@@ -5,7 +5,7 @@
  *      information as a component called TeamDetails.
  * 
  *      Written by: Moizes Almeida
- *      Last edited: June 4, 2024
+ *      Last edited: June 10, 2024
  * 
  *****************************************************************************/
 
@@ -99,9 +99,9 @@ function TeamDetails({ route, navigation, user }) {
   /* Creates the tabs */
   const generateAboutTab = () => {
     return <HTMLParser
-      htmlString={team.description}
-      baseStyle={textStyle}
-    />
+            htmlString={team.description}
+            baseStyle={textStyle}
+            />
   };
 
   /* 
@@ -273,6 +273,36 @@ function TeamDetails({ route, navigation, user }) {
     }
   };
 
+  /* Generates the Tab button component for each tab in the Details page */
+  function TabButton({ label, name }) {
+    return (
+      <Button
+        variant={activeTab === name ? "solid" : "outline"}
+        onPress={() => setActiveTab(name)}
+        mr={2}
+      >
+        {label}
+      </Button>
+    );
+  }
+
+  /* 
+   * Generates the Tab button component for the Members tab specifically, 
+   * since it is the only one that is different from the others for 
+   * displaying the number of members in that Team or Subteam 
+   */
+  function TabButtonMembers() {
+    return (
+      <Button
+        variant={activeTab === "members" ? "solid" : "outline"}
+        onPress={() => setActiveTab("members")}
+        mr={2}
+      >
+        {"Members (" + members.length + ")"}
+      </Button>
+    );
+  }
+
   /* Displays the DetailsScreen of the Team of the community */
   return (
     <View>
@@ -310,39 +340,14 @@ function TeamDetails({ route, navigation, user }) {
                   showsHorizontalScrollIndicator={false}
                 >
                   <HStack space="2">
-                    <Button
-                      variant={activeTab === "about" ? "solid" : "outline"}
-                      onPress={() => setActiveTab("about")}
-                    >
-                      About
-                    </Button>
-                    <Button
-                      variant={activeTab === "actions" ? "solid" : "outline"}
-                      onPress={() => setActiveTab("actions")}
-                    >
-                      Actions
-                    </Button>
-                    <Button
-                      variant={activeTab === "members" ? "solid" : "outline"}
-                      onPress={() => setActiveTab("members")}
-                    >
-                      {"Members (" + members.length + ")"}
-                    </Button>
+                    <TabButton label="About" name="about" />
+                    <TabButton label="Actions" name="actions" />
+                    <TabButtonMembers/>
                     {
                       subteams.length === 0 ? null :
-                        <Button
-                          variant={activeTab === "subTeams" ? "solid" : "outline"}
-                          onPress={() => setActiveTab("subTeams")}
-                        >
-                          Sub-teams
-                        </Button>
+                      <TabButton label="Sub-teams" name="subTeams" />
                     }
-                    <Button
-                      variant={activeTab === "contact" ? "solid" : "outline"}
-                      onPress={() => setActiveTab("contact")}
-                    >
-                      Contact
-                    </Button>
+                    <TabButton label="Contact" name="contact" />
                   </HStack>
                 </ScrollView>
               </Center>
