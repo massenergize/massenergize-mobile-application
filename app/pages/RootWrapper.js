@@ -153,6 +153,7 @@ const RootWrapper = ({
           component={ServiceProviderDetails}
         />
         <MainStack.Screen
+          options={{headerTitle: ''}}
           name="TestimonialDetails"
           component={TestimonialDetails}
         />

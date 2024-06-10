@@ -5,7 +5,7 @@
  *      single testimonial.
  * 
  *      Written by: William Soylemez
- *      Last edited: June 5, 2023
+ *      Last edited: June 10, 2023 (by Moizes Almeida)
  * 
  *****************************************************************************/
 
@@ -29,6 +29,8 @@ function TestimonialDetails({ route, navigation, vendorsSettings }) {
   const { testimonial_id } = route.params;
   const [testimonial, isTestimonialLoading]
     = useDetails("testimonials.info", { testimonial_id: testimonial_id });
+
+  console.log("testimonial: ", testimonial);
 
   return (
     <View style={{ height: '100%', backgroundColor: 'white' }}>
@@ -74,7 +76,7 @@ function TestimonialDetails({ route, navigation, vendorsSettings }) {
                           navigation={navigation}
                           id={testimonial.action?.id}
                           title={testimonial.action?.title}
-                          imgUrl={testimonial.action?.image?.url}
+                          imgUrl={testimonial.file?.url}
                           impactMetric={getActionMetric(testimonial.action, "Impact")}
                           costMetric={getActionMetric(testimonial.action, "Cost")}
                         />
