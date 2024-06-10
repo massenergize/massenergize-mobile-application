@@ -23,7 +23,10 @@ import {
   Input,
   View,
   Spinner,
-  Spacer
+  Spacer,
+  FormControl,
+  Modal,
+  Icon
 } from '@gluestack-ui/themed-native-base';
 import React, { useState } from 'react';
 import TeamCard from './TeamCard';
@@ -36,9 +39,31 @@ import { updateUser } from '../../utils/common';
 import AuthOptions from '../auth/AuthOptions';
 import { toggleUniversalModalAction } from '../../config/redux/actions';
 import { bindActionCreators } from 'redux';
+import * as Yup from 'yup';
+import { Formik } from 'formik';
+import { FontAwesomeIcon } from '../../components/icons';
+import { apiCall } from '../../api/functions';
 
-function TeamDetails({ route, navigation, user, toggleUniversalModalAction }) {
-  // console.log(user);
+/* 
+ * This serves as a validation schema to prevent the user to send a 
+ * message to the team's administrator if all the required fields 
+ * are not filled. 
+ */
+const validationSchema = Yup.object().shape({
+  subject: Yup.string().required("Subject is required"),
+  message: Yup.string().required("Message is required"),
+});
+
+function TeamDetails({ 
+  route, 
+  navigation, 
+  user, 
+  toggleUniversalModalAction,
+  communityInfo
+}) {
+  /* Saves the community's ID into a variable */
+  const community_id = communityInfo.id;
+
   /* Gets the parameters passed when the function was called */
   const { team_id } = route.params;
   const { subteams } = route.params;
@@ -54,6 +79,14 @@ function TeamDetails({ route, navigation, user, toggleUniversalModalAction }) {
 
   /* Uses local state to inform which tab is currently selected */
   const [activeTab, setActiveTab] = useState("about");
+
+  /* 
+   * Uses local state to determine if the message the user is sending
+   * to the team's administrator and/or if it is in the process to being sent 
+   * and/or if it was already sent. 
+   */
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSent, setIsSent] = useState(false);
 
   /* Evaluates if the user is part of the team */
   const inTeam = () => {
@@ -106,6 +139,29 @@ function TeamDetails({ route, navigation, user, toggleUniversalModalAction }) {
     );
   };
 
+  /* 
+   * Function that handles the action of the user of clicking in the
+   * 'Send Message' button in the 'Contact' tab.
+   */
+  const handleSendMessage = (values, action) => {
+    setIsSubmitting(true);
+    const data = {
+      community_id: community_id,
+      title: values.subject,
+      body: values.message
+    };
+
+    apiCall("admins.messages.add", data).then((response) => {
+      setIsSubmitting(false);
+      if (response.success && response.data) {
+        setIsSent(true);
+      } else {
+        console.log("Error sending message", response);
+      }
+    });
+
+    action.resetForm();
+  };
 
   /* TODO: Cache these components to avoid re-rendering. */
   /* Creates the tabs */
@@ -245,20 +301,122 @@ function TeamDetails({ route, navigation, user, toggleUniversalModalAction }) {
   /* Generates the Contact tab */
   const generateContactTab = () => {
     return (
-      <Box>
+      <Box style={{marginBottom: 30}}>
         <VStack space="2">
           <Text fontWeight="bold" fontSize="lg">
             Contact admin of this team
           </Text>
-          <Input variant="rounded" placeholder='Subject' />
-          <Input
-            borderRadius={20}
-            type="text"
-            placeholder='Message'
-            multiline
-            numberOfLines={8}
-          />
-          <Button>Send Message</Button>
+          <Formik
+            initialValues={{
+              subject: "",
+              message: ""
+            }}
+            validationSchema={validationSchema}
+            onSubmit={handleSendMessage}
+          >
+            {({
+              handleChange,
+              handleBlur,
+              handleSubmit,
+              values,
+              errors,
+              touched,
+            }) => (
+              <VStack>
+                <FormControl
+                    mt={3}
+                    isRequired
+                    isInvalid={errors.subject && touched.subject}
+                  >
+                    <Input
+                      variant="rounded"
+                      size="lg"
+                      placeholder="Subject"
+                      onChangeText={handleChange("subject")}
+                      onBlur={handleBlur("subject")}
+                      value={values.subject}
+                    />
+                    {
+                      errors.subject && touched.subject ? (
+                        <FormControl.ErrorMessage
+                          _text={{
+                            fontSize: "xs",
+                            color: "error.500",
+                            fontWeight: 500,
+                          }}
+                        >
+                          {errors.subject}
+                        </FormControl.ErrorMessage>
+                      ) : null
+                    }
+                  </FormControl>
+                  <FormControl
+                    mt={3}
+                    isRequired
+                    isInvalid={errors.message && touched.message}
+                  >
+                    <Input
+                      size="lg"
+                      borderRadius={25}
+                      placeholder="Message"
+                      textAlignVertical="top"
+                      multiline={true}
+                      height={40}
+                      onChangeText={handleChange("message")}
+                      onBlur={handleBlur("message")}
+                      value={values.message}
+                    />
+                    {
+                      errors.message && touched.message ? (
+                        <FormControl.ErrorMessage
+                          _text={{
+                            fontSize: "xs",
+                            color: "error.500",
+                            fontWeight: 500,
+                          }}
+                        >
+                          {errors.message}
+                        </FormControl.ErrorMessage>
+                      ) : null
+                    }
+                  </FormControl>
+                  <Button
+                    mt={3}
+                    bg="primary.400"
+                    isLoading={isSubmitting}
+                    loadingText="Sending..."
+                    disabled={isSubmitting}
+                    onPress={handleSubmit}
+                  >
+                    SEND MESSAGE
+                  </Button>
+              </VStack>
+            )} 
+          </Formik>
+
+          <Modal isOpen={isSent} onClose={() => setIsSent(false)}>
+            <Modal.Content maxWidth="400px">
+              <Modal.Body>
+                <Center mb="5">
+                    <Icon
+                      as={FontAwesomeIcon}
+                      name="paper-plane"
+                      size="90px"
+                      color="primary.600"
+                    />
+                    <Text fontSize="lg" fontWeight="bold" py="5">
+                      Message Sent!
+                    </Text>
+                    <Text textAlign="center">
+                      The admin of {team.name} will get in touch with you soon!
+                    </Text>
+                </Center>
+                <Button colorScheme={"gray"} onPress={() => setIsSent(false)}>
+                    Back
+                </Button>
+              </Modal.Body>
+            </Modal.Content>
+          </Modal>
         </VStack>
       </Box>
     );
@@ -314,6 +472,8 @@ function TeamDetails({ route, navigation, user, toggleUniversalModalAction }) {
       </Button>
     );
   }
+
+  // console.log("team info: ", team);
 
   /* Displays the DetailsScreen of the Team of the community */
   return (
@@ -382,6 +542,7 @@ const textStyle = {
 
 const mapStateToProps = state => ({
   user: state.user,
+  communityInfo: state.communityInfo,
 });
 
 const mapDispatchToProps = dispatch => {
