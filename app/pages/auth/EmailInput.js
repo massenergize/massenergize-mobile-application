@@ -10,7 +10,7 @@
  *****************************************************************************/
 
 import { View, Text } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Image } from 'react-native';
 import Textbox from '../../components/textbox/Textbox';
 import MEButton from '../../components/button/MEButton';
@@ -19,7 +19,7 @@ import { registerWithEmailAndPassword } from '../../config/firebase';
 import { showError } from '../../utils/common';
 
 
-const EmailInput = ({ navigation, activeCommunity, nextStep }) => {
+const EmailInput = ({ navigation, activeCommunity, nextStep, fireAuth }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -59,6 +59,13 @@ const EmailInput = ({ navigation, activeCommunity, nextStep }) => {
       nextStep();
     });
   }
+
+  // Proceed to the next step if the user is already logged in
+  useEffect(() => {
+    if (fireAuth) {
+      nextStep();
+    }
+  }, []);
 
 
   return (
@@ -158,6 +165,7 @@ const EmailInput = ({ navigation, activeCommunity, nextStep }) => {
 
 const mapStateToProps = state => ({
   activeCommunity: state.activeCommunity,
+  fireAuth: state.fireAuth
 });
 
 export default connect(mapStateToProps)(EmailInput);

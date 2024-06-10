@@ -151,9 +151,15 @@ export const fetchAllCommunityData = (body, cb) => dispatch => {
 };
 export const signOutAction = () => dispatch => {
   return firebaseSignOut(() => {
-    console.log('Yes we just signed out!');
-    dispatch({type: SET_FIREBASE_AUTH, payload: null});
-    dispatch({type: SET_ME_USER_PROFILE, payload: null});
+    apiCall('auth.logout')
+      .then(response => {
+        console.log('Yes we just signed out!');
+        dispatch({type: SET_FIREBASE_AUTH, payload: null});
+        dispatch({type: SET_ME_USER_PROFILE, payload: null});
+      })
+      .catch(error => {
+        console.error('ERROR_SIGNING_OUT', error);
+      });
   });
 };
 

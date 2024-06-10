@@ -33,6 +33,7 @@ const Login = ({
   activeCommunity,
   putFirebaseUserInRedux,
   fetchMEUser,
+  fireAuth,
 }) => {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
@@ -62,6 +63,13 @@ const Login = ({
       });
     });
   };
+
+  // Go to registration flow if already authenticated (but not registered)
+  useEffect(() => {
+    if (fireAuth) {
+      navigation.navigate('Register');
+    }
+  }, []);
 
   return (
     <View

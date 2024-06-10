@@ -10,7 +10,7 @@
  * 
  *****************************************************************************/
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {View, Text} from 'react-native';
 import { showError, showSuccess } from '../../utils/common';
 import MEButton from '../../components/button/MEButton';
@@ -56,6 +56,13 @@ const ConfirmEmail = ({ fireAuth, nextStep }) => {
         showError('Error resending email. Please try again');
       });
   }
+
+  // Move to the next step if the email is already verified
+  useEffect(() => {
+    if (fireAuth.emailVerified) {
+      nextStep();
+    }
+  }, []);
 
   return (
     <View style={{
