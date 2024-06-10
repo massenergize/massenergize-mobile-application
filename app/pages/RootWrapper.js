@@ -170,6 +170,7 @@ const RootWrapper = ({
           component={TeamDetails}
         />
         <MainStack.Screen
+          options={{headerTitle: ''}}
           name="TeamDetails"
           component={TeamDetails}
         />
