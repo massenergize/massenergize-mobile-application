@@ -60,6 +60,7 @@ const AuthOptions = ({closeModal, fetchMEUser, putFirebaseUserInRedux}) => {
       icon: 'google',
       theme: {text: {color: 'red'}, icon: {color: 'red'}},
       onPress: doGoogleAuth,
+      disabled: true
     },
     {
       key: 'facbeook',

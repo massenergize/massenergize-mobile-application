@@ -78,7 +78,7 @@ const ProfileName = ({ navigation, communityInfo, user }) => {
 
 // Component to display the user's sustainability score
 const SustainScore = ({CompletedList}) => {
-  const CarbonSaved = 0 && CompletedList?.length; // TODO: make this a real formula
+  const CarbonSaved = CompletedList?.length ?? 0; // TODO: make this a real formula
   return (
     <Box>
       <Text fontSize="4xl" color="primary.400" textAlign="center">
@@ -93,7 +93,7 @@ const SustainScore = ({CompletedList}) => {
 
 // Component to display the user's carbon saved, trees saved, and points
 const CarbonSaved = ({ CompletedList }) => {
-  const CarbonSaved = 0 && CompletedList?.length; // TODO: Make this a real formula
+  const CarbonSaved = CompletedList?.length ?? 0; // TODO: Make this a real formula
 
   return (
     <Flex flexDirection="row" justifyContent="space-evenly" width="full">

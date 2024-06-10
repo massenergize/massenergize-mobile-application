@@ -25,6 +25,7 @@ import {
   TOGGLE_UNIVERSAL_MODAL,
   ZIP_CODE_OPTIONS,
 } from './types';
+import auth from '@react-native-firebase/auth';
 
 export const test = () => ({type: 'TEST', payload: {value: 'Ankara messi!'}});
 
@@ -172,6 +173,27 @@ export const fetchAllUserInfo = cb => dispatch => {
     })
     .catch(error => {
       console.error('ERROR_FETCHING_USER_INFO', error);
+      cb && cb(null, error?.toString());
+    });
+}
+
+export const deleteUserAction = (user_id, cb) => dispatch => {
+  
+
+  // auth.currentUser.delete();
+  apiCall('users.delete', {user_id})
+    .then(response => {
+      if (!response.success) {
+        cb && cb(null, response.error);
+        return;
+      }
+      dispatch({type: SET_FIREBASE_AUTH, payload: null});
+      dispatch({type: SET_ME_USER_PROFILE, payload: null});
+      console.log('User deleted successfully');
+      cb && cb(response.data);
+    })
+    .catch(error => {
+      console.error('ERROR_DELETING_USER', error);
       cb && cb(null, error?.toString());
     });
 }

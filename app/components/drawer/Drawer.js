@@ -149,7 +149,7 @@ const CustomDrawerContent = ({
         </View>
       </DrawerContentScrollView>
       <View style={{width: '100%', marginBottom: 20, padding: 20}}>
-        {fireAuth ? (
+        {preferred_name ? (
           <TouchableOpacity
             onPress={() => signMeOut()}
             style={{
