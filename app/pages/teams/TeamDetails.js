@@ -5,7 +5,7 @@
  *      information as a component called TeamDetails.
  * 
  *      Written by: Moizes Almeida
- *      Last edited: June 10, 2024
+ *      Last edited: June 11, 2024
  * 
  *****************************************************************************/
 
@@ -540,11 +540,19 @@ const textStyle = {
   fontSize: "16px",
 };
 
+/* 
+ * Transforms the local state of the app into the proprieties of the 
+ * TeamDetails function, in which it is got from the API.
+ */
 const mapStateToProps = state => ({
   user: state.user,
   communityInfo: state.communityInfo,
 });
 
+/* 
+ * Transforms the dispatch function from the API in order to get the information
+ * of the current community and sends it to the Upcoming proprieties.
+ */
 const mapDispatchToProps = dispatch => {
   return bindActionCreators({ toggleUniversalModalAction }, dispatch);
 }

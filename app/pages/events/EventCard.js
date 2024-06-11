@@ -6,7 +6,7 @@
  *      is possible to keep consistency across all events pages.
  * 
  *      Written by: Moizes Almeida
- *      Last edited: May 30, 2024
+ *      Last edited: June 11, 2024
  * 
  *****************************************************************************/
 
@@ -113,7 +113,7 @@ export default EventCard = React.memo(
                     justifyContent="space-between"
                     py={!canRSVP && "2"}
                 >
-                    <Box px="4">
+                    <Box px="4" style={{ alignItems: 'center', justifyContent: 'center' }}>
                             <Text fontSize={events.cardMetaFontSize} color="primary.400">
                                 {date}
                             </Text>

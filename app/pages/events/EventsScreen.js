@@ -6,55 +6,172 @@
  *      and the Campaigns from a community.
  * 
  *      Written by: Moizes Almeida
- *      Last edited: May 31, 2024
+ *      Last edited: June 11, 2024
  * 
  *****************************************************************************/
 
 /* Imports and set up */
-import { View } from 'react-native';
-import React from 'react';
-import TopTabsComponent from '../../components/tab/TopTabsComponent';
-import Upcoming from './Upcoming';
-import PastEvents from './PastEvents';
-import Campaigns from './Campaigns';
+import React, { useState, useEffect } from "react";
+import {
+    Button,
+    Center,
+    HStack,
+    Spinner,
+    View,
+    ScrollView,
+    Text,
+} from '@gluestack-ui/themed-native-base';
+import { StyleSheet } from "react-native";
+import EventCard from "./EventCard";
+import { formatDateString } from "../../utils/Utils";
 import { connect } from 'react-redux';
 
-const EventsScreen = ({navigation, events}) => {
-  /* Creates the top tab that display the events screens */
-  const tabs = [
-    {
-      name: 'Upcoming ',
-      key: 'upcoming',
-      component: <Upcoming navigation={navigation}/>,
-    },
-    {
-      name: 'Past Events',
-      key: 'past',
-      component: <PastEvents navigation={navigation}/>,
-    },
-    {
-      name: 'Campaigns',
-      key: 'campaigns',
-      component: <Campaigns />,
-    },
-  ];
+const EventsScreen = ({ navigation, events }) => {
+    /*
+     * Uses local state to determine whether the information about the events
+     * is loading, and depending on the id of the filter (upcoming, past or
+     * campaign), it loads the 'newEvents' with the array of events information.
+     */
+    const [isLoading, setIsLoading] = useState(true);
+    const [newEvents, setNewEvents] = useState([]);
+    const [eventFilterID, setEventFilterID] = useState(0);
+    
+    /* 
+     * Filters the events depending on if it is an upcoming event, 
+     * past event or campaign, and loads all the information about each 
+     * event in the 'newEvents'.
+     */
+    useEffect(() => {
+        const filterEvents = () => {
+            let filteredEvents = [];
+            const now = new Date();
 
-  /* Displays the events screens */
-  return (
-    <View style={{flex: 1, backgroundColor: 'white'}}>
-      <TopTabsComponent tabs={tabs} />
-    </View>
-  );
+            if (eventFilterID === 0) {
+                /* Upcoming events */
+                filteredEvents = events.filter(
+                  (event) => new Date(event.start_date_and_time) > now
+                );
+            } else if (eventFilterID === 1) {
+                /* Past Events */
+                filteredEvents = events.filter(
+                  (event) => new Date(event.start_date_and_time) < now
+                );
+            } else {
+                /* TODO: campaigns */
+                filteredEvents = [];
+            }
+
+            setNewEvents(filteredEvents);
+            setIsLoading(false);
+        };
+
+        setIsLoading(true);
+        filterEvents();
+    }, [events, eventFilterID]);
+
+    /* Generates the Tab button component for each tab in the Details page */
+    function TabButton({ label, id }) {
+      return (
+        <Button
+          variant={eventFilterID === id ? "solid" : "outline"}
+          _text={{ fontSize: 'xs' }}
+          borderRadius="full"
+          onPress={() => setEventFilterID(id)}
+        >
+          {label + " Events"}
+        </Button>
+      );
+    }
+
+    /* Generates the top tab of events for Upcoming, Past, or Campaigns */
+    const renderHeader = () => {
+        return (
+            <HStack 
+              style={{ marginTop: 10 }}
+              width="100%" 
+              justifyContent="center" 
+              space={1} 
+              mb={1}
+            >
+                <TabButton label="Upcoming" id={0} />
+                <TabButton label="Past" id={1} />
+
+                <Button
+                    variant="outline"
+                    _text={{ fontSize: 'xs' }}
+                    borderRadius="full"
+                    onPress={() => setEventFilterID(2)}
+                    isDisabled
+                >
+                    Campaigns
+                </Button>
+            </HStack>
+        );
+    };
+
+    /* Displays the information for all events and campaigns */
+    return (
+        <View>
+            { isLoading ? (
+                <Center flex="1">
+                    <Spinner />
+                </Center>
+            ) : (
+                <ScrollView contentContainerStyle={{ alignItems: 'center' }}>
+                    {
+                      renderHeader()
+                    }
+                    { newEvents.length === 0 ? (
+                      <View 
+                        style={{ 
+                          justifyContent: 'center', 
+                          alignItems: 'center', 
+                          marginTop: 300 
+                        }}
+                      >
+                          <Text style={styles.noEventsText}>
+                            No upcoming events
+                          </Text>
+                      </View>
+                    ) : (
+                        newEvents.map((item) => (
+                            <EventCard
+                                key={item.id}
+                                title={item.name}
+                                date={formatDateString(
+                                    new Date(item.start_date_and_time),
+                                    new Date(item.end_date_and_time)
+                                )}
+                                location={item.location}
+                                imgUrl={item.image?.url}
+                                canRSVP={item.rsvp_enabled}
+                                id={item.id}
+                                navigation={navigation}
+                                my="3"
+                                mx={2}
+                                shadow={3}
+                            />
+                        ))
+                    )}
+                </ScrollView>
+            )}
+        </View>
+    );
 };
+
+const styles = StyleSheet.create({
+  noEventsText: {
+    fontSize: 18,
+    color: '#DC4E34',
+  },
+});
 
 /* 
  * Transforms the local state of the app into the proprieties of the 
  * EventsScreen function, in which it is got from the API.
  */
-const mapStateToProps = (state) => {
-  return {
-    actions: state.events,
-  };
-}
+const mapStateToProps = (state) => ({
+    events: state.events,
+});
 
 export default connect(mapStateToProps)(EventsScreen);
