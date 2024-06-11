@@ -37,6 +37,7 @@ import EventsScreen from './events/EventsScreen';
 import ImpactPage from './home/ImpactPage';
 import AddTestimonial from './testimonials/AddTestimonial';
 import EmailOnly from './auth/EmailOnly';
+import AddEvent from './events/AddEvent';
 
 GoogleSignin.configure({
   webClientId:
@@ -199,6 +200,10 @@ const RootWrapper = ({
         <MainStack.Screen 
           name="AddTestimonial" 
           component={AddTestimonial}
+        />
+        <MainStack.Screen 
+          name="AddEvent" 
+          component={AddEvent}
         />
       </MainStack.Navigator>
       <MEBottomSheet

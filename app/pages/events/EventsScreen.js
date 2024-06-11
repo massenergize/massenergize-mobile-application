@@ -25,8 +25,11 @@ import { StyleSheet } from "react-native";
 import EventCard from "./EventCard";
 import { formatDateString } from "../../utils/Utils";
 import { connect } from 'react-redux';
+import { bindActionCreators } from "redux";
+import { toggleUniversalModalAction } from "../../config/redux/actions";
+import AuthOptions from "../auth/AuthOptions";
 
-const EventsScreen = ({ navigation, events }) => {
+const EventsScreen = ({ navigation, events, fireAuth, toggleModal }) => {
     /*
      * Uses local state to determine whether the information about the events
      * is loading, and depending on the id of the filter (upcoming, past or
@@ -109,6 +112,29 @@ const EventsScreen = ({ navigation, events }) => {
         );
     };
 
+    /* Renders the Add Event button */
+    const renderAddEvent = () => {
+      return (
+        <Button
+          title="Add Event"
+          onPress={() => {
+            if (fireAuth) navigation.navigate("AddEvent");
+            else {
+              toggleModal({
+                isVisible: true,
+                Component: AuthOptions,
+                title: 'How would you like to sign in or Join?',
+              });
+            }
+          }}
+          m={5}
+          px={10}
+        >
+          Add Event
+        </Button>
+      );
+    }
+
     /* Displays the information for all events and campaigns */
     return (
         <View>
@@ -120,6 +146,9 @@ const EventsScreen = ({ navigation, events }) => {
                 <ScrollView contentContainerStyle={{ alignItems: 'center' }}>
                     {
                       renderHeader()
+                    }
+                    {
+                      renderAddEvent()
                     }
                     { newEvents.length === 0 ? (
                       <View 
@@ -170,8 +199,20 @@ const styles = StyleSheet.create({
  * Transforms the local state of the app into the proprieties of the 
  * EventsScreen function, in which it is got from the API.
  */
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state) => {
+  return {
     events: state.events,
-});
+    fireAuth: state.fireAuth,
+  }
+}
+/* 
+ * Transforms the dispatch function from the API in order to get the information
+ * of the current community and sends it to the EventsScreen proprieties.
+ */
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators({
+    toggleModal: toggleUniversalModalAction
+  }, dispatch);
+}
 
-export default connect(mapStateToProps)(EventsScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(EventsScreen);
