@@ -10,6 +10,7 @@ import ChangePasswordModal from "./settingsModals/ChangePasswordModal";
 import ChangeNotificationModal from "./settingsModals/ChangeNotificationModal";
 import DeleteAccountModal from "./settingsModals/DeleteAccountModal";
 import { connect } from "react-redux";
+import { hasProvider } from "../../utils/common";
 
 const SettingOptions = [
   {
@@ -33,11 +34,11 @@ const SettingOptions = [
   //   label: "Change communication preferences",
   //   icon: "bell",
   // },
-  // {
-  //   name: "delete",
-  //   label: "Delete my account",
-  //   icon: "trash",
-  // },
+  {
+    name: "delete",
+    label: "Delete my account",
+    icon: "trash",
+  },
 ];
 
 function SettingsPage({ navigation, fireAuth }) {
@@ -67,10 +68,7 @@ function SettingsPage({ navigation, fireAuth }) {
       <VStack space="5" pt="10" padding="5">
         {( SettingOptions.map((option, index) =>
           (
-            fireAuth.providerData
-              .map(provider => provider.providerId)
-              .includes(option.requiredAuth)
-            || !option.requiredAuth
+            hasProvider(fireAuth, option.requiredAuth) || !option.requiredAuth
           ) && (
               <TouchableOpacity
                 key={index}
@@ -102,11 +100,11 @@ function SettingsPage({ navigation, fireAuth }) {
         {/* <ChangeEmailModal isOpen={isCMEOpen} setIsOpen={setIsCMEOpen} /> */}
         <ChangePasswordModal isOpen={isCMPOpen} setIsOpen={setIsCMPOpen} />
         {/* <ChangeNotificationModal isOpen={isNPOpen} setIsOpen={setIsNPOpen} /> */}
-        {/* <DeleteAccountModal
+        <DeleteAccountModal
           isOpen={isDAOpen}
           setIsOpen={setIsDAOpen}
           navigation={navigation}
-        /> */}
+        />
       </VStack>
     </View>
   );

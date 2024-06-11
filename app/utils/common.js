@@ -90,3 +90,13 @@ export const updateUser = (endpoint, body, callback) => {
       )); // update the user in the redux store
     });
 }
+
+/**
+ * checks if a firebase user has a particular provider
+ * @param {Object} user
+ * @param {String} provider
+ * @returns {Boolean}
+ */
+export const hasProvider = (user, provider) => {
+  return user?.providerData.some(p => p.providerId === provider);
+}

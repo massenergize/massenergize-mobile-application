@@ -50,10 +50,9 @@ const AuthOptions = ({closeModal, fetchMEUser, putFirebaseUserInRedux}) => {
   // List of authentication options
   const options = [
     {
-      key: 'email-only',
+      key: 'EmailOnly',
       name: 'With Email Only (No Password)',
       icon: 'envelope',
-      disabled: true,
     },
     {key: 'Login', name: 'Email & Password', icon: 'lock'},
     {

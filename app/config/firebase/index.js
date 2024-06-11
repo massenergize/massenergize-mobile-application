@@ -54,6 +54,18 @@ export const authenticateWithEmailAndPassword = (email, password, cb) => {
     .catch(e => cb && cb(null, e?.toString()));
 };
 
+export const authenticateWithEmailOnly = (email, cb) => {
+  const actionCodeSettings = {
+    handleCodeInApp: true,
+    url: 'https://massenergize.org/'
+  }
+
+  auth()
+    .sendSignInLinkToEmail(email, actionCodeSettings)
+    .then(response => cb && cb(response))
+    .catch(e => cb && cb(null, e?.message));
+}
+
 export const authenticateWithGmail = async cb => {
   try {
     await GoogleSignin.hasPlayServices();
@@ -71,5 +83,9 @@ export const authenticateWithGmail = async cb => {
 };
 
 export const firebaseSignOut = cb => {
+  if (!auth().currentUser) {
+    cb && cb();
+    return;
+  }
   auth().signOut().then(cb);
 };

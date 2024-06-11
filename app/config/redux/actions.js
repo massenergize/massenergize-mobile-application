@@ -186,16 +186,15 @@ export const fetchAllUserInfo = cb => dispatch => {
 export const deleteUserAction = (user_id, cb) => dispatch => {
   
 
-  // auth.currentUser.delete();
+  auth().currentUser.delete();
   apiCall('users.delete', {user_id})
     .then(response => {
       if (!response.success) {
         cb && cb(null, response.error);
         return;
       }
-      dispatch({type: SET_FIREBASE_AUTH, payload: null});
-      dispatch({type: SET_ME_USER_PROFILE, payload: null});
-      console.log('User deleted successfully');
+      dispatch(signOutAction());
+      console.log('User deleted successfully!');
       cb && cb(response.data);
     })
     .catch(error => {

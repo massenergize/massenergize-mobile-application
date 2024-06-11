@@ -36,6 +36,7 @@ import ActionsScreen from './actions/ActionsScreen';
 import EventsScreen from './events/EventsScreen';
 import ImpactPage from './home/ImpactPage';
 import AddTestimonial from './testimonials/AddTestimonial';
+import EmailOnly from './auth/EmailOnly';
 
 GoogleSignin.configure({
   webClientId:
@@ -186,6 +187,10 @@ const RootWrapper = ({
         <MainStack.Screen 
           name="ForgotPassword" 
           component={ForgotPassword}
+        />
+        <MainStack.Screen 
+          name="EmailOnly" 
+          component={EmailOnly}
         />
         <MainStack.Screen 
           name="Settings" 
