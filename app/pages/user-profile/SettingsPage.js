@@ -9,6 +9,7 @@ import ChangeEmailModal from "./settingsModals/ChangeEmailModal";
 import ChangePasswordModal from "./settingsModals/ChangePasswordModal";
 import ChangeNotificationModal from "./settingsModals/ChangeNotificationModal";
 import DeleteAccountModal from "./settingsModals/DeleteAccountModal";
+import { connect } from "react-redux";
 
 const SettingOptions = [
   {
@@ -25,6 +26,7 @@ const SettingOptions = [
     name: "password",
     label: "Change my password",
     icon: "key",
+    requiredAuth: "password"
   },
   // {
   //   name: "notification",
@@ -38,12 +40,13 @@ const SettingOptions = [
   // },
 ];
 
-export default function SettingsPage({ navigation }) {
+function SettingsPage({ navigation, fireAuth }) {
   const [isEMPOpen, setIsEMPOpen] = useState(false);
   const [isCMEOpen, setIsCMEOpen] = useState(false);
   const [isCMPOpen, setIsCMPOpen] = useState(false);
   const [isNPOpen, setIsNPOpen] = useState(false);
   const [isDAOpen, setIsDAOpen] = useState(false);
+
 
   const handleOpenModal = (name) => {
     if (name === "profile") {
@@ -62,31 +65,38 @@ export default function SettingsPage({ navigation }) {
   return (
     <View style={{ height: '100%', backgroundColor: 'white' }}>
       <VStack space="5" pt="10" padding="5">
-        {SettingOptions.map((option, index) => (
-          <TouchableOpacity
-            key={index}
-            onPress={() => handleOpenModal(option.name)}
-          >
-            <Flex flexDirection="row" alignItems="center">
-              <Icon
-                as={FontAwesome}
-                name={option.icon}
-                size="md"
-                color="primary.600"
-                textAlign="center"
-              />
-              <Text fontSize="md" px="5" flexGrow="1">
-                {" "}
-                {option.label}{" "}
-              </Text>
-              <Icon
-                as={FontAwesome}
-                name="arrow-right"
-                size="md"
-                color="primary.600"
-              />
-            </Flex>
-          </TouchableOpacity>
+        {( SettingOptions.map((option, index) =>
+          (
+            fireAuth.providerData
+              .map(provider => provider.providerId)
+              .includes(option.requiredAuth)
+            || !option.requiredAuth
+          ) && (
+              <TouchableOpacity
+                key={index}
+                onPress={() => handleOpenModal(option.name)}
+              >
+                <Flex flexDirection="row" alignItems="center">
+                  <Icon
+                    as={FontAwesome}
+                    name={option.icon}
+                    size="md"
+                    color="primary.600"
+                    textAlign="center"
+                  />
+                  <Text fontSize="md" px="5" flexGrow="1">
+                    {" "}
+                    {option.label}{" "}
+                  </Text>
+                  <Icon
+                    as={FontAwesome}
+                    name="arrow-right"
+                    size="md"
+                    color="primary.600"
+                  />
+                </Flex>
+              </TouchableOpacity>
+            )
         ))}
         <EditProfileModal isOpen={isEMPOpen} setIsOpen={setIsEMPOpen} />
         {/* <ChangeEmailModal isOpen={isCMEOpen} setIsOpen={setIsCMEOpen} /> */}
@@ -101,3 +111,11 @@ export default function SettingsPage({ navigation }) {
     </View>
   );
 }
+
+const mapStateToProps = (state) => {
+  return {
+    fireAuth: state.fireAuth,
+  };
+}
+
+export default connect(mapStateToProps)(SettingsPage);

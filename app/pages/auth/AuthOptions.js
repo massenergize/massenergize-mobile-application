@@ -28,6 +28,7 @@ const AuthOptions = ({closeModal, fetchMEUser, putFirebaseUserInRedux}) => {
 
   // Function to authenticate with Gmail
   const doGoogleAuth = () => {
+    console.log('Authenticating with Gmail...');
     authenticateWithGmail((response, error) => {
       if (error && !response) return showError(error?.toString());
       const firebaseUser = response?.user;
@@ -37,7 +38,8 @@ const AuthOptions = ({closeModal, fetchMEUser, putFirebaseUserInRedux}) => {
         .then(token => {
           fetchMEUser(token, (user, error) => {
             closeModal();
-            if (!user) return showError(error);
+            console.log(user, error);
+            if (!user) return navigation.navigate('Register');
             navigation.navigate('Community');
           });
         })
@@ -60,7 +62,6 @@ const AuthOptions = ({closeModal, fetchMEUser, putFirebaseUserInRedux}) => {
       icon: 'google',
       theme: {text: {color: 'red'}, icon: {color: 'red'}},
       onPress: doGoogleAuth,
-      disabled: true
     },
     {
       key: 'facbeook',

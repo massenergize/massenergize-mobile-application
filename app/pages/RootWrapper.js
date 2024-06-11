@@ -39,7 +39,7 @@ import AddTestimonial from './testimonials/AddTestimonial';
 
 GoogleSignin.configure({
   webClientId:
-    '738582671182-6b94m9ot6jq3srhglag94atpjrhnhc7g.apps.googleusercontent.com',
+    '72842344535-02nclr1jgldostc3ajve2up59ice44gv.apps.googleusercontent.com',
 });
 
 const MainStack = createStackNavigator();
