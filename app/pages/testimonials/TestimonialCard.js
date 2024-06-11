@@ -46,12 +46,12 @@ function TestimonialCard({ navigation, data, picture }) {
         {/* Content */}
         <Box p={3}>
           <Text bold fontSize="lg">{data.title}</Text>
-          <Text fontSize="sm" color="#BAB9C0">By {data.preferred_name} | {Moment(data.created_at).format('l')}</Text>
+          <Text fontSize="sm" color="#BAB9C0">By {data?.preferred_name} | {Moment(data?.created_at).format('l')}</Text>
           {
-            (data.action != null) ? <Text fontSize="sm" color="primary.400">{data.action.title}</Text> : <></>
+            (data?.action != null) ? <Text fontSize="sm" color="primary.400">{data?.action?.title}</Text> : <></>
           }
           {/* {Remove the html symbols} */}
-          <Text isTruncated={true} noOfLines={3}>{data.body.replace(/(<([^>]+)>)/gi, "")}</Text>
+          <Text isTruncated={true} noOfLines={3}>{data?.body?.replace(/(<([^>]+)>)/gi, "")}</Text>
         </Box>
       </Box>
     </Pressable>
