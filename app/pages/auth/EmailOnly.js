@@ -1,3 +1,16 @@
+/******************************************************************************
+ *                            EmailOnly
+ * 
+ *      This page is responsible for rendering the email only sign in page,
+ *      allowing the user to sign in with their email address only.
+ * 
+ *      Currently under development.
+ * 
+ *      Written by: William Soylemez
+ *      Last edited: June 11, 2024
+ * 
+ *****************************************************************************/
+
 import { Image } from '@gluestack-ui/themed-native-base';
 import React, { useState } from 'react';
 import { View, Text } from 'react-native';
@@ -16,6 +29,8 @@ const EmailOnly = ({ activeCommunity }) => {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
 
+
+  // Function to send email to user
   const sendEmail = () => {
     authenticateWithEmailOnly(email, (response, error) => {
       if (error) {
@@ -26,6 +41,8 @@ const EmailOnly = ({ activeCommunity }) => {
     });
   }
 
+
+  // Function to confirm email has been verified
   const confirmEmail = () => {
     console.log('Confirming email:', email);
   }
@@ -61,7 +78,7 @@ const EmailOnly = ({ activeCommunity }) => {
         Enter your email address and we'll send you a link to sign in.
       </Text>
 
-      {/* Email and password inputs */}
+      {/* Email input */}
       <View style={{ width: '100%', paddingHorizontal: '10%' }}>
         {email.length > 0 && !isValidEmail(email) &&
           <Text style={{ color: 'red' }}>

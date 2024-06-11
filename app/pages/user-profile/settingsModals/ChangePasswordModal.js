@@ -4,7 +4,7 @@
  *      Displays a modal that allows the user to change their password
  * 
  *      Written by: William Soylemez
- *      Last edited: June 6, 2023
+ *      Last edited: June 10, 2023
  * 
  *****************************************************************************/
 
@@ -30,11 +30,15 @@ const validationSchema = Yup.object().shape({
 const ChangePasswordModal = ({ isOpen, setIsOpen, fireAuth }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-
+  /* Function to handle form submission */
   const handleSubmit = (values) => {
     setIsSubmitting(true);
+
+    /* Reauthenticate user with their current email and password */
     reauthnticateWithEmail(fireAuth.email, values.oldPassword)
       .then(() => {
+
+        /* Update the user's password in Firebase */
         fireAuth.updatePassword(values.newPassword)
           .then(() => {
             console.log("Password updated successfully");
@@ -75,9 +79,13 @@ const ChangePasswordModal = ({ isOpen, setIsOpen, fireAuth }) => {
         }) => (
           <Modal.Content maxWidth="400px">
             <Modal.CloseButton />
+
+            {/* Header */}
             <Modal.Header>Change My Password</Modal.Header>
             <Modal.Body>
               <FormControl>
+
+                {/* Old Password */}
                 <FormControl.Label>Old Password</FormControl.Label>
                 <Input
                   variant="rounded"
@@ -93,6 +101,8 @@ const ChangePasswordModal = ({ isOpen, setIsOpen, fireAuth }) => {
                   <Text color="red.500">{errors.oldPassword}</Text>
                 )}
               </FormControl>
+
+              {/* New Password */}
               <FormControl>
                 <FormControl.Label>New Password</FormControl.Label>
                 <Input
@@ -126,6 +136,8 @@ const ChangePasswordModal = ({ isOpen, setIsOpen, fireAuth }) => {
                 )}
               </FormControl>
             </Modal.Body>
+
+            {/* Footer */}
             <Modal.Footer>
               <Button.Group>
                 <Button

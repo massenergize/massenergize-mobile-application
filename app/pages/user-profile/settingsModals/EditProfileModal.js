@@ -45,10 +45,15 @@ const EditProfileModal = ({ isOpen, setIsOpen, user }) => {
     <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
       <Modal.Content maxWidth="400px">
         <Modal.CloseButton />
+
+        {/* Header */}
         <Modal.Header>Edit My Profile</Modal.Header>
+        
+        {/* Inputs */}
         <Modal.Body>
           <VStack space="5">
             <FormControl>
+
               <FormControl.Label>Full Name</FormControl.Label>
               <Input
                 variant="rounded"
@@ -58,6 +63,7 @@ const EditProfileModal = ({ isOpen, setIsOpen, user }) => {
                 placeholder="Full Name"
               />
             </FormControl>
+            
             <FormControl>
               <FormControl.Label>Preferred Name</FormControl.Label>
               <Input
@@ -68,9 +74,10 @@ const EditProfileModal = ({ isOpen, setIsOpen, user }) => {
                 placeholder="Preferred Name"
               />
             </FormControl>
-            {/* TODO: Add option to upload your profile image. */}
           </VStack>
         </Modal.Body>
+
+        {/* Footer */}
         <Modal.Footer>
           <Button.Group>
             <Button
@@ -80,7 +87,6 @@ const EditProfileModal = ({ isOpen, setIsOpen, user }) => {
             >
               Cancel
             </Button>
-            {/* TODO: Submit changes to the backend */}
             <Button onPress={handleSubmit}>Apply</Button>
           </Button.Group>
         </Modal.Footer>

@@ -1,3 +1,16 @@
+/******************************************************************************
+ *                            SettingsPage
+ * 
+ *      This page is responsible for rendering the settings page, which
+ *      allows the user to edit their profile, change their email, change
+ *      their password, change their notification preferences, and delete
+ *      their account. Most functionality comes from modals in other files
+ * 
+ *      Written by: William Soylemez
+ *      Last edited: June 11, 2024
+ * 
+ *****************************************************************************/
+
 import React, { useState } from "react";
 import { TouchableOpacity, View } from "react-native";
 
@@ -49,7 +62,7 @@ function SettingsPage({ navigation, fireAuth }) {
   const [isNPOpen, setIsNPOpen] = useState(false);
   const [isDAOpen, setIsDAOpen] = useState(false);
 
-
+  /* Open the appropriate modal based on the name */
   const handleOpenModal = (name) => {
     if (name === "profile") {
       setIsEMPOpen(true);
@@ -66,6 +79,8 @@ function SettingsPage({ navigation, fireAuth }) {
 
   return (
     <View style={{ height: '100%', backgroundColor: 'white' }}>
+
+      {/* Buttons to open modals */}
       <VStack space="5" pt="10" padding="5">
         {( SettingOptions.map((option, index) =>
           (
@@ -97,6 +112,8 @@ function SettingsPage({ navigation, fireAuth }) {
               </TouchableOpacity>
             )
         ))}
+
+        {/* Actual modal list (hidden initially) */}
         <EditProfileModal isOpen={isEMPOpen} setIsOpen={setIsEMPOpen} />
         <ChangeEmailModal isOpen={isCMEOpen} setIsOpen={setIsCMEOpen} />
         <ChangePasswordModal isOpen={isCMPOpen} setIsOpen={setIsCMPOpen} />

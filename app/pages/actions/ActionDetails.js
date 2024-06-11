@@ -61,9 +61,8 @@ const ActionDetails = ({
   });
   const [isDoneOpen, setIsDoneOpen] = useState(false)
   const [isToDoOpen, setIsToDoOpen] = useState(false)
-  const [completedActions, setCompletedActions] = useState([])
-  const userEmail = user?.email;
 
+  // Functions to check if the action is in the user's todo or completed list
   const actionInToDo = () => {
     return todoList?.some((todo) => todo.action.id === action.id);
   }
@@ -71,6 +70,7 @@ const ActionDetails = ({
   const actionCompleted = () => {
     return completedList?.some((completed) => completed.action.id === action.id);
   }
+
 
   // Handles a todo press, adding/removing the action to the user's todo list
   const handleTodoPress = async () => {

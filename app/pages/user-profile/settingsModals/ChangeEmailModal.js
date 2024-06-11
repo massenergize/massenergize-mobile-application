@@ -1,3 +1,14 @@
+/******************************************************************************
+ *                            ChangeEmailModal
+ * 
+ *      This page allows the user to change their email address. It requires
+ *      the user to enter their current password to confirm the change.
+ * 
+ *      Written by: William Soylemez
+ *      Last edited: June 11, 2024
+ * 
+ *****************************************************************************/
+
 import React, { useState } from "react";
 
 import * as Yup from "yup";
@@ -18,14 +29,22 @@ const validationSchema = Yup.object().shape({
 const ChangeEmailModal = ({ isOpen, setIsOpen, user }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // TODO: Handle form submission
+  /* Function to handle form submission */
   const handleSubmit = (values) => {
     setIsSubmitting(true);
+
+    /* Reauthenticate user with their current email and password */
     reauthnticateWithEmail(user.email, values.password)
       .then(() => {
+
+        /* Update the user's email in Firebase */
         auth().currentUser.updateEmail(values.newEmail)
           .then(() => {
+
+            /* Send email verification to the new email */
             auth().currentUser.sendEmailVerification();
+
+            /* Update the user's email in the database */
             updateUser(
               "users.update",
               { user_id: user.id, email: values.newEmail },
@@ -50,6 +69,7 @@ const ChangeEmailModal = ({ isOpen, setIsOpen, user }) => {
       .finally(() => setIsSubmitting(false));
   }
 
+
   return (
     <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
       <Formik
@@ -67,12 +87,15 @@ const ChangeEmailModal = ({ isOpen, setIsOpen, user }) => {
         }) => (
           <Modal.Content maxWidth="400px">
             <Modal.CloseButton />
+
+            {/* Header */}
             <Modal.Header>Change My Email</Modal.Header>
             <Modal.Body>
-              {/* TODO: Display current email */}
               <Text style={{ fontSize: 16 }}>Current email</Text>
               <Text pb={5}>{user?.email}</Text>
               <FormControl>
+
+                {/* New Email */}
                 <FormControl.Label>New Email</FormControl.Label>
                 <Input
                   variant="rounded"
@@ -86,6 +109,8 @@ const ChangeEmailModal = ({ isOpen, setIsOpen, user }) => {
                   <Text color="red.500">{errors.newEmail}</Text>
                 )}
               </FormControl>
+
+              {/* Enter Password */}
               <FormControl>
                 <FormControl.Label>Current Password</FormControl.Label>
                 <Input
@@ -102,6 +127,8 @@ const ChangeEmailModal = ({ isOpen, setIsOpen, user }) => {
                 )}
               </FormControl>
             </Modal.Body>
+
+            {/* Footer */}
             <Modal.Footer>
               <Button.Group>
                 <Button

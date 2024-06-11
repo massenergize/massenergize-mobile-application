@@ -1,3 +1,13 @@
+/******************************************************************************
+ *                            AddTestimonial.js
+ * 
+ *      This page allows users to add a testimonial for a particular action.
+ * 
+ *      Written by: William Soylemez
+ *      Last edited: June 11, 2024
+ * 
+ *****************************************************************************/
+
 import { View, Text, StyleSheet } from 'react-native';
 import { Input, Button, Select, ScrollView } from '@gluestack-ui/themed-native-base';
 import { Formik } from 'formik';
@@ -26,13 +36,13 @@ const validationSchema = Yup.object({
 
 const AddTestimonial = ({ navigation, actions, user, activeCommunity, testimonials, setTestimonials }) => {
 
+  // Function to handle form submission
   const onSubmit = (values, { setSubmitting }) => {
-    // TODO: Add API call to submit testimonial
-    console.log("SUbmitting");
+
     const data = {
       user_email: user.email,
       action_id: values.action || '--',
-      // vendor_id: '--', // TODO: Replace with actual vendor ID
+      // vendor_id: '--', maybe make this work someday
       // other_vendor: '--',
       preferred_name: values.name,
       title: values.title,
@@ -40,7 +50,7 @@ const AddTestimonial = ({ navigation, actions, user, activeCommunity, testimonia
       community_id: activeCommunity.id,
       rank: 0
     };
-    console.log(data);
+
     apiCall('testimonials.add', data)
     .then((response) => {
       if (!response.success) {
@@ -50,7 +60,8 @@ const AddTestimonial = ({ navigation, actions, user, activeCommunity, testimonia
       }
       showSuccess('Testimonial added successfully.');
       console.log('TESTIMONIAL_ADDED:', response.data);
-      // console.log([...testimonials, response.data]);
+
+      // Add the new testimonial to the redux store
       setTestimonials([response.data, ...testimonials]);
       navigation.goBack();
     })
@@ -69,6 +80,8 @@ const AddTestimonial = ({ navigation, actions, user, activeCommunity, testimonia
     >
       {({ handleChange, handleBlur, handleSubmit, setFieldValue, values, errors, touched, isSubmitting }) => (
         <View style={styles.container}>
+
+          {/* Action select */}
           <Text>Associated Action</Text>
           <Select
             borderRadius={10}
@@ -86,6 +99,7 @@ const AddTestimonial = ({ navigation, actions, user, activeCommunity, testimonia
             </ScrollView>
           </Select>
 
+          {/* Name, title, and description */}
           <Text>Name</Text>
           <Input
             variant="rounded"
@@ -121,6 +135,7 @@ const AddTestimonial = ({ navigation, actions, user, activeCommunity, testimonia
           />
           {touched.description && errors.description && <Text style={styles.error}>{errors.description}</Text>}
 
+          {/* Submit button */}
           <MEButton onPress={handleSubmit} loading={isSubmitting}>
             Submit
           </MEButton>

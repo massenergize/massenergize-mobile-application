@@ -1,3 +1,14 @@
+/******************************************************************************
+ *                            ChangeNotificationModal
+ * 
+ *      This component is a modal that allows the user to change their
+ *      notification frequency. It is used in the settings page.
+ * 
+ *      Written by: William Soylemez
+ *      Last edited: June 11, 2023
+ * 
+ *****************************************************************************/
+
 import React, { useState } from "react";
 import { Modal, Radio, Text, Button } from "@gluestack-ui/themed-native-base";
 import { showError, showSuccess, updateUser } from "../../../utils/common";
@@ -8,7 +19,7 @@ const ChangeNotificationModal = ({ isOpen, setIsOpen, user }) => {
   const initialState = Object.keys(user?.preferences?.user_portal_settings?.communication_prefs?.update_frequency ?? {})[0];
   const [notificationFrequency, setNotificationFrequency] = useState(initialState || "per_day");
 
-  // TODO: Handle form submission
+  /* Function to handle saving the new notification frequency */
   const handleSave = () => {
 
     // For some reason we have to give it all the old preferences as well
@@ -21,8 +32,9 @@ const ChangeNotificationModal = ({ isOpen, setIsOpen, user }) => {
       .user_portal_settings
       .communication_prefs
       .update_frequency = {[notificationFrequency]: true};
-
     setIsSubmitting(true);
+
+    /* Update the user's notification frequency in the database */
     updateUser(
       "users.update",
       { user_id: user?.id, preferences: JSON.stringify(preferences) },
@@ -41,15 +53,20 @@ const ChangeNotificationModal = ({ isOpen, setIsOpen, user }) => {
     setIsOpen(false);
   };
 
+
   return (
     <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
       <Modal.Content maxWidth="400px">
         <Modal.CloseButton />
+
+        {/* Header */}
         <Modal.Header>Communication Preferences</Modal.Header>
         <Modal.Body>
           <Text mb="5">
             How often would you like to be notified about new events?
           </Text>
+
+          {/* Selection */}
           <Radio.Group
             name="notificationFrequency"
             accessibilityLabel="Communication Preferences"
@@ -73,6 +90,8 @@ const ChangeNotificationModal = ({ isOpen, setIsOpen, user }) => {
             </Radio>
           </Radio.Group>
         </Modal.Body>
+
+        {/* Footer */}
         <Modal.Footer>
           <Button.Group>
             <Button variant="ghost" onPress={() => setIsOpen(false)}>
