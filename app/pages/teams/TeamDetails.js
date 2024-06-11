@@ -35,9 +35,8 @@ import { TeamActionsChart, ActionsList } from '../../utils/Charts';
 import { useDetails } from '../../utils/hooks';
 import HTMLParser from '../../utils/HTMLParser';
 import { connect } from 'react-redux';
-import { updateUser } from '../../utils/common';
 import AuthOptions from '../auth/AuthOptions';
-import { toggleUniversalModalAction } from '../../config/redux/actions';
+import { toggleUniversalModalAction, updateUserAction } from '../../config/redux/actions';
 import { bindActionCreators } from 'redux';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
@@ -112,7 +111,7 @@ function TeamDetails({
     }
     setIsJoinLoading(true);
   
-    updateUser(
+    updateUserAction(
       "teams.join",
       { team_id: team.id, user_id: user.id },
       (response, error) => {
@@ -128,7 +127,7 @@ function TeamDetails({
     if (!team || !user) return;
     setIsJoinLoading(true);
 
-    updateUser(
+    updateUserAction(
       "teams.leave",
       { team_id: team.id, user_id: user.id },
       (response, error) => {

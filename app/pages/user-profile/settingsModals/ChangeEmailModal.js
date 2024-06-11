@@ -16,8 +16,9 @@ import { Formik } from "formik";
 import { Button, Modal, FormControl, Input, Text } from "@gluestack-ui/themed-native-base";
 import { connect } from "react-redux";
 import { reauthnticateWithEmail } from "../../../config/firebase";
-import { showError, showSuccess, updateUser } from "../../../utils/common";
+import { showError, showSuccess } from "../../../utils/common";
 import auth from "@react-native-firebase/auth";
+import { updateUserAction } from "../../../config/redux/actions";
 
 const validationSchema = Yup.object().shape({
   newEmail: Yup.string()
@@ -45,7 +46,7 @@ const ChangeEmailModal = ({ isOpen, setIsOpen, user }) => {
             auth().currentUser.sendEmailVerification();
 
             /* Update the user's email in the database */
-            updateUser(
+            updateUserAction(
               "users.update",
               { user_id: user.id, email: values.newEmail },
               (response, error) => {

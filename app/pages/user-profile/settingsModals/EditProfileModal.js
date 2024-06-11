@@ -10,8 +10,9 @@
 
 import React, { useState } from "react";
 import { Modal, FormControl, Input, VStack, Button } from "@gluestack-ui/themed-native-base";
-import { showError, updateUser } from "../../../utils/common";
+import { showError } from "../../../utils/common";
 import { connect } from "react-redux";
+import { updateUserAction } from "../../../config/redux/actions";
 
 const EditProfileModal = ({ isOpen, setIsOpen, user }) => {
   const [fullName, setFullName] = useState(user?.full_name);
@@ -26,7 +27,7 @@ const EditProfileModal = ({ isOpen, setIsOpen, user }) => {
   };
 
   const handleSubmit = () => {
-    updateUser(
+    updateUserAction(
       "users.update",
       { user_id: user?.id, full_name: fullName, preferred_name: preferredName },
       (response, error) => {
@@ -63,7 +64,7 @@ const EditProfileModal = ({ isOpen, setIsOpen, user }) => {
                 placeholder="Full Name"
               />
             </FormControl>
-            
+
             <FormControl>
               <FormControl.Label>Preferred Name</FormControl.Label>
               <Input

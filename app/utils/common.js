@@ -1,13 +1,35 @@
+/******************************************************************************
+ *                            Commons
+ * 
+ *      This file contains common utility functions that are used throughout
+ *      the app. These functions include validation, snackbar display, and
+ *      other general-purpose functions.
+ * 
+ *      Written by: William Soylemez
+ *      Last edited: June 11, 2023
+ * 
+ *****************************************************************************/
+
 import Snackbar from 'react-native-snackbar';
 import { apiCall } from '../api/functions';
 import store from '../config/redux/store';
 import { fetchAllUserInfo } from '../config/redux/actions';
 
+/**
+ * Checks if the given zip code is valid.
+ * @param {string} zipCode - The zip code to be validated.
+ * @returns {boolean} - Returns true if the zip code is valid, otherwise false.
+ */
 export const isValidZipCode = zipCode => {
   const zipCodePattern = /^\d{5}(?:[-\s]\d{4})?$/;
   return zipCodePattern.test(zipCode);
 };
 
+/**
+ * Groups communities into matched and near categories.
+ * @param {Array} communities - The list of communities to be grouped.
+ * @returns {Object} - Returns an object containing matches and near communities.
+ */
 export const groupCommunities = communities => {
   communities = communities; //.filter(c => c.is_geographically_focused);
   const matches = communities; //.filter(c => c.location.distance === 0);
@@ -17,6 +39,13 @@ export const groupCommunities = communities => {
   return {matches, near};
 };
 
+/**
+ * Displays a snackbar with a given message and optional properties and action.
+ * @param {Object} options - Options for the snackbar.
+ * @param {string} options.message - The message to be displayed in the snackbar.
+ * @param {Object} options.props - Additional properties for the snackbar.
+ * @param {Function} options.onPress - Function to be called when the snackbar action is pressed.
+ */
 export const showSnackBar = ({message, props, onPress}) => {
   Snackbar.show({
     text: message || '',
@@ -36,6 +65,10 @@ export const showSnackBar = ({message, props, onPress}) => {
   });
 };
 
+/**
+ * Displays an error snackbar with a given message.
+ * @param {string} message - The error message to be displayed in the snackbar.
+ */
 export const showError = message => {
   showSnackBar({
     message,
@@ -46,6 +79,11 @@ export const showError = message => {
     },
   });
 };
+
+/**
+ * Displays a success snackbar with a given message.
+ * @param {string} message - The success message to be displayed in the snackbar.
+ */
 export const showSuccess = message => {
   showSnackBar({
     message,
@@ -58,10 +96,10 @@ export const showSuccess = message => {
 };
 
 /**
- * get the metric of an action
- * @param {Object} action
- * @param {String} metric
- * @returns {String} the metric of the action
+ * Retrieves the metric of an action.
+ * @param {Object} action - The action object containing tags.
+ * @param {String} metric - The metric to be retrieved from the action's tags.
+ * @returns {String} - Returns the metric value or "-" if not found.
  */
 export function getActionMetric(action, metric) {
   for (let i = 0; i < action?.tags?.length; i++) {
@@ -72,30 +110,12 @@ export function getActionMetric(action, metric) {
   return "-";
 }
 
-/**
- * update the user in the backend then update the user in the redux store
- * @param {String} endpoint
- * @param {Object} body
- * @param {Function} callback
- */
-export const updateUser = (endpoint, body, callback) => {
-  apiCall(endpoint, body) // update the user in the backend
-    .then(response => {
-      if (!response.success) {
-        callback && callback(null, response.error);
-        return;
-      }
-      store.dispatch(fetchAllUserInfo(
-        () => callback && callback(response.data)
-      )); // update the user in the redux store
-    });
-}
 
 /**
- * checks if a firebase user has a particular provider
- * @param {Object} user
- * @param {String} provider
- * @returns {Boolean}
+ * Checks if a firebase user has a particular provider.
+ * @param {Object} user - The firebase user object.
+ * @param {String} provider - The provider ID to be checked.
+ * @returns {Boolean} - Returns true if the user has the specified provider, otherwise false.
  */
 export const hasProvider = (user, provider) => {
   return user?.providerData.some(p => p.providerId === provider);

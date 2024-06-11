@@ -1,3 +1,13 @@
+/******************************************************************************
+ *                            Reducers (redux)
+ * 
+ *      This file contains all the reducers that are used in the redux store.
+ * 
+ *      Written by: Frimpong Opoku-Agyemang
+ *      Last edited: June 11, 2023
+ * 
+ *****************************************************************************/
+
 import {LOADING} from '../../utils/values';
 import {
   ACTIVE_COMMUNITY,

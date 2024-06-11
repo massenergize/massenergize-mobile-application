@@ -1,4 +1,13 @@
-// store/reducers/index.js
+/******************************************************************************
+ *                            Actions (redux)
+ * 
+ *      This file sets up the redux root reducer.
+ * 
+ *      Written by: Frimpong Opoku-Agyemang
+ *      Last edited: June 11, 2023
+ * 
+ *****************************************************************************/
+
 import {combineReducers} from 'redux';
 import {
   firebaseAuthReducer,

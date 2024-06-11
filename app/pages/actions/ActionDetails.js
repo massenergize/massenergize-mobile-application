@@ -31,12 +31,12 @@ import ServiceProviderCard from "../service-providers/ServiceProviderCard";
 import { useDetails } from "../../utils/hooks";
 import { TestimonialCard } from "../testimonials/TestimonialCard";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { getActionMetric, updateUser } from "../../utils/common";
+import { getActionMetric } from "../../utils/common";
 import { apiCall } from "../../api/functions";
 import AuthOptions from '../../pages/auth/AuthOptions';
 import { connect } from "react-redux";
 import { bindActionCreators } from 'redux';
-import { fetchAllUserInfo, test, toggleUniversalModalAction } from '../../config/redux/actions';
+import { fetchAllUserInfo, toggleUniversalModalAction, updateUserAction } from '../../config/redux/actions';
 import MEImage from "../../components/image/MEImage";
 
 
@@ -79,7 +79,7 @@ const ActionDetails = ({
       // Action depends on whether the action is already in the user's todo list
       if (actionInToDo()) { 
         // Updates the backend, redux, and displays a success message
-        updateUser(
+        updateUserAction(
           "users.actions.remove",
           { action_id: action_id, hid: 1 },
           (response, error) => {
@@ -92,7 +92,7 @@ const ActionDetails = ({
 
       } else {
         // Updates the backend, redux, and displays a success message
-        updateUser(
+        updateUserAction(
           "users.actions.todo.add",
           { action_id: action_id, hid: 1 },
           (response, error) => {
@@ -121,7 +121,7 @@ const ActionDetails = ({
       // Action depends on whether the action is already in the user's completed list
       if (actionCompleted() && false) { // TODO: figure out why removing from completed list is not working
         // Updates the backend, redux, and displays a success message
-        updateUser(
+        updateUserAction(
           "users.actions.remove",
           { action_id: action_id, hid: 1 },
           (response, error) => {
@@ -132,7 +132,7 @@ const ActionDetails = ({
         );
       } else {
         // Updates the backend, redux, and displays a success message
-        updateUser(
+        updateUserAction(
           "users.actions.completed.add",
           { action_id: action_id, hid: 1 },
           (response, error) => {

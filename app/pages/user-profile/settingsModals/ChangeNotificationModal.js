@@ -11,8 +11,9 @@
 
 import React, { useState } from "react";
 import { Modal, Radio, Text, Button } from "@gluestack-ui/themed-native-base";
-import { showError, showSuccess, updateUser } from "../../../utils/common";
+import { showError, showSuccess } from "../../../utils/common";
 import { connect } from "react-redux";
+import { updateUserAction } from "../../../config/redux/actions";
 
 const ChangeNotificationModal = ({ isOpen, setIsOpen, user }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -35,7 +36,7 @@ const ChangeNotificationModal = ({ isOpen, setIsOpen, user }) => {
     setIsSubmitting(true);
 
     /* Update the user's notification frequency in the database */
-    updateUser(
+    updateUserAction(
       "users.update",
       { user_id: user?.id, preferences: JSON.stringify(preferences) },
       (response, error) => {

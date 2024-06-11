@@ -1,4 +1,12 @@
-// store/index.js
+ /******************************************************************************
+ *                            Store (redux)
+ * 
+ *      This file sets up the redux store.
+ * 
+ *      Written by: Frimpong Opoku-Agyemang
+ *      Last edited: June 11, 2023
+ * 
+ *****************************************************************************/
 import {createStore, applyMiddleware, compose} from 'redux';
 import rootReducer from './rootReducer';
 import thunk from 'redux-thunk';

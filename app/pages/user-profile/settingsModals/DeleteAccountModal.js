@@ -13,7 +13,7 @@ import React, { useState } from "react";
 import { Modal, Text, Button, FormControl, Input } from "@gluestack-ui/themed-native-base";
 import { Alert } from "react-native";
 import { connect } from "react-redux";
-import { hasProvider, showError, showSuccess, updateUser } from "../../../utils/common";
+import { hasProvider, showError, showSuccess } from "../../../utils/common";
 import auth from "@react-native-firebase/auth";
 import { deleteUserAction } from "../../../config/redux/actions";
 import { bindActionCreators } from "redux";

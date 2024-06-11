@@ -1,3 +1,13 @@
+/******************************************************************************
+ *                            Actions (redux)
+ * 
+ *      This file contains all the actions that are used in the redux store.
+ * 
+ *      Written by: William Soylemez and Frimpong Opoku-Agyemang
+ *      Last edited: June 11, 2023
+ * 
+ *****************************************************************************/
+
 import {apiCall} from '../../api/functions';
 import {showError} from '../../utils/common';
 import {firebaseSignOut} from '../firebase';
@@ -27,8 +37,10 @@ import {
 } from './types';
 import auth from '@react-native-firebase/auth';
 
+/* Test action */
 export const test = () => ({type: 'TEST', payload: {value: 'Ankara messi!'}});
 
+/* Basic actions */
 export const toggleUniversalModalAction = payload => {
   return {type: TOGGLE_UNIVERSAL_MODAL, payload};
 };
@@ -41,7 +53,19 @@ export const setZipCodeOptions = payload => {
 export const setCommunitiesAction = payload => {
   return {type: COMMUNITIES, payload};
 };
+export const setActiveCommunityAction = payload => {
+  return {type: ACTIVE_COMMUNITY, payload};
+};
+export const setUserProfile = payload => {
+  return {type: SET_ME_USER_PROFILE, payload};
+};
+export const setActionWithValue = (type, payload) => {
+  return {type, payload};
+};
 
+/* Actions with API calls */
+
+/* Fetches the user profile from the backend and sets it in the redux store */
 export const fetchUserProfile = (idToken, cb) => dispatch => {
   const body = {idToken};
   apiCall('auth.login', body)
@@ -76,16 +100,7 @@ export const fetchCommunities = (data, cb) => dispatch => {
     });
 };
 
-export const setActiveCommunityAction = payload => {
-  return {type: ACTIVE_COMMUNITY, payload};
-};
-export const setUserProfile = payload => {
-  return {type: SET_ME_USER_PROFILE, payload};
-};
-
-export const setActionWithValue = (type, payload) => {
-  return {type, payload};
-};
+/* Fetches all the data for a community */
 export const fetchAllCommunityData = (body, cb) => dispatch => {
   Promise.all([
     apiCall('communities.info', body),
@@ -149,6 +164,8 @@ export const fetchAllCommunityData = (body, cb) => dispatch => {
       cb && cb(null, error?.toString());
     });
 };
+
+/* Signs out the user and removes information from redux */
 export const signOutAction = () => dispatch => {
   return firebaseSignOut(() => {
     apiCall('auth.logout')
@@ -163,6 +180,7 @@ export const signOutAction = () => dispatch => {
   });
 };
 
+/* Fetches all the information for the user (profile, todo, and completed lists) */
 export const fetchAllUserInfo = cb => dispatch => {
   Promise.all([
     apiCall('users.info'),
@@ -183,9 +201,8 @@ export const fetchAllUserInfo = cb => dispatch => {
     });
 }
 
+/* Deletes a user from the database */
 export const deleteUserAction = (user_id, cb) => dispatch => {
-  
-
   auth().currentUser.delete();
   apiCall('users.delete', {user_id})
     .then(response => {
@@ -200,5 +217,19 @@ export const deleteUserAction = (user_id, cb) => dispatch => {
     .catch(error => {
       console.error('ERROR_DELETING_USER', error);
       cb && cb(null, error?.toString());
+    });
+}
+
+/* Updates the user's profile in the backend and in the redux store */
+export const updateUserAction = (endpoint, body, callback) => {
+  apiCall(endpoint, body) // update the user in the backend
+    .then(response => {
+      if (!response.success) {
+        callback && callback(null, response.error);
+        return;
+      }
+      store.dispatch(fetchAllUserInfo(
+        () => callback && callback(response.data)
+      )); // update the user in the redux store
     });
 }
