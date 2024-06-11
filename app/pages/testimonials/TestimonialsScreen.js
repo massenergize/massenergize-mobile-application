@@ -16,15 +16,28 @@ import { connect } from "react-redux";
 
 import { TestimonialCard } from "./TestimonialCard";
 import MEButton from "../../components/button/MEButton";
+import { bindActionCreators } from "redux";
+import { toggleUniversalModalAction } from "../../config/redux/actions";
+import AuthOptions from "../auth/AuthOptions";
 
-function TestimonialsPage({ navigation, testimonials }) {
+function TestimonialsPage({ navigation, testimonials, fireAuth, toggleModal }) {
 
   return (
     <View style={{ height: '100%', backgroundColor: 'white' }}>
       {
         <View>
           <ScrollView showsVerticalScrollIndicator={false}>
-            <Button title="Add Testimonial" onPress={() => navigation.navigate("AddTestimonial")} m={5}>
+            <Button title="Add Testimonial" onPress={() => {
+              if (fireAuth) navigation.navigate("AddTestimonial");
+              else {
+                toggleModal({
+                  isVisible: true,
+                  Component: AuthOptions,
+                  title: 'How would you like to sign in or Join ?',
+                });
+              }}}
+              m={5}
+            >
               Add Testimonial
             </Button>
             {
@@ -51,8 +64,15 @@ function TestimonialsPage({ navigation, testimonials }) {
 
 const mapStateToProps = state => {
   return {
-    testimonials: state.testimonials
+    testimonials: state.testimonials,
+    fireAuth: state.fireAuth
   }
 }
 
-export default connect(mapStateToProps)(TestimonialsPage);
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators({
+    toggleModal: toggleUniversalModalAction
+  }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(TestimonialsPage);

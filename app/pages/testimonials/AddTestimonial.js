@@ -4,6 +4,11 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import MEButton from '../../components/button/MEButton';
 import { connect } from 'react-redux';
+import { apiCall } from '../../api/functions';
+import { showError, showSuccess } from '../../utils/common';
+import { set } from '@gluestack-style/react';
+import { setActionWithValue } from '../../config/redux/actions';
+import { SET_TESTIMONIALS_LIST } from '../../config/redux/types';
 
 const validationSchema = Yup.object({
   name: Yup.string()
@@ -17,19 +22,48 @@ const validationSchema = Yup.object({
     .required('Required'),
 });
 
-const onSubmit = (values, { setSubmitting }) => {
-  // TODO: Add API call to submit testimonial
-  setTimeout(() => {
-    console.log(values);
-    setSubmitting(false);
-  }, 1000);
-}
 
-const AddTestimonial = ({ navigation, actions }) => {
+
+const AddTestimonial = ({ navigation, actions, user, activeCommunity, testimonials, setTestimonials }) => {
+
+  const onSubmit = (values, { setSubmitting }) => {
+    // TODO: Add API call to submit testimonial
+    console.log("SUbmitting");
+    const data = {
+      user_email: user.email,
+      action_id: values.action || '--',
+      // vendor_id: '--', // TODO: Replace with actual vendor ID
+      // other_vendor: '--',
+      preferred_name: values.name,
+      title: values.title,
+      body: values.description,
+      community_id: activeCommunity.id,
+      rank: 0
+    };
+    console.log(data);
+    apiCall('testimonials.add', data)
+    .then((response) => {
+      if (!response.success) {
+        showError('An error occurred while adding testimonial. Please try again.');
+        console.error('ERROR_ADDING_TESTIMONIAL:', response);
+        return;
+      }
+      showSuccess('Testimonial added successfully.');
+      console.log('TESTIMONIAL_ADDED:', response.data);
+      // console.log([...testimonials, response.data]);
+      setTestimonials([response.data, ...testimonials]);
+      navigation.goBack();
+    })
+    .catch((error) => {
+      console.error('ERROR_ADDING_TESTIMONIAL:', error);
+      showError('An error occurred while adding testimonial. Please try again.');
+      return;
+    });
+  }
 
   return (
     <Formik
-      initialValues={{ action: '', name: '', title: '', description: ''}} 
+      initialValues={{ action: '', name: user.preferred_name, title: '', description: ''}} 
       validationSchema={validationSchema}
       onSubmit={onSubmit}
     >
@@ -111,7 +145,16 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => {
   return {
     actions: state.actions,
+    user: state.user,
+    activeCommunity: state.activeCommunity,
+    testimonials: state.testimonials,
   };
 }
 
-export default connect(mapStateToProps)(AddTestimonial);
+const mapDispatchToProps = dispatch => {
+  return {
+    setTestimonials: (testimonials) => dispatch(setActionWithValue(SET_TESTIMONIALS_LIST, testimonials)),
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddTestimonial);
