@@ -17,6 +17,7 @@ import { showError, showSuccess } from "../../../utils/common";
 import { connect } from "react-redux";
 
 import auth from '@react-native-firebase/auth';
+import { reauthnticateWithEmail } from "../../../config/firebase";
 
 const validationSchema = Yup.object().shape({
   oldPassword: Yup.string().required("Old password is required"),
@@ -32,12 +33,7 @@ const ChangePasswordModal = ({ isOpen, setIsOpen, fireAuth }) => {
 
   const handleSubmit = (values) => {
     setIsSubmitting(true);
-    fireAuth.reauthenticateWithCredential(
-      auth.EmailAuthProvider.credential(
-        fireAuth.email,
-        values.oldPassword
-      )
-    )
+    reauthnticateWithEmail(fireAuth.email, values.oldPassword)
       .then(() => {
         fireAuth.updatePassword(values.newPassword)
           .then(() => {

@@ -7,6 +7,7 @@ import auth from "@react-native-firebase/auth";
 import { deleteUserAction } from "../../../config/redux/actions";
 import { bindActionCreators } from "redux";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
+import { reauthenticateWithGoogle, reauthnticateWithEmail } from "../../../config/firebase";
 
 const DeleteAccountModal = ({
   isOpen,
@@ -19,20 +20,6 @@ const DeleteAccountModal = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState(null);
-
-  const reauthnticateWithEmail = () => {
-    const credential = auth.EmailAuthProvider.credential(fireAuth.email, password);
-    return fireAuth.reauthenticateWithCredential(credential);
-  };
-
-  const reauthenticateWithGoogle = async () => {
-    await GoogleSignin.hasPlayServices();
-    const userInfo = await GoogleSignin.signIn();
-    const credential = auth.GoogleAuthProvider.credential(userInfo.idToken);
-
-    return fireAuth.reauthenticateWithCredential(credential);
-  };
-
 
   const deleteUser = () => {
     setIsSubmitting(true);
@@ -55,7 +42,7 @@ const DeleteAccountModal = ({
       ? reauthenticateWithGoogle
       : reauthnticateWithEmail;
 
-    reauthenticateFunction()
+    reauthenticateFunction(fireAuth.email, password)
       .then(() => {
         Alert.alert(
           "Delete Account",

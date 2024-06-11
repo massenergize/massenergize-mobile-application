@@ -5,14 +5,27 @@ import { connect } from "react-redux";
 
 const ChangeNotificationModal = ({ isOpen, setIsOpen, user }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [notificationFrequency, setNotificationFrequency] = useState("weekly");
+  const initialState = Object.keys(user?.preferences?.user_portal_settings?.communication_prefs?.update_frequency ?? {})[0];
+  const [notificationFrequency, setNotificationFrequency] = useState(initialState || "per_day");
 
   // TODO: Handle form submission
   const handleSave = () => {
+
+    // For some reason we have to give it all the old preferences as well
+    let preferences = user?.preferences;
+    delete preferences
+      .user_portal_settings
+      .communication_prefs
+      .update_frequency;
+    preferences
+      .user_portal_settings
+      .communication_prefs
+      .update_frequency = {[notificationFrequency]: true};
+
     setIsSubmitting(true);
     updateUser(
       "users.update",
-      { notification_frequency: notificationFrequency, user_id: user?.id },
+      { user_id: user?.id, preferences: JSON.stringify(preferences) },
       (response, error) => {
         if (error) {
           console.error("Error updating notification frequency:", error);
@@ -23,6 +36,7 @@ const ChangeNotificationModal = ({ isOpen, setIsOpen, user }) => {
         console.log("Notification frequency updated successfully");
         showSuccess("Notification frequency updated successfully");
         setIsOpen(false);
+        setIsSubmitting(false);
       });
     setIsOpen(false);
   };
@@ -42,16 +56,16 @@ const ChangeNotificationModal = ({ isOpen, setIsOpen, user }) => {
             value={notificationFrequency}
             onChange={setNotificationFrequency}
           >
-            <Radio my="2" value="daily">
+            <Radio my="2" value="per_day">
               Daily
             </Radio>
-            <Radio my="2" value="weekly">
+            <Radio my="2" value="per_week">
               Weekly
             </Radio>
             <Radio my="2" value="biweekly">
               Biweekly
             </Radio>
-            <Radio my="2" value="monthly">
+            <Radio my="2" value="per_month">
               Monthly
             </Radio>
             <Radio my="2" value="never">

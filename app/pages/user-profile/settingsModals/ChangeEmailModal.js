@@ -4,6 +4,9 @@ import * as Yup from "yup";
 import { Formik } from "formik";
 import { Button, Modal, FormControl, Input, Text } from "@gluestack-ui/themed-native-base";
 import { connect } from "react-redux";
+import { reauthnticateWithEmail } from "../../../config/firebase";
+import { showError, showSuccess, updateUser } from "../../../utils/common";
+import auth from "@react-native-firebase/auth";
 
 const validationSchema = Yup.object().shape({
   newEmail: Yup.string()
@@ -16,19 +19,35 @@ const ChangeEmailModal = ({ isOpen, setIsOpen, user }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // TODO: Handle form submission
-  const handleSubmit = () => {
-    updateUser(
-      "users.update",
-      { user_id: user.id,  },
-      (response, error) => {
-        if (error) {
-          console.error("Error updating user profile:", error);
-          return;
-        }
-        console.log("User profile updated successfully:", response);
-        setIsOpen(false);
-      }
-    );
+  const handleSubmit = (values) => {
+    setIsSubmitting(true);
+    reauthnticateWithEmail(user.email, values.password)
+      .then(() => {
+        auth().currentUser.updateEmail(values.newEmail)
+          .then(() => {
+            auth().currentUser.sendEmailVerification();
+            updateUser(
+              "users.update",
+              { user_id: user.id, email: values.newEmail },
+              (response, error) => {
+                if (error) {
+                  console.error("Error updating email:", error);
+                  showError("Failed to update email. Please try again later.");
+                  setIsSubmitting(false);
+                  return;
+                }
+                console.log("Email updated successfully");
+                showSuccess("Email updated successfully. Please verify your new email address.");
+                setIsOpen(false);
+              });
+          });
+      })
+      .catch((error) => {
+        console.error("Error reauthenticating user:", error);
+        showError("Failed to reauthenticate user. \
+          Are you sure you entered the correct password?");
+      })
+      .finally(() => setIsSubmitting(false));
   }
 
   return (

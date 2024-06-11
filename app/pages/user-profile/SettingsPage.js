@@ -18,22 +18,23 @@ const SettingOptions = [
     label: "Edit my profile",
     icon: "user",
   },
-  // {
-  //   name: "email",
-  //   label: "Change my email",
-  //   icon: "envelope",
-  // },
+  {
+    name: "email",
+    label: "Change my email",
+    icon: "envelope",
+    requiredAuth: "password"
+  },
   {
     name: "password",
     label: "Change my password",
     icon: "key",
     requiredAuth: "password"
   },
-  // {
-  //   name: "notification",
-  //   label: "Change communication preferences",
-  //   icon: "bell",
-  // },
+  {
+    name: "notification",
+    label: "Change communication preferences",
+    icon: "bell",
+  },
   {
     name: "delete",
     label: "Delete my account",
@@ -97,9 +98,9 @@ function SettingsPage({ navigation, fireAuth }) {
             )
         ))}
         <EditProfileModal isOpen={isEMPOpen} setIsOpen={setIsEMPOpen} />
-        {/* <ChangeEmailModal isOpen={isCMEOpen} setIsOpen={setIsCMEOpen} /> */}
+        <ChangeEmailModal isOpen={isCMEOpen} setIsOpen={setIsCMEOpen} />
         <ChangePasswordModal isOpen={isCMPOpen} setIsOpen={setIsCMPOpen} />
-        {/* <ChangeNotificationModal isOpen={isNPOpen} setIsOpen={setIsNPOpen} /> */}
+        <ChangeNotificationModal isOpen={isNPOpen} setIsOpen={setIsNPOpen} />
         <DeleteAccountModal
           isOpen={isDAOpen}
           setIsOpen={setIsDAOpen}

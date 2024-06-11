@@ -89,3 +89,17 @@ export const firebaseSignOut = cb => {
   }
   auth().signOut().then(cb);
 };
+
+
+export const reauthnticateWithEmail = (email, password) => {
+  const credential = auth.EmailAuthProvider.credential(email, password);
+  return auth().currentUser.reauthenticateWithCredential(credential);
+};
+
+export const reauthenticateWithGoogle = async () => {
+  await GoogleSignin.hasPlayServices();
+  const userInfo = await GoogleSignin.signIn();
+  const credential = auth.GoogleAuthProvider.credential(userInfo.idToken);
+
+  return auth().currentUser.reauthenticateWithCredential(credential);
+};
