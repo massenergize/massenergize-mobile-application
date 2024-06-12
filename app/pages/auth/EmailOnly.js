@@ -18,8 +18,11 @@ import { connect } from 'react-redux';
 import Textbox from '../../components/textbox/Textbox';
 import MEButton from '../../components/button/MEButton';
 import { authenticateWithEmailOnly } from '../../config/firebase';
+import auth from '@react-native-firebase/auth';
+import { NavigationActions } from 'react-navigation';
+import { showError, showSuccess } from '../../utils/common';
 
-const EmailOnly = ({ activeCommunity }) => {
+const EmailOnly = ({ activeCommunity, navigation }) => {
 
   const isValidEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -44,7 +47,14 @@ const EmailOnly = ({ activeCommunity }) => {
 
   // Function to confirm email has been verified
   const confirmEmail = () => {
-    console.log('Confirming email:', email);
+    const user = auth().currentUser;
+    if (user.emailVerified) {
+      console.log('Email verified');
+      navigation.navigate('Community');
+    } else {
+      console.log('Email not verified');
+      showError('Email not verified yet!');
+    }
   }
 
 
