@@ -107,7 +107,7 @@ const RootWrapper = ({
         user?.getIdToken().then(token => {
           fetchMEUser(token);
         });
-        fetchAllUserInfo(); // TODO: maybe put this somewhere else idk
+        fetchAllUserInfo();
       } else console.log('User is not signed in yet!');
     });
   }, []);

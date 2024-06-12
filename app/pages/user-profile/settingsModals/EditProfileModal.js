@@ -36,7 +36,7 @@ const EditProfileModal = ({ isOpen, setIsOpen, user }) => {
           showError("Failed to update user profile. Please try again later.");
           return;
         }
-        console.log("User profile updated successfully:", response);
+        console.log("User profile updated successfully");
         setIsOpen(false);
       }
     );

@@ -44,7 +44,6 @@ const CompleteProfile = ({
 
   // Submit data to backend and update user profile in redux
   const onSubmit = () => {
-    console.log('Submitting...');
     setLoading(true);
 
     const profile = {
@@ -74,7 +73,6 @@ const CompleteProfile = ({
       fireAuth.reload().then(() => {
         const user = firebase.auth().currentUser;
 
-        console.log('USER:', user);
         putFirebaseUserInRedux(user);
         user?.getIdToken().then(token => {
           fetchMEUser(token, (_, error) => {

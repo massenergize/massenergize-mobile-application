@@ -38,12 +38,15 @@ const AuthOptions = ({closeModal, fetchMEUser, putFirebaseUserInRedux}) => {
         .then(token => {
           fetchMEUser(token, (user, error) => {
             closeModal();
-            console.log(user, error);
+            if (error) {
+              console.error('ERROR_FETCHING_USER_PROFILE', error);
+              showError("Error fetching user profile. Please try again.");
+            };
             if (!user) return navigation.navigate('Register');
             navigation.navigate('Community');
           });
         })
-        .catch(e => showError(e?.toString()));
+        .catch(e => showError("Error signing in. Please try again."));
     });
   };
 

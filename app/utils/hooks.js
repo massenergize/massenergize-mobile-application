@@ -8,12 +8,11 @@ export const useDetails = (route, args) => {
     const [isLoading, setIsLoading] = useState(true);
   
     useEffect(() => {
-      console.log("Fetching Details");
       apiCall(route, args).then((json) => {
         if (json.success) {
             setData(json.data);
         } else {
-            console.log(json);
+            console.log("Error fetching data: ", json.error);
         }
         setIsLoading(false);
       });

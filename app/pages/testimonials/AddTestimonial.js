@@ -59,7 +59,7 @@ const AddTestimonial = ({ navigation, actions, user, activeCommunity, testimonia
         return;
       }
       showSuccess('Testimonial added successfully.');
-      console.log('TESTIMONIAL_ADDED:', response.data);
+      console.log('TESTIMONIAL_ADDED');
 
       // Add the new testimonial to the redux store
       setTestimonials([response.data, ...testimonials]);

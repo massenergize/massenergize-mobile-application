@@ -116,7 +116,7 @@ function TeamDetails({
       { team_id: team.id, user_id: user.id },
       (response, error) => {
         if (error) return console.error("Failed to join team", error);
-        console.log("Joined team", response);
+        console.log("JOINED TEAM");
         setIsJoinLoading(false);
       }
     );
@@ -132,7 +132,7 @@ function TeamDetails({
       { team_id: team.id, user_id: user.id },
       (response, error) => {
         if (error) return console.error("Failed to leave team", error);
-        console.log("Left team", response);
+        console.log("LEFT TEAM");
         setIsJoinLoading(false);
       }
     );

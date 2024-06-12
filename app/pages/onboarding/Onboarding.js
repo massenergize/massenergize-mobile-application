@@ -85,8 +85,6 @@ export default function OnboardingPage({ navigation }) {
     setImgSrc(STEPS[currentStep].image);
   }, [currentStep]);
 
-  console.log("SOURCE:", imgSrc);
-
   /* Displays the onboarding pages */
   return (
     <Box width="100%" flex="1">
