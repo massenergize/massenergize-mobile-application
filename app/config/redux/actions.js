@@ -11,6 +11,7 @@
 import {apiCall} from '../../api/functions';
 import {showError} from '../../utils/common';
 import {firebaseSignOut} from '../firebase';
+import store from './store';
 import {
   ACTIVE_COMMUNITY,
   COMMUNITIES,

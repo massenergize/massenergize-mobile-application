@@ -57,7 +57,7 @@ const ChangeNotificationModal = ({ isOpen, setIsOpen, user }) => {
 
   return (
     <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
-      <Modal.Content maxWidth="400px">
+      <Modal.Content maxWidth="400">
         <Modal.CloseButton />
 
         {/* Header */}

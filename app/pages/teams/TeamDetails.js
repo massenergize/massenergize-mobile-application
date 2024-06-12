@@ -42,6 +42,7 @@ import * as Yup from 'yup';
 import { Formik } from 'formik';
 import { FontAwesomeIcon } from '../../components/icons';
 import { apiCall } from '../../api/functions';
+import MEImage from '../../components/image/MEImage';
 
 /* 
  * This serves as a validation schema to prevent the user to send a 
@@ -146,16 +147,18 @@ function TeamDetails({
     setIsSubmitting(true);
     const data = {
       community_id: community_id,
+      team_id: team_id,
       title: values.subject,
       body: values.message
     };
 
-    apiCall("admins.messages.add", data).then((response) => {
+    apiCall("teams.contactAdmin", data).then((response) => {
       setIsSubmitting(false);
       if (response.success && response.data) {
+        console.log("Message sent");
         setIsSent(true);
       } else {
-        console.log("Error sending message", response);
+        console.log("Error sending message", response.error);
       }
     });
 
@@ -394,15 +397,10 @@ function TeamDetails({
           </Formik>
 
           <Modal isOpen={isSent} onClose={() => setIsSent(false)}>
-            <Modal.Content maxWidth="400px">
+            <Modal.Content maxWidth="400">
               <Modal.Body>
                 <Center mb="5">
-                    <Icon
-                      as={FontAwesomeIcon}
-                      name="paper-plane"
-                      size="90px"
-                      color="primary.600"
-                    />
+                    <FontAwesomeIcon name="paper-plane" size={90} color="green" />
                     <Text fontSize="lg" fontWeight="bold" py="5">
                       Message Sent!
                     </Text>
@@ -483,8 +481,9 @@ function TeamDetails({
         ) : (
           <View>
             {team.logo ? (
-              <Image
+              <MEImage
                 source={{ uri: team.logo.url }}
+                altComponent={<></>}
                 alt="image"
                 height={200}
                 mt={5}

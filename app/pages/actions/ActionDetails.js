@@ -292,7 +292,7 @@ const ActionDetails = ({
                     <Button
                       size="md"
                       variant={actionInToDo() ? "outline" : "solid" }
-                      key={actionInToDo()}
+                      key={actionInToDo() ? "todo" : "not_todo"}
                       _text={{
                         color: actionInToDo() ? "green" : "white",
                         fontWeight: "bold",
@@ -303,7 +303,7 @@ const ActionDetails = ({
                     <Button
                       size="md"
                       variant={actionCompleted() ? "outline" : "solid"}
-                      key={actionCompleted()}
+                      key={actionCompleted() ? "completed" : "not_completed"}
                       _text={{
                         color: actionCompleted() ? "primary.600" : "white",
                         fontWeight: "bold",
@@ -355,7 +355,7 @@ const ActionDetails = ({
 
           {/* Modal for when the user marks the action as done */}
           <Modal isOpen={isDoneOpen} onClose={() => {}}>
-            <Modal.Content maxWidth="400px">
+            <Modal.Content maxWidth="400">
               <Modal.Body>
                 <Center mb="5">
                   <Ionicons name={"ribbon-outline"} size={90} color="#64B058" />
@@ -394,7 +394,7 @@ const ActionDetails = ({
           
           {/* Modal for when the user adds the action to their to-do list */}
           <Modal isOpen={isToDoOpen} onClose={() => {}}>
-            <Modal.Content maxWidth="400px">
+            <Modal.Content maxWidth="400">
               <Modal.Body>
                 <Center mb="5">
                   <Ionicons name={"ribbon-outline"} size={90} color="#64B058" />

@@ -86,7 +86,7 @@ const ChangeEmailModal = ({ isOpen, setIsOpen, user }) => {
           errors,
           touched,
         }) => (
-          <Modal.Content maxWidth="400px">
+          <Modal.Content maxWidth="400">
             <Modal.CloseButton />
 
             {/* Header */}
