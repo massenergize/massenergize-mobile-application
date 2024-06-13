@@ -25,19 +25,7 @@ import {
   Icon,
 } from '@gluestack-ui/themed-native-base';
 import { FontAwesomeIcon } from "../../components/icons";
-
-/* Component that displays the logo of the team or sub-team */
-const Logo = ({ url }) => {
-  return (
-    <AspectRatio ratio={16 / 9} width="100%">
-      <Image
-        source={{ uri: url }}
-        alt="image"
-        resizeMode="contain"
-      />
-    </AspectRatio>
-  );
-};
+import MEImage from "../../components/image/MEImage";
 
 
 export default function TeamCard({
@@ -66,7 +54,12 @@ export default function TeamCard({
         }
       >
         <Box>
-          {team.team.logo ? <Logo url={team.team.logo.url} /> : null}
+          <MEImage
+            source={{ uri: team.logo }}
+            altComponent={<></>}
+            alt="image"
+            resizeMode="contain"
+          />
         </Box>
         <Box p="4">
           <Box py="2">

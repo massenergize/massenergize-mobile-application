@@ -48,7 +48,7 @@ const ConfirmEmail = ({ fireAuth, nextStep }) => {
   const resendEmail = () => {
     fireAuth.sendEmailVerification()
       .then(() => {
-        console.log('EMAIL_RESENT:');
+        console.log('EMAIL_RESENT');
         showSuccess('Email verification sent');
       })
       .catch(error => {

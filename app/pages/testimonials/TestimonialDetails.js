@@ -30,8 +30,6 @@ function TestimonialDetails({ route, navigation, vendorsSettings }) {
   const [testimonial, isTestimonialLoading]
     = useDetails("testimonials.info", { testimonial_id: testimonial_id });
 
-  console.log("testimonial: ", testimonial);
-
   return (
     <View style={{ height: '100%', backgroundColor: 'white' }}>
       {

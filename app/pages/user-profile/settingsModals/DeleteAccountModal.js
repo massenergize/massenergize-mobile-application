@@ -38,10 +38,10 @@ const DeleteAccountModal = ({
     deleteUserAction(user?.id, (response, error) => {
       if (error) {
         showError("An error occurred while deleting your account. Please try again.");
+        console.error("Error deleting user account:", error);
         return;
       }
       showSuccess("Your account has been deleted successfully.");
-      console.log("NAVIGATIONSNSNS??");
       navigation.navigate("Community");
     });
 
@@ -76,7 +76,7 @@ const DeleteAccountModal = ({
 
   return (
     <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
-      <Modal.Content maxWidth="400px">
+      <Modal.Content maxWidth="400">
         <Modal.CloseButton />
 
         {/* Header */}

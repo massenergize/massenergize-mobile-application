@@ -29,7 +29,6 @@ const ActionCard = ({
     <Pressable
       onPress={() => {
         navigation.navigate("ActionDetails", { action_id: id });
-        console.log("ActionCard Pressed");
       }}
       {...props}
     >

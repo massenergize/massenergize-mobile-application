@@ -11,6 +11,7 @@
 import {apiCall} from '../../api/functions';
 import {showError} from '../../utils/common';
 import {firebaseSignOut} from '../firebase';
+import store from './store';
 import {
   ACTIVE_COMMUNITY,
   COMMUNITIES,
@@ -170,7 +171,7 @@ export const signOutAction = () => dispatch => {
   return firebaseSignOut(() => {
     apiCall('auth.logout')
       .then(response => {
-        console.log('Yes we just signed out!');
+        console.log('USER_SIGNED_OUT');
         dispatch({type: SET_FIREBASE_AUTH, payload: null});
         dispatch({type: SET_ME_USER_PROFILE, payload: null});
       })
@@ -211,7 +212,7 @@ export const deleteUserAction = (user_id, cb) => dispatch => {
         return;
       }
       dispatch(signOutAction());
-      console.log('User deleted successfully!');
+      console.log('USER_DELETED');
       cb && cb(response.data);
     })
     .catch(error => {

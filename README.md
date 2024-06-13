@@ -23,7 +23,7 @@ XCode can be found on the Mac App Store.
 
 ### 3. Installing libraries
 #### a. Install Node modules
-In the project root directory, run `npm install -f` to install the required modules.
+In the project root directory, run `npm install` to install the required modules.
 
 #### b. Installing CocoaPods
 CocoaPods is a package manager which we will use to install iOS specific packages.

@@ -41,18 +41,6 @@ export async function apiCall(
     formData.append("", "")
   }
 
-  // Object.keys(dataToSend).map((k) => formData.append(k, {...dataToSend[k], type: 'multipart/form-data'}));
-  // if (authToken)
-  //     formData.append("__token", authToken || authTokenInLocalStorage || null);
-
-  // })
-  // .catch(err => {
-  //     console.log("error catch search:", err.message);
-  //     fetching = false;
-  //     // Choose one, depends what you need.
-  //     return false; // If you want to ignore the error and do something in a chained .then()
-  // })
-
   try {
     const response = await fetch(`${URLS.ROOT}/${destinationUrl}`, {
       credentials: "include",

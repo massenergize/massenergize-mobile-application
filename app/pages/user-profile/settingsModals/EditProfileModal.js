@@ -36,7 +36,7 @@ const EditProfileModal = ({ isOpen, setIsOpen, user }) => {
           showError("Failed to update user profile. Please try again later.");
           return;
         }
-        console.log("User profile updated successfully:", response);
+        console.log("User profile updated successfully");
         setIsOpen(false);
       }
     );
@@ -44,7 +44,7 @@ const EditProfileModal = ({ isOpen, setIsOpen, user }) => {
 
   return (
     <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
-      <Modal.Content maxWidth="400px">
+      <Modal.Content maxWidth="400">
         <Modal.CloseButton />
 
         {/* Header */}

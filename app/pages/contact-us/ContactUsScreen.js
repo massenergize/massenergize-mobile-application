@@ -271,14 +271,13 @@ function ContactUsScreen({
 
           {/* Modal for congratulating after message is sent successfully */}
           <Modal isOpen={isSent} onClose={() => setIsSent(false)}>
-            <Modal.Content maxWidth="400px">
+            <Modal.Content maxWidth="400">
               <Modal.Body>
                 <Center mb="5">
-                    <Icon
-                      as={FontAwesomeIcon}
+                    <FontAwesomeIcon
                       name="paper-plane"
-                      size="90px"
-                      color="primary.600"
+                      size={90}
+                      color="green"
                     />
                     <Text fontSize="lg" fontWeight="bold" py="5">
                       Message Sent!

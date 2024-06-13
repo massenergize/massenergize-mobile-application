@@ -84,7 +84,6 @@ const ActionDetails = ({
           { action_id: action_id, hid: 1 },
           (response, error) => {
             if (error) return console.log("Failed to remove item from todo list:", error);
-            console.log("Successfully removed item from todo list");
             setIsToDoOpen(false);
             console.log("Removed " + action.title + " from To-do");
           }
@@ -97,7 +96,6 @@ const ActionDetails = ({
           { action_id: action_id, hid: 1 },
           (response, error) => {
             if (error) return console.log("Failed to add item to todo list:", error);
-            console.log("Successfully added item to todo list");
             setIsToDoOpen(true);
             console.log("Added " + action.title + " to To-do");
           }
@@ -119,13 +117,12 @@ const ActionDetails = ({
       if (actionCompleted()) return; // TODO: figure out why removing from completed list is not working
 
       // Action depends on whether the action is already in the user's completed list
-      if (actionCompleted() && false) { // TODO: figure out why removing from completed list is not working
+      if (actionCompleted()) { // TODO: figure out why removing from completed list is not working
         // Updates the backend, redux, and displays a success message
         updateUserAction(
           "users.actions.remove",
           { action_id: action_id, hid: 1 },
           (response, error) => {
-            if (error) return console.log("Failed to remove item from completed list:", error);
             setIsDoneOpen(true);
             console.log("Successfully removed item from completed list");
           }
@@ -136,7 +133,6 @@ const ActionDetails = ({
           "users.actions.completed.add",
           { action_id: action_id, hid: 1 },
           (response, error) => {
-            if (error) return console.log("Failed to add item to completed list:", error);
             setIsDoneOpen(true);
             console.log("Successfully added item to completed list");
           }
@@ -296,7 +292,7 @@ const ActionDetails = ({
                     <Button
                       size="md"
                       variant={actionInToDo() ? "outline" : "solid" }
-                      key={actionInToDo()}
+                      key={actionInToDo() ? "todo" : "not_todo"}
                       _text={{
                         color: actionInToDo() ? "green" : "white",
                         fontWeight: "bold",
@@ -307,7 +303,7 @@ const ActionDetails = ({
                     <Button
                       size="md"
                       variant={actionCompleted() ? "outline" : "solid"}
-                      key={actionCompleted()}
+                      key={actionCompleted() ? "completed" : "not_completed"}
                       _text={{
                         color: actionCompleted() ? "primary.600" : "white",
                         fontWeight: "bold",
@@ -359,7 +355,7 @@ const ActionDetails = ({
 
           {/* Modal for when the user marks the action as done */}
           <Modal isOpen={isDoneOpen} onClose={() => {}}>
-            <Modal.Content maxWidth="400px">
+            <Modal.Content maxWidth="400">
               <Modal.Body>
                 <Center mb="5">
                   <Ionicons name={"ribbon-outline"} size={90} color="#64B058" />
@@ -398,7 +394,7 @@ const ActionDetails = ({
           
           {/* Modal for when the user adds the action to their to-do list */}
           <Modal isOpen={isToDoOpen} onClose={() => {}}>
-            <Modal.Content maxWidth="400px">
+            <Modal.Content maxWidth="400">
               <Modal.Body>
                 <Center mb="5">
                   <Ionicons name={"ribbon-outline"} size={90} color="#64B058" />

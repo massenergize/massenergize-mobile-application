@@ -56,7 +56,7 @@ export const createUserProfile = (profile, callBackFn = null) => {
       if (response?.success && response?.data) {
         if (callBackFn) callBackFn(response, null);
       } else {
-        console.log("Error creating user profile: ", response?.error);
+        console.error("Error creating user profile: ", response?.error);
       }
     })
     .catch((error) => {

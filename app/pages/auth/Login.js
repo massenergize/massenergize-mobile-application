@@ -51,7 +51,7 @@ const Login = ({
     authenticateWithEmailAndPassword(email, password, (response, error) => {
       setLoading(false);
       if (!response) return showError(error);
-      console.log("LOGIN_RESPONSE:", response);
+      console.log("USER LOGGED IN");
       const user = response.user;
       putFirebaseUserInRedux(user);
       user?.getIdToken().then(token => {
