@@ -1,5 +1,3 @@
-# Resolve react_native_pods.rb with node to allow for hoisting
-
 $FirebaseSDKVersion = '10.14.0'
 # $FirebaseSDKVersion = '9.6.0'
 # use_modular_headers!
@@ -53,11 +51,11 @@ target 'MassenergizeAppV2' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
  
-
-
-  
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
-  
+  pod 'react-native-image-picker', :path => '../node_modules/react-native-image-picker'
+  pod 'RNDateTimePicker', :path => '../node_modules/@react-native-community/datetimepicker'
+
+
   target 'MassenergizeAppV2Tests' do
     inherit! :complete
     # Pods for testing

@@ -202,6 +202,9 @@ const RootWrapper = ({
           component={AddTestimonial}
         />
         <MainStack.Screen 
+          options={{
+            headerTitle: ''
+          }}
           name="AddEvent" 
           component={AddEvent}
         />
