@@ -5,7 +5,7 @@
  *      an event to the selected community.
  * 
  *      Written by: Moizes Almeida
- *      Last edited: June 13, 2024
+ *      Last edited: June 14, 2024
  * 
  *****************************************************************************/
 
@@ -59,9 +59,8 @@ const AddEvent = ({
     const community_id = activeCommunity.id;
 
     /* 
-     * Uses local state to determine if the message the user is sending
-     * to the community's administrator is in the process to being sent 
-     * or if it was already sent. 
+     * Uses local state to determine if the event is in the 
+     * process to being added to the community or if it was already added. 
      */
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSent, setIsSent] = useState(false);
@@ -595,7 +594,7 @@ const AddEvent = ({
                                     isLoading={isSubmitting}
                                     loadingText="Sending..."
                                     disabled={isSubmitting}
-                                    onPress={handleSubmit} // Updated to handleSubmit
+                                    onPress={handleSubmit}
                                 >
                                     SUBMIT EVENT
                                 </Button>

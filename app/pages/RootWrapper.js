@@ -38,6 +38,7 @@ import ImpactPage from './home/ImpactPage';
 import AddTestimonial from './testimonials/AddTestimonial';
 import EmailOnly from './auth/EmailOnly';
 import AddEvent from './events/AddEvent';
+import AddTeam from './teams/AddTeam';
 
 GoogleSignin.configure({
   webClientId:
@@ -198,6 +199,9 @@ const RootWrapper = ({
           component={SettingsPage}
         />
         <MainStack.Screen 
+          options={{
+            headerTitle: ''
+          }}
           name="AddTestimonial" 
           component={AddTestimonial}
         />
@@ -207,6 +211,13 @@ const RootWrapper = ({
           }}
           name="AddEvent" 
           component={AddEvent}
+        />
+        <MainStack.Screen 
+          options={{
+            headerTitle: ''
+          }}
+          name="AddTeam" 
+          component={AddTeam}
         />
       </MainStack.Navigator>
       <MEBottomSheet

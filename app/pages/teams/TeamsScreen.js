@@ -6,7 +6,7 @@
  *      actions they performed, and their team members.
  * 
  *      Written by: Moizes Almeida
- *      Last edited: June 6, 2024
+ *      Last edited: June 14, 2024
  * 
  *****************************************************************************/
 
@@ -20,7 +20,8 @@ import {
   Text,
   Spacer,
   Center,
-  Spinner
+  Spinner, 
+  Button
 } from '@gluestack-ui/themed-native-base';
 import { StyleSheet } from 'react-native';
 import React, { useState, useEffect } from 'react';
@@ -28,10 +29,11 @@ import { connect } from 'react-redux';
 import { fetchAllCommunityData } from '../../config/redux/actions';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import TeamCard from './TeamCard';
-import { NativeBaseConfigProvider } from 'native-base';
+import { bindActionCreators } from 'redux';
+import { toggleUniversalModalAction } from '../../config/redux/actions';
+import AuthOptions from '../auth/AuthOptions';
 
-
-const TeamsScreen = ({ navigation, teams }) => {
+const TeamsScreen = ({ navigation, teams, fireAuth, toggleModal }) => {
   /*
    * Uses local state to determine wheter the information about the community
    * is still loading, if the sub-team expland button is selected, and gets 
@@ -40,11 +42,6 @@ const TeamsScreen = ({ navigation, teams }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [subteamsExpanded, setSubteamsExpanded] = useState({});
   const [teamsList, setTeamsList] = useState([]);
-
-  /* Fetch the information from the community */
-  // useEffect(() => {
-  //   fetchAllCommunityData({ community_id: communityInfo.id });
-  // }, [fetchAllCommunityData, communityInfo.id]);
 
   /* Fetch the information from each team/sub-team */
   useEffect(() => {
@@ -100,6 +97,30 @@ const TeamsScreen = ({ navigation, teams }) => {
     setSubteamsExpanded(copy);
   };
 
+  const renderAddTeam = () => {
+    return (
+      <Button
+        title="Add Team"
+        onPress={() => {
+          if (fireAuth) navigation.navigate("AddTeam");
+          else {
+            toggleModal({
+              isVisible: true,
+              Component: AuthOptions,
+              title: 'How would you like to sign in or Join?',
+            });
+          }
+        }}
+        m={5}
+        px={10}
+      >
+        Add Team
+      </Button>
+    );
+  }
+
+  console.log(teams);
+
   /* Displays the community's team/sub-teams information */
   return (
     // <NativeBaseConfigProvider config={config}>
@@ -111,6 +132,9 @@ const TeamsScreen = ({ navigation, teams }) => {
       ) : (
         <ScrollView showsVerticalScrollIndicator={false}>
           <VStack space={5} p={5}>
+            {
+              renderAddTeam()
+            }
             {teamsList.map((team, i) => {
               return (
                 <View key={i}>
@@ -177,19 +201,14 @@ const styles = StyleSheet.create({
   },
 });
 
-const config = {
-  // Define your configurations here
-  initialColorMode: "dark", // Example configuration
-};
-
 /* 
  * Transforms the local state of the app into the properties of the 
  * TeamsScreen function, in which it is got from the API.
  */
 const mapStateToProps = (state) => {
-  // communityInfo: state.communityInfo,
   return {
     teams: state.teamsStats,
+    fireAuth: state.fireAuth,
   };
 };
 
@@ -197,8 +216,10 @@ const mapStateToProps = (state) => {
  * Transforms the dispatch function from the API in order to get the information
  * of the current community and sends it to the Upcoming properties.
  */
-// const mapDispatchToProps = {
-//   fetchAllCommunityData,
-// };
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators({
+    toggleModal: toggleUniversalModalAction
+  }, dispatch);
+}
 
-export default connect(mapStateToProps)(TeamsScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(TeamsScreen);
