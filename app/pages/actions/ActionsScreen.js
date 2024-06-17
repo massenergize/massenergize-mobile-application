@@ -1,28 +1,163 @@
 /******************************************************************************
  *                            ActionsScreen
  * 
- *      This page displays all action cards in a horizontal scroll view
+ *      This page displays all action cards in a horizontal scroll view. It
+ *      is also possible to filter the actions by what you are, category, 
+ *      impact, and cost.
  * 
  *      Written by: William Soylemez
- *      Last edited: June 5, 2023
+ *      Last edited: June 17, 2023 (by Moizes Almeida)
  * 
  *****************************************************************************/
 
-import { View } from 'react-native';
+/* Imports and set up */
 import React, { useState, useEffect } from 'react';
 import ActionCard from './ActionCard';
 import { connect } from 'react-redux';
 import { StyleSheet } from "react-native";
-import { ScrollView, HStack, Text, Spinner, Center } from "@gluestack-ui/themed-native-base";
+import { 
+  View,
+  ScrollView, 
+  HStack, 
+  Text, 
+  Spinner, 
+  Center, 
+  VStack, 
+  Select, 
+  Pressable,
+} from "@gluestack-ui/themed-native-base";
 import { getActionMetric } from "../../utils/common";
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const ActionsScreen = ({navigation, actions}) => {
-  
+  /*
+   * Uses local state to determine wheter the user has or not applied any 
+   * filter to the actions page, or if they selected the 'Expand Filters'
+   * button, or what are the filters they applied to the page.
+   */
+  const [userType, setUserType] = useState('All');
+  const [category, setCategory] = useState('All');
+  const [impact, setImpact] = useState('All');
+  const [cost, setCost] = useState('All');
+  const [expand, setExpand] = useState(false);
+  const [isFilterApplied, setIsFilterApplied] = useState(false);
+
+  /* Check if any filter is applied */
+  useEffect(() => {
+    if (userType !== 'All' || 
+        category !== 'All' || 
+        impact !== 'All' || 
+        cost !== 'All') {
+      setIsFilterApplied(true);
+    } else {
+      setIsFilterApplied(false);
+    }
+  }, [userType, category, impact, cost]);
+
+  /* Function that filters the actions according to the user's preferences */
+  const applyFilter = (actions) => {
+    return actions.filter(action => {
+      const actionTags = action.tags.map(tag => tag.name);
+
+      return (userType === 'All' || actionTags.includes(userType)) &&
+             (category === 'All' || actionTags.includes(category)) &&
+             (impact === 'All' || actionTags.includes(impact)) &&
+             (cost === 'All' || actionTags.includes(cost));
+    });
+  };
+
+  /* Variable that holds the list of filtered actions */
+  const filteredActions = applyFilter(actions);
+
+  /* Displays the actions page and the applied filters */
   return (
-    <View style={{height: '100%', backgroundColor: 'white'}}>
+    <View style={styles.container}>
       <ScrollView>
         {/* Header */}
         <Text style={styles.title}>Actions</Text>
+
+        {/* Expand Filter Button */}
+        <Pressable
+          onPress={() => setExpand(!expand)}
+          style={styles.expandButton}
+        >
+          <HStack mt={2} alignItems="center">
+            <Ionicons
+              name={
+                expand ? "chevron-up-outline" : "search"
+              }
+              color="#64B058"
+            />
+            <Text color="#64B058" ml={2}>
+              Expand Filters
+            </Text>
+          </HStack>
+        </Pressable>
+
+        {/* Filter Options */}
+        {expand && (
+          <View style={styles.filterContainer}>
+            <VStack 
+              space={2} 
+              style={styles.filterVStack}
+            >
+              <Text>I am a...</Text>
+              <Select 
+                selectedValue={userType} 
+                onValueChange={(value) => setUserType(value)} 
+                style={styles.filterSelect}
+              >
+                <Select.Item label="All" value="All" />
+                <Select.Item label="Student" value="Student" />
+                <Select.Item label="Homeowner" value="Homeowner" />
+                <Select.Item label="Renter" value="Renter" />
+                <Select.Item label="Condo" value="Condo" />
+                <Select.Item label="Business" value="Business" />
+              </Select>
+
+              <Text>Category</Text>
+              <Select 
+                selectedValue={category} 
+                onValueChange={(value) => setCategory(value)} 
+                style={styles.filterSelect}
+              >
+                <Select.Item label="All" value="All" />
+                <Select.Item label="Transportation" value="Transportation" />
+                <Select.Item label="Home Energy" value="Home Energy" />
+                <Select.Item label="Waste & Recycling" value="Waste & Recycling" />
+                <Select.Item label="Food" value="Food" />
+                <Select.Item label="Activism & Education" value="Activism & Education" />
+                <Select.Item label="Solar" value="Solar" />
+                <Select.Item label="Land, Soil, & Water" value="Land, Soil, & Water" />
+              </Select>
+
+              <Text>Impact</Text>
+              <Select 
+                selectedValue={impact} 
+                onValueChange={(value) => setImpact(value)} 
+                style={styles.filterSelect}
+              >
+                <Select.Item label="All" value="All" />
+                <Select.Item label="High" value="High" />
+                <Select.Item label="Medium" value="Medium" />
+                <Select.Item label="Low" value="Low" />
+              </Select>
+
+              <Text>Cost</Text>
+              <Select 
+                selectedValue={cost}
+                onValueChange={(value) => setCost(value)}
+                style={styles.filterSelect}
+              >
+              <Select.Item label="All" value="All" />
+              <Select.Item label="0" value="0" />
+              <Select.Item label="$" value="$" />
+              <Select.Item label="$$" value="$$" />
+              <Select.Item label="$$$" value="$$$" />
+              </Select>
+            </VStack>
+          </View>
+        )}
 
         {/* Display loading spinner if actions are not loaded */}
         {!actions ? (
@@ -30,80 +165,136 @@ const ActionsScreen = ({navigation, actions}) => {
             <Spinner />
           </Center>
         ) : (
-            <View>
-            {/* Currently "All" instead of "Recommended" for v1 (v2 will have filtering) */}
-            
-            {/* Display all actions */}
-            <Text style={styles.category}>All</Text>
-            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-              <HStack space={2} justifyContent="center" mx={15} marginBottom={15}>
-                {actions.map((action, index) => {
-                  return (
-                    <ActionCard
-                      key={index}
-                      navigation={navigation}
-                      id={action.id}
-                      title={action.title}
-                      imgUrl={action.image?.url}
-                      impactMetric={getActionMetric(action, "Impact")}
-                      costMetric={getActionMetric(action, "Cost")}
-                    />
-                  );
-                })}
-              </HStack>
-            </ScrollView>
-            
-            {/* High impact */}
-            <Text style={styles.category}>High Impact</Text>
-            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-              <HStack space={2} justifyContent="center" mx={15} marginBottom={15}>
-                {/* Display all actions with high impact */}
-                {actions
-                  .filter(
-                    (action) => getActionMetric(action, "Impact") === "High"
-                  )
-                  .map((action, index) => {
-                    return (
-                      <ActionCard
-                        key={index}
-                        navigation={navigation}
-                        id={action.id}
-                        title={action.title}
-                        imgUrl={action.image?.url}
-                        impactMetric={getActionMetric(action, "Impact")}
-                        costMetric={getActionMetric(action, "Cost")}
-                      />
-                    );
-                  })}
-              </HStack>
-            </ScrollView>
+          <View>
+            {isFilterApplied ? (
+              /* Display filtered actions */
+              <View>
+                <Text style={styles.category}>
+                  Filtered Actions
+                </Text>
 
-            {/* Low cost */}
-            <Text style={styles.category}>Low Cost</Text>
-            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-              <HStack space={2} justifyContent="center" mx={15} marginBottom={15}>
-                {/* Display all actions with low cost (0 or $) */}
-                {actions
-                  .filter(
-                    (action) =>
-                      getActionMetric(action, "Cost") === "$" ||
-                      getActionMetric(action, "Cost") === "0"
-                  )
-                  .map((action, index) => {
-                    return (
-                      <ActionCard
-                        key={index}
-                        navigation={navigation}
-                        id={action.id}
-                        title={action.title}
-                        imgUrl={action.image?.url}
-                        impactMetric={getActionMetric(action, "Impact")}
-                        costMetric={getActionMetric(action, "Cost")}
-                      />
-                    );
-                  })}
-              </HStack>
-            </ScrollView>
+                <ScrollView 
+                  horizontal={true} 
+                  showsHorizontalScrollIndicator={false}
+                >
+                  <HStack 
+                    space={2} 
+                    justifyContent="center" 
+                    mx={15} 
+                    marginBottom={15}
+                  >
+                    {filteredActions.map((action, index) => {
+                      return (
+                        <ActionCard
+                          key={index}
+                          navigation={navigation}
+                          id={action.id}
+                          title={action.title}
+                          imgUrl={action.image?.url}
+                          impactMetric={getActionMetric(action, "Impact")}
+                          costMetric={getActionMetric(action, "Cost")}
+                        />
+                      );
+                    })}
+                  </HStack>
+                </ScrollView>
+              </View>
+            ) : (
+              /* 
+               * Display all actions categorized by "All", "High Impact", 
+               * and "Low Cost".
+               */
+              <View>
+                {/* All Actions */}
+                <Text style={styles.category}>All</Text>
+                <ScrollView 
+                  horizontal={true} 
+                  showsHorizontalScrollIndicator={false}
+                >
+                  <HStack 
+                    space={2} 
+                    justifyContent="center" 
+                    mx={15} 
+                    marginBottom={15}
+                  >
+                    {actions.map((action, index) => {
+                      return (
+                        <ActionCard
+                          key={index}
+                          navigation={navigation}
+                          id={action.id}
+                          title={action.title}
+                          imgUrl={action.image?.url}
+                          impactMetric={getActionMetric(action, "Impact")}
+                          costMetric={getActionMetric(action, "Cost")}
+                        />
+                      );
+                    })}
+                  </HStack>
+                </ScrollView>
+
+                {/* High Impact */}
+                <Text style={styles.category}>High Impact</Text>
+                <ScrollView 
+                  horizontal={true} 
+                  showsHorizontalScrollIndicator={false}
+                >
+                  <HStack 
+                    space={2} 
+                    justifyContent="center" 
+                    mx={15} 
+                    marginBottom={15}
+                  >
+                    {actions
+                      .filter(action => getActionMetric(action, "Impact") === "High")
+                      .map((action, index) => {
+                        return (
+                          <ActionCard
+                            key={index}
+                            navigation={navigation}
+                            id={action.id}
+                            title={action.title}
+                            imgUrl={action.image?.url}
+                            impactMetric={getActionMetric(action, "Impact")}
+                            costMetric={getActionMetric(action, "Cost")}
+                          />
+                        );
+                      })}
+                  </HStack>
+                </ScrollView>
+
+                {/* Low Cost */}
+                <Text style={styles.category}>Low Cost</Text>
+                <ScrollView 
+                  horizontal={true} 
+                  showsHorizontalScrollIndicator={false}
+                >
+                  <HStack 
+                    space={2} 
+                    justifyContent="center" 
+                    mx={15} 
+                    marginBottom={15}
+                  >
+                    {actions
+                      .filter(action => getActionMetric(action, "Cost") === "$" 
+                              || getActionMetric(action, "Cost") === "0")
+                      .map((action, index) => {
+                        return (
+                          <ActionCard
+                            key={index}
+                            navigation={navigation}
+                            id={action.id}
+                            title={action.title}
+                            imgUrl={action.image?.url}
+                            impactMetric={getActionMetric(action, "Impact")}
+                            costMetric={getActionMetric(action, "Cost")}
+                          />
+                        );
+                      })}
+                  </HStack>
+                </ScrollView>
+              </View>
+            )}
           </View>
         )}
       </ScrollView>
@@ -112,8 +303,9 @@ const ActionsScreen = ({navigation, actions}) => {
 }
 
 const styles = StyleSheet.create({
-  scroll: {
-    height: "80",
+  container: {
+    height: '100%', 
+    backgroundColor: 'white'
   },
   category: {
     padding: 15,
@@ -125,9 +317,28 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     padding: 20,
+  },
+  expandButton: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  filterContainer: {
+    marginHorizontal: 10,
+    marginVertical: 20,
+  },
+  filterVStack: {
+    alignItems: 'center',
+  },
+  filterSelect: {
+    width: '90%',
   }
 });
 
+/* 
+ * Transforms the local state of the app into the properties of the 
+ * ActionsScreen function, in which it is got from the API.
+ */
 const mapStateToProps = (state) => {
   return {
     actions: state.actions,
