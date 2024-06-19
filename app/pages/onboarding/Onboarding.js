@@ -5,12 +5,12 @@
  *      for when the user accesses the app for the first time.
  * 
  *      Written by: Moizes Almeida
- *      Last edited: May 31, 2024
+ *      Last edited: June 19, 2024
  * 
  *****************************************************************************/
 
 /* Imports and set up */
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Image,
   Box,
@@ -34,29 +34,27 @@ const STEPS = [
   {
     title: "Witness Your Impact",
     description: "<p><strong>MassEnergize</strong> offers you access to compelling and inspirational data, presenting the number of households actively engaged in diverse actions.</p>",
-    image: require("../../assets/intro-step-3.png"),
+    image: require("../../assets/intro-step-2.png"),
   },
   {
     title: "Collaborate With Your Neighbor",
     description: "<p><strong>Access</strong> a diverse range of climate actions tailored to your community.</p>",
-    image: require("../../assets/intro-step-2.png"),
+    image: require("../../assets/intro-step-3.png"),
   },
   {
     title: "Find A Community Near You",
     description:
       "<p><strong>Connect</strong> with local communities to foster social connections, promote engagement, and achieve one common goal: <strong>take climate actions</strong>.</p>",
-    image: require("../../assets/intro-step-1.png"),
+    image: require("../../assets/intro-step-4.png"),
   },
 ];
 
 export default function OnboardingPage({ navigation }) {
   /*
    * Uses local state to determine the current step that the user is
-   * currently on and the source of the image to be displayed in the 
-   * background image of the onboarding page.
+   * currently on.
    */
   const [currentStep, setCurrentStep] = useState(0);
-  const [imgSrc, setImgSrc] = useState(STEPS[currentStep].image);
 
   /* 
    * Function to handle when the user clicks on the button to go to 
@@ -80,11 +78,6 @@ export default function OnboardingPage({ navigation }) {
     }
   };
 
-  /* Sets the current background image of the page */
-  useEffect(() => {
-    setImgSrc(STEPS[currentStep].image);
-  }, [currentStep]);
-
   /* Displays the onboarding pages */
   return (
     <Box width="100%" flex="1">
@@ -107,7 +100,11 @@ export default function OnboardingPage({ navigation }) {
 
       {/* Background Image */}
       <AspectRatio>
-        <MEImage src={imgSrc} key={imgSrc} altComponent={<></>} />
+        <Image
+          source={STEPS[currentStep].image}
+          alt="image"
+          style={{ width: '100%', height: '100%' }}
+        />
       </AspectRatio>
 
       {/* Background Overlay */}
@@ -116,7 +113,7 @@ export default function OnboardingPage({ navigation }) {
         height="100%"
         position="absolute"
         backgroundColor="primary.400"
-        opacity="30"
+        opacity={0.3}
       ></Box>
 
       {/* Main */}
@@ -140,7 +137,7 @@ export default function OnboardingPage({ navigation }) {
         }}
       >
         <Flex
-          flexDirection="colum"
+          flexDirection="column"
           flex="1"
           width="100%"
           px="6"
@@ -204,7 +201,7 @@ export default function OnboardingPage({ navigation }) {
               </Button>
               <Button
                 size="lg"
-                variant={currentStep === STEPS.length - 1 ? "solid" : "ghost"}
+                variant="solid"
                 _text={{ fontWeight: "bold" }}
                 onPress={handleNext}
               >
