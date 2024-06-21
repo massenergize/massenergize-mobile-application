@@ -5,7 +5,7 @@
  *      an event to the selected community.
  * 
  *      Written by: Moizes Almeida
- *      Last edited: June 14, 2024
+ *      Last edited: June 21, 2024
  * 
  *****************************************************************************/
 
@@ -91,8 +91,8 @@ const AddEvent = ({
      * location within the state of Massachusetts.
      */
     let location = {
-        "address": "", 
-        "city": "", 
+        "address": null, 
+        "city": null, 
         "country": "US", 
         "state": "MA", 
         "unit": null, 
@@ -161,6 +161,7 @@ const AddEvent = ({
 
         apiCall("events.add", data).then((response) => {
             setIsSubmitting(false);
+            setIsSent(true);
 
             if (!response.success) {
                 showError('An error occurred while adding event. Please try again.');
@@ -191,7 +192,14 @@ const AddEvent = ({
                 px={3}
             >
                 <VStack>
-                    <Text bold fontSize="lg" mt={5} style={{alignSelf: 'center', color: '#64B058'}}>
+                    <Text 
+                        bold 
+                        fontSize="lg" 
+                        mt={5} 
+                        style={{
+                            alignSelf: 'center', 
+                            color: '#64B058'
+                        }}>
                         Create Event Form
                     </Text>
                     <Formik
@@ -222,13 +230,9 @@ const AddEvent = ({
                                     mt={5}
                                     isRequired
                                     isInvalid={errors.title && touched.title}
-                                    style={{
-                                        flex: 1,
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                    }}
+                                    
                                 >
-                                    <FormControl.Label>
+                                    <FormControl.Label style={{fontSize: 14}}>
                                         Event Name
                                     </FormControl.Label>
                                     <Input
@@ -238,9 +242,7 @@ const AddEvent = ({
                                         onChangeText={handleChange("title")}
                                         onBlur={handleBlur("title")}
                                         value={values.title}
-                                        style={{
-                                            marginTop: 10,
-                                        }}
+                                        mt={2}
                                     />
                                     {
                                         errors.title && touched.title ? (
@@ -267,8 +269,8 @@ const AddEvent = ({
                                     }
                                     style={{
                                         flex: 1,
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
+                                        alignItems: 'flex-start',
+                                        justifyContent: 'flex-start',
                                         gap: 10
                                     }}
                                 >   
@@ -284,7 +286,7 @@ const AddEvent = ({
                                     />
                                     {
                                         startDate && 
-                                        <Text>
+                                        <Text ml={5} color="#64B058">
                                             Start Date: {startDate
                                                             .toLocaleString()}
                                         </Text>
@@ -301,8 +303,8 @@ const AddEvent = ({
                                     }
                                     style={{
                                         flex: 1,
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
+                                        alignItems: 'flex-start',
+                                        justifyContent: 'flex-start',
                                         gap: 10,
                                     }}
                                 >   
@@ -318,7 +320,7 @@ const AddEvent = ({
                                     />
                                     {
                                         endDate && 
-                                        <Text>
+                                        <Text ml={5} color="#64B058">
                                             End Date: {endDate
                                                             .toLocaleString()}
                                         </Text>
@@ -332,11 +334,6 @@ const AddEvent = ({
                                         errors.format &&
                                         touched.format
                                     }
-                                    style={{
-                                        flex: 1,
-                                        alignItems: 'center',
-                                        justifyContent: 'center'
-                                    }}
                                 >
                                     <FormControl.Label>
                                         Is this event?
@@ -399,12 +396,7 @@ const AddEvent = ({
                                 >
                                     {format === 'online' || format === 'both' ? (
                                         <View
-                                            style={{
-                                                flex: 1,
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
-                                                marginBottom: 10,
-                                            }}
+                                            mb={5}
                                         >
                                             <FormControl.Label>
                                                 Link to Join Meeting
@@ -423,13 +415,7 @@ const AddEvent = ({
                                         </View>
                                     ) : null}
                                     {format === 'in-person' || format === 'both' ? (
-                                        <View
-                                            style={{
-                                                flex: 1,
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
-                                            }}
-                                        >
+                                        <View>
                                             <FormControl.Label>
                                                 Enter Location of Event
                                             </FormControl.Label>
@@ -524,6 +510,7 @@ const AddEvent = ({
                                             >
                                                 <Text
                                                     mt={5}
+                                                    color="#64B058"
                                                 >
                                                     Selected image:
                                                 </Text>
@@ -549,9 +536,6 @@ const AddEvent = ({
                                         touched.description
                                     }
                                     style={{
-                                        flex: 1,
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
                                         marginBottom: 10,
                                         gap: 10,
                                         marginTop: 30,

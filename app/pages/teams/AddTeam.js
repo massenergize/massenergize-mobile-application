@@ -5,7 +5,7 @@
  *      a team or subteam to the selected community.
  * 
  *      Written by: Moizes Almeida
- *      Last edited: June 14, 2024
+ *      Last edited: June 21, 2024
  * 
  *****************************************************************************/
 
@@ -156,6 +156,7 @@ const AddTeam = ({
 
         apiCall("teams.add", data).then((response) => {
             setIsSubmitting(false);
+            setIsSent(true);
 
             if (!response.success) {
                 showError('An error occurred while adding team. Please try again.');
@@ -224,11 +225,6 @@ const AddTeam = ({
                                     mt={5}
                                     isRequired
                                     isInvalid={errors.name && touched.name}
-                                    style={{
-                                        flex: 1,
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                    }}
                                 >
                                     <FormControl.Label>
                                         Name
@@ -266,16 +262,12 @@ const AddTeam = ({
                                     isInvalid={
                                         errors.tagline && touched.tagline
                                     }
-                                    style={{
-                                        flex: 1,
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                    }}
                                 >
                                     <FormControl.Label>
                                         Tagline
                                     </FormControl.Label>
                                     <Input
+                                        mt={2}
                                         size="lg"
                                         borderRadius={25}
                                         placeholder="A catchy slogan for your team..."
@@ -305,11 +297,6 @@ const AddTeam = ({
                                 <FormControl
                                     mt={5}
                                     isInvalid={errors.admins && touched.admins}
-                                    style={{
-                                        flex: 1,
-                                        alignItems: 'center',
-                                        justifyContent: 'center'
-                                    }}
                                 >
                                     <FormControl.Label>
                                         Add team admins here with their emails
@@ -329,7 +316,7 @@ const AddTeam = ({
                                     <Button
                                         style={{
                                             width: '30%',
-                                            marginTop: 10,
+                                            marginTop: 15,
                                         }}
                                         onPress={() => handleAddAdmin(values.admins)}
                                     >
@@ -339,7 +326,7 @@ const AddTeam = ({
                                         style={{
                                             flexDirection: 'row',
                                             flexWrap: 'wrap',
-                                            marginTop: 10,
+                                            marginTop: 20,
                                             alignItems: 'center',
                                             justifyContent: 'center',
                                             gap: 10,
@@ -374,22 +361,18 @@ const AddTeam = ({
 
                                 {/* Description */}
                                 <FormControl
-                                    mt={3}
+                                    mt={5}
                                     isRequired
                                     isInvalid={
                                         errors.description && 
                                         touched.description
                                     }
-                                    style={{
-                                        flex: 1,
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                    }}
                                 >
                                     <FormControl.Label>
                                         Description
                                     </FormControl.Label>
                                     <Input
+                                        mt={3}
                                         size="lg"
                                         borderRadius={25}
                                         placeholder="Describe your team. Who are you and what brings you together?..."
@@ -450,7 +433,7 @@ const AddTeam = ({
                                                     marginBottom: 10
                                                 }}
                                             >
-                                                <Text mt={5}>
+                                                <Text mt={5} color="#64B058">
                                                     Selected image:
                                                 </Text>
                                                 <Image
@@ -467,49 +450,59 @@ const AddTeam = ({
                                 </FormControl>
 
                                 {/* Parent */}
-                                <FormControl
-                                    mt={5}
-                                    isInvalid={errors.parent && touched.parent}
-                                    style={{
-                                        flex: 1,
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        gap: 10
-                                    }}
-                                >
-                                    <FormControl.Label>
-                                        Parent Team
-                                    </FormControl.Label>
-                                    <Text style={{textAlign: 'center'}}>
-                                        You can pick a parent team to which all 
-                                        of your members' actions will also 
-                                        automatically contribute
-                                    </Text>
-                                    <Select
-                                        borderRadius={10}
-                                        mb={3}
-                                        selectedValue={values.parent}
-                                        minWidth={200}
-                                        accessibilityLabel="Choose Category"
-                                        placeholder="Choose which team is the parent team"
-                                        onValueChange={(itemValue) => setFieldValue('parent', itemValue)}
-                                    >
-                                        <ScrollView>
-                                        {teamsList.map((teamName, index) => (
-                                            <Select.Item
-                                                key={index}
-                                                label={teamName}
-                                                value={teamName}
-                                            />
-                                        ))}
-                                        </ScrollView>
-                                    </Select>
-                                </FormControl>
+                                {
+                                    teamsList.length !== 0 ? (
+                                        <FormControl
+                                            mt={5}
+                                            isInvalid={
+                                                errors.parent && touched.parent
+                                            }
+                                            style={{
+                                                gap: 10
+                                            }}
+                                        >
+                                            <FormControl.Label>
+                                                Parent Team
+                                            </FormControl.Label>
+                                            <Text>
+                                                You can pick a parent team to 
+                                                which all of your members' 
+                                                actions will also 
+                                                automatically contribute
+                                            </Text>
+                                            <Select
+                                                mt={2}
+                                                borderRadius={10}
+                                                mb={3}
+                                                selectedValue={values.parent}
+                                                minWidth={200}
+                                                accessibilityLabel="Choose Category"
+                                                placeholder="Choose which team is the parent team"
+                                                onValueChange={
+                                                    (itemValue) => 
+                                                    setFieldValue('parent', 
+                                                    itemValue)
+                                                }
+                                            >
+                                                <ScrollView>
+                                                {
+                                                    teamsList.map((teamName, 
+                                                                   index) => (
+                                                        <Select.Item
+                                                            key={index}
+                                                            label={teamName}
+                                                            value={teamName}
+                                                        />
+                                                ))}
+                                                </ScrollView>
+                                            </Select>
+                                        </FormControl>
+                                ) : null}
 
                                 {/* Submit Team */}
                                 <Button
                                     mt={5}
-                                    mb={20}
+                                    mb={10}
                                     bg="primary.400"
                                     isLoading={isSubmitting}
                                     loadingText="Sending..."
