@@ -26,7 +26,8 @@ import {
   Heading,
   Image,
   AspectRatio,
-  Spinner
+  Spinner,
+  Button
 } from '@gluestack-ui/themed-native-base';
 import { RefreshControl } from 'react-native-gesture-handler';
 import Carousel from 'pinar';
@@ -237,6 +238,9 @@ const CommunityHomeScreen = ({
             <Center position="absolute" zIndex={1} height="100%" width="100%" px="2">
               <Heading color="white" fontWeight="bold" size="xl" textAlign="center">{communityInfo.name}</Heading>
               <Text color="white" textAlign="center" fontSize={["xs", "sm"]}>{homeSettings.sub_title}</Text>
+              <Button onPress={() => navigation.navigate("Questionaire")}>
+                Questionaire
+              </Button>
             </Center>
             <BackgroundCarousel data={homeSettings.images} />
           </Box>

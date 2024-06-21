@@ -6,7 +6,7 @@
  *      actions they performed, and their team members.
  * 
  *      Written by: Moizes Almeida
- *      Last edited: June 14, 2024
+ *      Last edited: June 21, 2024
  * 
  *****************************************************************************/
 
@@ -26,7 +26,6 @@ import {
 import { StyleSheet } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { fetchAllCommunityData } from '../../config/redux/actions';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import TeamCard from './TeamCard';
 import { bindActionCreators } from 'redux';
@@ -76,18 +75,6 @@ const TeamsScreen = ({ navigation, teams, fireAuth, toggleModal }) => {
   };
 
   /* 
-   * If the information of the team is not available, or if there are no
-   * teams in the community, display message.
-   */
-  if (!teams || teams.length === 0) {
-    return (
-      <View style={styles.noInfoContainer}>
-        <Text style={styles.noInfoText}>No Teams information</Text>
-      </View>
-    );
-  }
-
-  /* 
    * If the sub-team expand button is selected, it is possible to either
    * expand it or undo the expand.
    */
@@ -119,11 +106,8 @@ const TeamsScreen = ({ navigation, teams, fireAuth, toggleModal }) => {
     );
   }
 
-  console.log(teams);
-
   /* Displays the community's team/sub-teams information */
   return (
-    // <NativeBaseConfigProvider config={config}>
     <View>
       {isLoading ? (
         <Center flex={1}>
@@ -135,7 +119,12 @@ const TeamsScreen = ({ navigation, teams, fireAuth, toggleModal }) => {
             {
               renderAddTeam()
             }
-            {teamsList.map((team, i) => {
+            { teamsList.length === 0 ? (
+              <View style={styles.noInfoContainer}>
+                <Text style={styles.noInfoText}>No Teams information</Text>
+              </View>
+            ) : ( 
+              teamsList.map((team, i) => {
               return (
                 <View key={i}>
                   <TeamCard
@@ -181,7 +170,7 @@ const TeamsScreen = ({ navigation, teams, fireAuth, toggleModal }) => {
                   )}
                 </View>
               );
-            })}
+            }))}
           </VStack>
         </ScrollView>
       )}
@@ -191,7 +180,7 @@ const TeamsScreen = ({ navigation, teams, fireAuth, toggleModal }) => {
 
 const styles = StyleSheet.create({
   noInfoContainer: {
-    height: '100%',
+    marginTop: 200,
     justifyContent: 'center',
     alignItems: 'center',
   },

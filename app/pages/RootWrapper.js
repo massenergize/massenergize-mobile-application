@@ -39,6 +39,7 @@ import AddTestimonial from './testimonials/AddTestimonial';
 import EmailOnly from './auth/EmailOnly';
 import AddEvent from './events/AddEvent';
 import AddTeam from './teams/AddTeam';
+import Questionaire from './onboarding/Questionaire';
 
 GoogleSignin.configure({
   webClientId:
@@ -121,6 +122,11 @@ const RootWrapper = ({
           options={{headerShown: false}}
           name="Onboarding"
           component={OnboardingPage}
+        />
+        <MainStack.Screen 
+          options={{headerShown: false}}
+          name="Questionaire"
+          component={Questionaire}
         />
         <MainStack.Screen
           options={{headerShown: false}}
