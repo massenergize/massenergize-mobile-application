@@ -7,7 +7,7 @@
  *      of the community.
  * 
  *      Written by: Moizes Almeida
- *      Last edited: June 5, 2024
+ *      Last edited: June 24, 2024
  * 
  *****************************************************************************/
 
@@ -27,7 +27,8 @@ import {
   Image,
   AspectRatio,
   Spinner,
-  Button
+  Button,
+  Icon
 } from '@gluestack-ui/themed-native-base';
 import { RefreshControl } from 'react-native-gesture-handler';
 import Carousel from 'pinar';
@@ -41,6 +42,7 @@ import { connect } from 'react-redux';
 import { useDetails } from '../../utils/hooks';
 import { ActivityIndicator } from 'react-native-paper';
 import { StyleSheet } from 'react-native';
+import { FontAwesomeIcon } from '../../components/icons';
 
 /* Defines the colors of the three charts of the impact of the community */
 const colors = ["#DC4E34", "#64B058", "#000000"];
@@ -203,6 +205,10 @@ const CommunityHomeScreen = ({
   const community_id = communityInfo.id;
   /* Uses local state to determine if the app is refreshing or no */
   const [refreshing, setRefreshing] = useState(false);
+  
+  /* Placeholder for the User Preferences button */
+  /* TO-DO: This should be a part of the API instead of local state */
+  const [preferences, setPreferences] = useState(false);
 
   /* Fetch the information from the community */
   useEffect(() => {
@@ -238,14 +244,52 @@ const CommunityHomeScreen = ({
             <Center position="absolute" zIndex={1} height="100%" width="100%" px="2">
               <Heading color="white" fontWeight="bold" size="xl" textAlign="center">{communityInfo.name}</Heading>
               <Text color="white" textAlign="center" fontSize={["xs", "sm"]}>{homeSettings.sub_title}</Text>
-              <Button onPress={() => navigation.navigate("Questionaire")}>
-                Questionaire
-              </Button>
             </Center>
             <BackgroundCarousel data={homeSettings.images} />
           </Box>
         <VStack alignItems="center" space={3} bg="white" top="-3%" borderTopRadius={30} pt="5">
           <GoalsCard navigation={navigation} goals={communityInfo.goal} community_id={community_id} />
+
+          {/* User preferences card */}
+          { !preferences && (
+            <Pressable
+              onPress={() => {
+                setPreferences(true);
+                navigation.navigate("Questionnaire"); 
+              }}
+              mx={4}
+              width="100%"
+            >
+              <Box
+                shadow="1"
+                bg="white"
+                alignItems="center"
+                rounded="xl"
+                p={3}
+                mx={4}
+                borderWidth={1}
+                borderColor="primary.400"
+              >
+                <HStack alignItems="center" gap="1">
+                  <Icon
+                    as={FontAwesomeIcon}
+                    name="cog"
+                    size="lg"
+                    color="primary.600"
+                    mx={2}
+                  />
+
+                  <VStack>
+                    <Text bold fontSize="lg">Complete Your Preferences</Text>
+                    <Text fontSize="sm" color="gray.500">
+                      Help us tailor recommendations to you!
+                    </Text>
+                  </VStack>
+                </HStack>
+              </Box>
+            </Pressable>
+          )}
+          
           <HStack alignItems="center" pb={2} pt={3}>
             <HeaderText text="Recommended Actions"/>
             <Spacer/>
