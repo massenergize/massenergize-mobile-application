@@ -5,7 +5,7 @@
  *      a team or subteam to the selected community.
  * 
  *      Written by: Moizes Almeida
- *      Last edited: June 21, 2024
+ *      Last edited: June 24, 2024
  * 
  *****************************************************************************/
 
@@ -148,7 +148,7 @@ const AddTeam = ({
             community_id: community_id,
             name: values.name,
             tagline: values.tagline,
-            admins: values.admins,
+            admins: adminsEmails,
             description: values.description,
             image: values.image,
             parent: values.parent
@@ -529,8 +529,8 @@ const AddTeam = ({
                             <Center mb="5">
                                 <Icon
                                     as={FontAwesomeIcon}
-                                    name="circle-check"
-                                    size="90px"
+                                    name="check-circle"
+                                    size="lg"
                                     color="primary.600"
                                 />
                                 <Text
