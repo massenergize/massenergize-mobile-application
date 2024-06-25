@@ -241,7 +241,6 @@ const CommunityHomeScreen = ({
       <Pressable
       onPress={() => {
         if (fireAuth) {
-          setPreferences(true);
           navigation.navigate("Questionnaire");
         } else {
           toggleModal({
