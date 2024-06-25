@@ -26,6 +26,7 @@ import {
   SET_TEAMS_STATS,
   SET_TESTIMONIALS_LIST,
   SET_TESTIMONIALS_PAGE_INFO,
+  SET_QUESTIONNAIRE_INFO,
   SET_VENDORS_LIST,
   SET_VENDORS_PAGE_INFO,
   TOGGLE_UNIVERSAL_MODAL,
@@ -118,5 +119,9 @@ export const reducerForUserTodo = (state = null, action) => {
 }
 export const reducerForUserCompleted = (state = null, action) => {
   if (action?.type === SET_ME_USER_COMPLETED) return action.payload;
+  return state;
+}
+export const reducerForQuestionnaireInfo = (state = null, action) => {
+  if (action?.type === SET_QUESTIONNAIRE_INFO) return action.payload;
   return state;
 }

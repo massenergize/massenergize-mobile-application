@@ -10,7 +10,8 @@ import {
   setActiveCommunityAction,
   setFirebaseAuthenticationAction,
   toggleUniversalModalAction,
-  fetchAllUserInfo
+  fetchAllUserInfo,
+  setQuestionnaireInfo
 } from '../config/redux/actions';
 import {NavigationContainer, useNavigation} from '@react-navigation/native';
 import {isUserAuthenticated} from '../config/firebase';
@@ -21,7 +22,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import LoadingScreen from './misc/LoadingScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {COMMUNITY_CHOICE} from '../utils/values';
+import {COMMUNITY_CHOICE, QUESTIONNAIRE_DATA} from '../utils/values';
 import ActionDetails from './actions/ActionDetails';
 import EventDetails from './events/EventDetails';
 import OnboardingPage from './onboarding/Onboarding';
@@ -64,7 +65,8 @@ const RootWrapper = ({
   activeCommunity,
   setActiveCommunity,
   fetchMEUser,
-  fetchAllUserInfo
+  fetchAllUserInfo,
+  setQuestionnaireInfo
 }) => {
   const navigation = useNavigation();
   useEffect(() => {
@@ -76,6 +78,7 @@ const RootWrapper = ({
       .catch(e => console.log('ERROR_FETCHING_SAVED_CHOICE', e.toString()));
   }, []);
 
+  /* Get the list of communities from the backend and current community choice */
   useEffect(() => {
     const {zipcode, miles} = zipcodeOptions || {};
     // First time app launches, it will load a few communities at 10 miles... (zipcode is set as wayland zip, and 10 miles check reducers.js)
@@ -101,6 +104,7 @@ const RootWrapper = ({
     });
   }, []);
 
+  /* Check if user is authenticated */
   useEffect(() => {
     isUserAuthenticated((yes, user) => {
       console.log('USER IS FIREBASE_AUTHENTICATED: ', user?.email);
@@ -114,6 +118,16 @@ const RootWrapper = ({
     });
   }, []);
 
+  /* Check for questionaire completion */
+  useEffect(() => {
+    AsyncStorage.getItem(QUESTIONNAIRE_DATA)
+      .then(data => {
+        console.log(data);
+        setQuestionnaireInfo(JSON.parse(data));
+      })
+      .catch(e => console.log('ERROR_FETCHING_QUESTIONAIRE_DATA', e.toString()));
+  }, []);
+
   return (
     // <NavigationContainer>
     <>
@@ -124,7 +138,7 @@ const RootWrapper = ({
           component={OnboardingPage}
         />
         <MainStack.Screen 
-          options={{headerShown: false}}
+          // options={{headerShown: false}}
           name="Questionnaire"
           component={Questionnaire}
         />
@@ -250,6 +264,7 @@ const mapDispatchToProps = dispatch => {
       setActiveCommunity: setActiveCommunityAction,
       fetchMEUser: fetchUserProfile,
       fetchAllUserInfo: fetchAllUserInfo,
+      setQuestionnaireInfo: setQuestionnaireInfo
     },
     dispatch,
   );

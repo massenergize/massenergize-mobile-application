@@ -38,6 +38,13 @@ export default function ServiceProviderDetails({ route, navigation }) {
 
   const [imageError, setImageError] = useState(false);
 
+  const addHttp = (url) => {
+    if (!/^(?:f|ht)tps?\:\/\//.test(url)) {
+      return "http://" + url;
+    }
+    return url;
+  }
+
   // set the header title when the details are loaded
   useEffect(() => {
     spDetails
@@ -109,12 +116,15 @@ export default function ServiceProviderDetails({ route, navigation }) {
                   <Icon as={FontAwesome} name="envelope" size="sm" />
                   <Link isUnderlined={false}>{spDetails.email || "N/A"}</Link>
                 </HStack>
-                <HStack space="5">
-                  <Icon as={FontAwesome} name="globe" size="sm" />
-                  <Link _text={{ color: "primary.400" }}>
-                    {spDetails.website || "N/A"}
-                  </Link>
-                </HStack>
+                
+                {spDetails.website &&
+                  <HStack space="5">
+                    <Icon as={FontAwesome} name="globe" size="sm" />
+                    <Link _text={{ color: "primary.400" }} href={addHttp(spDetails.website)}>
+                      {spDetails.website}
+                    </Link>
+                  </HStack>
+                }
               </VStack>
             </Box>
           </Box>

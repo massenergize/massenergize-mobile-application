@@ -23,6 +23,7 @@ import {
   reducerForTeamsStats,
   reducerForTestimonialList,
   reducerForTestimonialsPageInfo,
+  reducerForQuestionnaireInfo,
   reducerForUserCompleted,
   reducerForUserProfile,
   reducerForUserTodo,
@@ -53,6 +54,7 @@ const rootReducer = combineReducers({
   homePage: reducerForHomepageInfo,
   vendorsPage: reducerForVendorsPageInfo,
   testimonialsPage: reducerForTestimonialsPageInfo,
+  questionnaire: reducerForQuestionnaireInfo,
   userTodo: reducerForUserTodo,
   userCompleted: reducerForUserCompleted,
 });

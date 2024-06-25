@@ -26,6 +26,7 @@ import {
   SET_ME_USER_COMPLETED,
   SET_ME_USER_PROFILE,
   SET_ME_USER_TODO,
+  SET_QUESTIONNAIRE_INFO,
   SET_TEAMSPAGE_INFO,
   SET_TEAMS_STATS,
   SET_TESTIMONIALS_LIST,
@@ -60,6 +61,9 @@ export const setActiveCommunityAction = payload => {
 export const setUserProfile = payload => {
   return {type: SET_ME_USER_PROFILE, payload};
 };
+export const setQuestionnaireInfo = payload => {
+  return {type: SET_QUESTIONNAIRE_INFO, payload};
+};
 export const setActionWithValue = (type, payload) => {
   return {type, payload};
 };
@@ -75,7 +79,7 @@ export const fetchUserProfile = (idToken, cb) => dispatch => {
       if (!response.success) {
         showError(response.error);
         console.error('ERROR_FETCHING_USER_PROFILE', response.error);
-        cb & cb(null, response.error);
+        cb && cb(null, response.error);
         return;
       }
       cb && cb(response.data);
@@ -84,6 +88,7 @@ export const fetchUserProfile = (idToken, cb) => dispatch => {
     .catch(err => {
       const error = err?.toString();
       cb && cb(null, error);
+      console.error('ERROR_FETCHING_USER_PROFILE', error);
       showError(error);
     });
 };

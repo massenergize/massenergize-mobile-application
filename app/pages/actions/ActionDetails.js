@@ -77,7 +77,7 @@ const ActionDetails = ({
     if (fireAuth) {
       if (actionInToDo()) return; // TODO: figure out why removing from todo list is not working
       // Action depends on whether the action is already in the user's todo list
-      if (actionInToDo()) { 
+      if (actionInToDo()) {
         // Updates the backend, redux, and displays a success message
         updateUserAction(
           "users.actions.remove",
@@ -146,7 +146,7 @@ const ActionDetails = ({
       });
     }
   };
-  
+
   // get testimonials related to this action
   const actionTestimonials = (
     testimonialsSettings.is_published
@@ -241,11 +241,11 @@ const ActionDetails = ({
 
   // Main render function
   return (
-    <View style={{height: '100%', backgroundColor: 'white'}}>
+    <View style={{ height: '100%', backgroundColor: 'white' }}>
       {/* Loading indicator */}
       {isActionLoading ? (
         <Center width="100%" height="100%">
-          <Spinner/>
+          <Spinner />
         </Center>
       ) : (
 
@@ -291,7 +291,7 @@ const ActionDetails = ({
                   <HStack justifyContent="space-between" width="100%" mb={5}>
                     <Button
                       size="md"
-                      variant={actionInToDo() ? "outline" : "solid" }
+                      variant={actionInToDo() ? "outline" : "solid"}
                       key={actionInToDo() ? "todo" : "not_todo"}
                       _text={{
                         color: actionInToDo() ? "green" : "white",
@@ -332,9 +332,9 @@ const ActionDetails = ({
                       && actionTestimonials.length > 0
                     ) ? (
                       <TabButton label="Testimonials" name="testimonials" />
-                    ) : null }
+                    ) : null}
                     {(
-                      vendorsSettings.is_published 
+                      vendorsSettings.is_published
                       && action.vendors.length > 0
                     ) ? (
                       <TabButton
@@ -354,7 +354,7 @@ const ActionDetails = ({
           </ScrollView>
 
           {/* Modal for when the user marks the action as done */}
-          <Modal isOpen={isDoneOpen} onClose={() => {}}>
+          <Modal isOpen={isDoneOpen} onClose={() => { }}>
             <Modal.Content maxWidth="400">
               <Modal.Body>
                 <Center mb="5">
@@ -373,13 +373,16 @@ const ActionDetails = ({
                 <HStack width="100%" justifyContent={"center"}>
 
                   {/* Testimonial button temporarily disabled while waiting for user funcitonality */}
-                  <Button 
-                    color={"primary.600"} 
-                    onPress={() => {setIsDoneOpen(false), navigation.navigate("AddTestimonial")}} 
+                  <Button
+                    color={"primary.600"}
+                    onPress={() => {
+                      setIsDoneOpen(false);
+                      navigation.navigate("AddTestimonial", { action_id: action_id });
+                    }}
                     mr={3}
                   >
                     Leave a Testimonial
-                  </Button> 
+                  </Button>
                   <Button
                     variant={"outline"}
                     px={5}
@@ -391,9 +394,9 @@ const ActionDetails = ({
               </Modal.Body>
             </Modal.Content>
           </Modal>
-          
+
           {/* Modal for when the user adds the action to their to-do list */}
-          <Modal isOpen={isToDoOpen} onClose={() => {}}>
+          <Modal isOpen={isToDoOpen} onClose={() => { }}>
             <Modal.Content maxWidth="400">
               <Modal.Body>
                 <Center mb="5">

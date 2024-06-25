@@ -361,6 +361,15 @@ function DashboardPage({
           <SustainScore CompletedList={completedList} />
           <CarbonSaved CompletedList={completedList} />
 
+          {/* Update questionnaire */}
+          {/* <Button
+            onPress={() => navigation.navigate("Questionnaire")}
+            variant="outline"
+            colorScheme="primary"
+          >
+            Update action recommendation settings
+          </Button> */}
+
           {/* Todo and completed list */}
           <Text style={styles.category}>Todo list</Text>
           <ActionsList navigation={navigation} list={todoList} actions={actions} />
