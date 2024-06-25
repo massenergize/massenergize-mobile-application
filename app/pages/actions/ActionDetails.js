@@ -71,19 +71,20 @@ const ActionDetails = ({
     return completedList?.some((completed) => completed.action.id === action.id);
   }
 
+  /* Gets the action-user relation */
 
   // Handles a todo press, adding/removing the action to the user's todo list
   const handleTodoPress = async () => {
     if (fireAuth) {
-      if (actionInToDo()) return; // TODO: figure out why removing from todo list is not working
       // Action depends on whether the action is already in the user's todo list
       if (actionInToDo()) {
         // Updates the backend, redux, and displays a success message
+        const rel_id = todoList.find((todo) => todo.action.id === action_id).id;
         updateUserAction(
           "users.actions.remove",
-          { action_id: action_id, hid: 1 },
+          { id: rel_id },
           (response, error) => {
-            if (error) return console.log("Failed to remove item from todo list:", error);
+            if (error) return console.error("Failed to remove item from todo list:", error);
             setIsToDoOpen(false);
             console.log("Removed " + action.title + " from To-do");
           }
@@ -95,7 +96,7 @@ const ActionDetails = ({
           "users.actions.todo.add",
           { action_id: action_id, hid: 1 },
           (response, error) => {
-            if (error) return console.log("Failed to add item to todo list:", error);
+            if (error) return console.error("Failed to add item to todo list:", error);
             setIsToDoOpen(true);
             console.log("Added " + action.title + " to To-do");
           }
@@ -114,16 +115,17 @@ const ActionDetails = ({
   // completed list
   const handleCompletedPress = async () => {
     if (fireAuth) {
-      if (actionCompleted()) return; // TODO: figure out why removing from completed list is not working
-
       // Action depends on whether the action is already in the user's completed list
-      if (actionCompleted()) { // TODO: figure out why removing from completed list is not working
+      if (actionCompleted()) {
         // Updates the backend, redux, and displays a success message
+        const rel_id = completedList.find((completed) => completed.action.id === action_id).id;
         updateUserAction(
           "users.actions.remove",
-          { action_id: action_id, hid: 1 },
+          { id: rel_id },
           (response, error) => {
             setIsDoneOpen(true);
+            console.log(response, error);
+            if (error) return console.error("Failed to remove item from completed list:", error);
             console.log("Successfully removed item from completed list");
           }
         );

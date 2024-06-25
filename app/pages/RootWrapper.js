@@ -122,7 +122,6 @@ const RootWrapper = ({
   useEffect(() => {
     AsyncStorage.getItem(QUESTIONNAIRE_DATA)
       .then(data => {
-        console.log(data);
         setQuestionnaireInfo(JSON.parse(data));
       })
       .catch(e => console.log('ERROR_FETCHING_QUESTIONAIRE_DATA', e.toString()));

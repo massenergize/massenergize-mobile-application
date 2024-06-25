@@ -67,9 +67,10 @@ const ActionsScreen = ({ navigation, actions, questionnaire }) => {
     });
   };
 
+  /* List of suggested actions based on questionnaire profile */
   const suggestedActions = actions.filter(action => {
     const actionTags = action.tags.map(tag => tag.name);
-    console.log(action.title, actionTags, questionnaire)
+
     return (
       (questionnaire?.categories.some(category => actionTags.includes(category))) &&
       (questionnaire?.type === 'All' || actionTags.includes(questionnaire.type)) &&
