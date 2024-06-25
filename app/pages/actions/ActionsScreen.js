@@ -15,21 +15,22 @@ import React, { useState, useEffect } from 'react';
 import ActionCard from './ActionCard';
 import { connect } from 'react-redux';
 import { StyleSheet } from "react-native";
-import { 
+import {
   View,
-  ScrollView, 
-  HStack, 
-  Text, 
-  Spinner, 
-  Center, 
-  VStack, 
-  Select, 
+  ScrollView,
+  HStack,
+  Text,
+  Spinner,
+  Center,
+  VStack,
+  Select,
   Pressable,
 } from "@gluestack-ui/themed-native-base";
 import { getActionMetric } from "../../utils/common";
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import MEButton from '../../components/button/MEButton';
 
-const ActionsScreen = ({navigation, actions}) => {
+const ActionsScreen = ({ navigation, actions, questionnaire }) => {
   /*
    * Uses local state to determine wheter the user has or not applied any 
    * filter to the actions page, or if they selected the 'Expand Filters'
@@ -44,10 +45,10 @@ const ActionsScreen = ({navigation, actions}) => {
 
   /* Check if any filter is applied */
   useEffect(() => {
-    if (userType !== 'All' || 
-        category !== 'All' || 
-        impact !== 'All' || 
-        cost !== 'All') {
+    if (userType !== 'All' ||
+      category !== 'All' ||
+      impact !== 'All' ||
+      cost !== 'All') {
       setIsFilterApplied(true);
     } else {
       setIsFilterApplied(false);
@@ -60,11 +61,23 @@ const ActionsScreen = ({navigation, actions}) => {
       const actionTags = action.tags.map(tag => tag.name);
 
       return (userType === 'All' || actionTags.includes(userType)) &&
-             (category === 'All' || actionTags.includes(category)) &&
-             (impact === 'All' || actionTags.includes(impact)) &&
-             (cost === 'All' || actionTags.includes(cost));
+        (category === 'All' || actionTags.includes(category)) &&
+        (impact === 'All' || actionTags.includes(impact)) &&
+        (cost === 'All' || actionTags.includes(cost));
     });
   };
+
+  const suggestedActions = actions.filter(action => {
+    const actionTags = action.tags.map(tag => tag.name);
+    console.log(action.title, actionTags, questionnaire)
+    return (
+      (questionnaire?.categories.some(category => actionTags.includes(category))) &&
+      (questionnaire?.type === 'All' || actionTags.includes(questionnaire.type)) &&
+      (questionnaire?.impact === 'All' || actionTags.includes(questionnaire.impact)) &&
+      (questionnaire?.cost === 'All' || actionTags.includes(questionnaire.cost))
+    );
+  });
+
 
   /* Variable that holds the list of filtered actions */
   const filteredActions = applyFilter(actions);
@@ -95,69 +108,7 @@ const ActionsScreen = ({navigation, actions}) => {
         </Pressable>
 
         {/* Filter Options */}
-        {expand && (
-          <View style={styles.filterContainer}>
-            <VStack 
-              space={2} 
-              style={styles.filterVStack}
-            >
-              <Text>I am a...</Text>
-              <Select 
-                selectedValue={userType} 
-                onValueChange={(value) => setUserType(value)} 
-                style={styles.filterSelect}
-              >
-                <Select.Item label="All" value="All" />
-                <Select.Item label="Student" value="Student" />
-                <Select.Item label="Homeowner" value="Homeowner" />
-                <Select.Item label="Renter" value="Renter" />
-                <Select.Item label="Condo" value="Condo" />
-                <Select.Item label="Business" value="Business" />
-              </Select>
-
-              <Text>Category</Text>
-              <Select 
-                selectedValue={category} 
-                onValueChange={(value) => setCategory(value)} 
-                style={styles.filterSelect}
-              >
-                <Select.Item label="All" value="All" />
-                <Select.Item label="Transportation" value="Transportation" />
-                <Select.Item label="Home Energy" value="Home Energy" />
-                <Select.Item label="Waste & Recycling" value="Waste & Recycling" />
-                <Select.Item label="Food" value="Food" />
-                <Select.Item label="Activism & Education" value="Activism & Education" />
-                <Select.Item label="Solar" value="Solar" />
-                <Select.Item label="Land, Soil, & Water" value="Land, Soil, & Water" />
-              </Select>
-
-              <Text>Impact</Text>
-              <Select 
-                selectedValue={impact} 
-                onValueChange={(value) => setImpact(value)} 
-                style={styles.filterSelect}
-              >
-                <Select.Item label="All" value="All" />
-                <Select.Item label="High" value="High" />
-                <Select.Item label="Medium" value="Medium" />
-                <Select.Item label="Low" value="Low" />
-              </Select>
-
-              <Text>Cost</Text>
-              <Select 
-                selectedValue={cost}
-                onValueChange={(value) => setCost(value)}
-                style={styles.filterSelect}
-              >
-              <Select.Item label="All" value="All" />
-              <Select.Item label="0" value="0" />
-              <Select.Item label="$" value="$" />
-              <Select.Item label="$$" value="$$" />
-              <Select.Item label="$$$" value="$$$" />
-              </Select>
-            </VStack>
-          </View>
-        )}
+        {expand && filterOptions()}
 
         {/* Display loading spinner if actions are not loaded */}
         {!actions ? (
@@ -169,35 +120,7 @@ const ActionsScreen = ({navigation, actions}) => {
             {isFilterApplied ? (
               /* Display filtered actions */
               <View>
-                <Text style={styles.category}>
-                  Filtered Actions
-                </Text>
-
-                <ScrollView 
-                  horizontal={true} 
-                  showsHorizontalScrollIndicator={false}
-                >
-                  <HStack 
-                    space={2} 
-                    justifyContent="center" 
-                    mx={15} 
-                    marginBottom={15}
-                  >
-                    {filteredActions.map((action, index) => {
-                      return (
-                        <ActionCard
-                          key={index}
-                          navigation={navigation}
-                          id={action.id}
-                          title={action.title}
-                          imgUrl={action.image?.url}
-                          impactMetric={getActionMetric(action, "Impact")}
-                          costMetric={getActionMetric(action, "Cost")}
-                        />
-                      );
-                    })}
-                  </HStack>
-                </ScrollView>
+                {ActionList(filteredActions, "Filtered Actions")}
               </View>
             ) : (
               /* 
@@ -205,94 +128,40 @@ const ActionsScreen = ({navigation, actions}) => {
                * and "Low Cost".
                */
               <View>
-                {/* All Actions */}
-                <Text style={styles.category}>All</Text>
-                <ScrollView 
-                  horizontal={true} 
-                  showsHorizontalScrollIndicator={false}
+                {/* Suggested */}
+                {questionnaire && suggestedActions.length > 0 &&
+                  ActionList(suggestedActions, "Suggested")
+                }
+                <MEButton
+                  title="Update action preferences"
+                  asLink
+                  onPress={() => navigation.navigate("Questionnaire")}
+                  style={{ margin: 15 }}
                 >
-                  <HStack 
-                    space={2} 
-                    justifyContent="center" 
-                    mx={15} 
-                    marginBottom={15}
-                  >
-                    {actions.map((action, index) => {
-                      return (
-                        <ActionCard
-                          key={index}
-                          navigation={navigation}
-                          id={action.id}
-                          title={action.title}
-                          imgUrl={action.image?.url}
-                          impactMetric={getActionMetric(action, "Impact")}
-                          costMetric={getActionMetric(action, "Cost")}
-                        />
-                      );
-                    })}
-                  </HStack>
-                </ScrollView>
+                  Update action preferences
+                </MEButton>
+
+                {/* All Actions */}
+                {ActionList(actions, "All")}
 
                 {/* High Impact */}
-                <Text style={styles.category}>High Impact</Text>
-                <ScrollView 
-                  horizontal={true} 
-                  showsHorizontalScrollIndicator={false}
-                >
-                  <HStack 
-                    space={2} 
-                    justifyContent="center" 
-                    mx={15} 
-                    marginBottom={15}
-                  >
-                    {actions
-                      .filter(action => getActionMetric(action, "Impact") === "High")
-                      .map((action, index) => {
-                        return (
-                          <ActionCard
-                            key={index}
-                            navigation={navigation}
-                            id={action.id}
-                            title={action.title}
-                            imgUrl={action.image?.url}
-                            impactMetric={getActionMetric(action, "Impact")}
-                            costMetric={getActionMetric(action, "Cost")}
-                          />
-                        );
-                      })}
-                  </HStack>
-                </ScrollView>
+                {
+                  ActionList(
+                    actions
+                      .filter(action => getActionMetric(action, "Impact") === "High"),
+                    "High Impact")
+                }
+
 
                 {/* Low Cost */}
-                <Text style={styles.category}>Low Cost</Text>
-                <ScrollView 
-                  horizontal={true} 
-                  showsHorizontalScrollIndicator={false}
-                >
-                  <HStack 
-                    space={2} 
-                    justifyContent="center" 
-                    mx={15} 
-                    marginBottom={15}
-                  >
-                    {actions
-                      .filter(action => getActionMetric(action, "Cost") === "$" 
-                              || getActionMetric(action, "Cost") === "0")
-                      .map((action, index) => {
-                        return (
-                          <ActionCard
-                            key={index}
-                            navigation={navigation}
-                            id={action.id}
-                            title={action.title}
-                            imgUrl={action.image?.url}
-                            impactMetric={getActionMetric(action, "Impact")}
-                            costMetric={getActionMetric(action, "Cost")}
-                          />
-                        );
-                      })}
-                  </HStack>
-                </ScrollView>
+                {
+                  ActionList(
+                    actions
+                      .filter(action => getActionMetric(action, "Cost") === "$"
+                        || getActionMetric(action, "Cost") === "0"),
+                    "Low Cost")
+                }
+
               </View>
             )}
           </View>
@@ -300,11 +169,110 @@ const ActionsScreen = ({navigation, actions}) => {
       </ScrollView>
     </View>
   );
+
+  function filterOptions() {
+    return <View style={styles.filterContainer}>
+      <VStack
+        space={2}
+        style={styles.filterVStack}
+      >
+        <Text>I am a...</Text>
+        <Select
+          selectedValue={userType}
+          onValueChange={(value) => setUserType(value)}
+          style={styles.filterSelect}
+        >
+          <Select.Item label="All" value="All" />
+          <Select.Item label="Student" value="Student" />
+          <Select.Item label="Homeowner" value="Homeowner" />
+          <Select.Item label="Renter" value="Renter" />
+          <Select.Item label="Condo" value="Condo" />
+          <Select.Item label="Business" value="Business" />
+        </Select>
+
+        <Text>Category</Text>
+        <Select
+          selectedValue={category}
+          onValueChange={(value) => setCategory(value)}
+          style={styles.filterSelect}
+        >
+          <Select.Item label="All" value="All" />
+          <Select.Item label="Transportation" value="Transportation" />
+          <Select.Item label="Home Energy" value="Home Energy" />
+          <Select.Item label="Waste & Recycling" value="Waste & Recycling" />
+          <Select.Item label="Food" value="Food" />
+          <Select.Item label="Activism & Education" value="Activism & Education" />
+          <Select.Item label="Solar" value="Solar" />
+          <Select.Item label="Land, Soil, & Water" value="Land, Soil, & Water" />
+        </Select>
+
+        <Text>Impact</Text>
+        <Select
+          selectedValue={impact}
+          onValueChange={(value) => setImpact(value)}
+          style={styles.filterSelect}
+        >
+          <Select.Item label="All" value="All" />
+          <Select.Item label="High" value="High" />
+          <Select.Item label="Medium" value="Medium" />
+          <Select.Item label="Low" value="Low" />
+        </Select>
+
+        <Text>Cost</Text>
+        <Select
+          selectedValue={cost}
+          onValueChange={(value) => setCost(value)}
+          style={styles.filterSelect}
+        >
+          <Select.Item label="All" value="All" />
+          <Select.Item label="0" value="0" />
+          <Select.Item label="$" value="$" />
+          <Select.Item label="$$" value="$$" />
+          <Select.Item label="$$$" value="$$$" />
+        </Select>
+      </VStack>
+    </View>;
+  }
+
+  function ActionList(actions, title) {
+    return (
+      <>
+        <Text style={styles.category}>{title}</Text>
+        <ScrollView
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+        >
+          <HStack
+            space={2}
+            justifyContent="center"
+            mx={15}
+            marginBottom={15}
+          >
+            {actions
+              .map((action, index) => {
+                return (
+                  <ActionCard
+                    key={index}
+                    navigation={navigation}
+                    id={action.id}
+                    title={action.title}
+                    imgUrl={action.image?.url}
+                    impactMetric={getActionMetric(action, "Impact")}
+                    costMetric={getActionMetric(action, "Cost")}
+                  />
+                );
+              })}
+          </HStack>
+        </ScrollView>
+      </>
+    );
+
+  }
 }
 
 const styles = StyleSheet.create({
   container: {
-    height: '100%', 
+    height: '100%',
     backgroundColor: 'white'
   },
   category: {
@@ -342,6 +310,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => {
   return {
     actions: state.actions,
+    questionnaire: state.questionnaire
   };
 }
 

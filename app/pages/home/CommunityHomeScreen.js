@@ -205,15 +205,12 @@ const CommunityHomeScreen = ({
   fetchAllCommunityData,
   fireAuth,
   toggleModal,
+  questionnaire
 }) => {
   /* Saves the community's ID into a variable */
   const community_id = communityInfo.id;
   /* Uses local state to determine if the app is refreshing or no */
   const [refreshing, setRefreshing] = useState(false);
-  
-  /* Placeholder for the User Preferences button */
-  /* TO-DO: This should be a part of the API instead of local state */
-  const [preferences, setPreferences] = useState(false);
 
   /* Fetch the information from the community */
   useEffect(() => {
@@ -342,7 +339,7 @@ const CommunityHomeScreen = ({
           />
 
           {/* User preferences card */}
-          { !preferences && renderPreferences() }
+          { !questionnaire && renderPreferences() }
           
           <HStack alignItems="center" pb={2} pt={3}>
             <HeaderText text="Recommended Actions"/>
@@ -432,6 +429,7 @@ const mapStateToProps = (state) => {
     events: state.events,
     actions: state.actions,
     fireAuth: state.fireAuth,
+    questionnaire: state.questionnaire,
   };
 };
 
