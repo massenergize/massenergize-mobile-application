@@ -7,7 +7,7 @@
  *      of the community.
  * 
  *      Written by: Moizes Almeida
- *      Last edited: June 24, 2024
+ *      Last edited: June 25, 2024
  * 
  *****************************************************************************/
 
@@ -37,12 +37,15 @@ import EventCard from '../events/EventCard';
 import { SmallChart } from '../../utils/Charts';
 import { formatDateString } from '../../utils/Utils';
 import { getActionMetric } from '../../utils/common';
-import { fetchAllCommunityData } from '../../config/redux/actions';
+import { fetchAllCommunityData, toggleUniversalModalAction } from '../../config/redux/actions';
 import { connect } from 'react-redux';
 import { useDetails } from '../../utils/hooks';
 import { ActivityIndicator } from 'react-native-paper';
 import { StyleSheet } from 'react-native';
 import { FontAwesomeIcon } from '../../components/icons';
+import { bindActionCreators } from 'redux';
+import { set } from '@gluestack-style/react';
+import AuthOptions from '../auth/AuthOptions';
 
 /* Defines the colors of the three charts of the impact of the community */
 const colors = ["#DC4E34", "#64B058", "#000000"];
@@ -199,7 +202,9 @@ const CommunityHomeScreen = ({
   navigation,
   communityInfo,
   actions,
-  fetchAllCommunityData
+  fetchAllCommunityData,
+  fireAuth,
+  toggleModal,
 }) => {
   /* Saves the community's ID into a variable */
   const community_id = communityInfo.id;
@@ -233,6 +238,56 @@ const CommunityHomeScreen = ({
     );
   }
 
+  /* Function that renders the User's Preferences button */
+  const renderPreferences = () => {
+    return (
+      <Pressable
+      onPress={() => {
+        if (fireAuth) {
+          setPreferences(true);
+          navigation.navigate("Questionnaire");
+        } else {
+          toggleModal({
+            isVisible: true,
+            Component: AuthOptions,
+            title: 'How would you like to sign in or Join?',
+          })
+        }
+      }}
+        mx={4}
+        width="100%"
+      >
+        <Box
+          shadow="1"
+          bg="white"
+          alignItems="center"
+          rounded="xl"
+          p={3}
+          mx={4}
+          borderWidth={1}
+          borderColor="primary.400"
+        >
+          <HStack alignItems="center" gap="1">
+            <Icon
+              as={FontAwesomeIcon}
+              name="cog"
+              size="lg"
+              color="primary.600"
+              mx={2}
+            />
+
+            <VStack>
+              <Text bold fontSize="lg">Complete Your Preferences</Text>
+              <Text fontSize="sm" color="gray.500">
+                Help us tailor recommendations to you!
+              </Text>
+            </VStack>
+          </HStack>
+        </Box>
+      </Pressable>
+    );
+  }
+
   /* Displays the community home screen and its information */
   return (
     <View>
@@ -240,61 +295,61 @@ const CommunityHomeScreen = ({
       nestedScrollEnabled = {true} 
       showsVerticalScrollIndicator={false}
       >
-          <Box maxHeight={[200, 300]} width="100%">
-            <Center position="absolute" zIndex={1} height="100%" width="100%" px="2">
-              <Heading color="white" fontWeight="bold" size="xl" textAlign="center">{communityInfo.name}</Heading>
-              <Text color="white" textAlign="center" fontSize={["xs", "sm"]}>{homeSettings.sub_title}</Text>
-            </Center>
-            <BackgroundCarousel data={homeSettings.images} />
-          </Box>
-        <VStack alignItems="center" space={3} bg="white" top="-3%" borderTopRadius={30} pt="5">
-          <GoalsCard navigation={navigation} goals={communityInfo.goal} community_id={community_id} />
+        <Box 
+          maxHeight={[200, 300]} 
+          width="100%"
+        >
+          <Center 
+            position="absolute" 
+            zIndex={1} 
+            height="100%" 
+            width="100%" 
+            px="2"
+          >
+            <Heading 
+              color="white" 
+              fontWeight="bold" 
+              size="xl" 
+              textAlign="center"
+            >
+              {communityInfo.name}
+            </Heading>
+
+            <Text 
+              color="white" 
+              textAlign="center" 
+              fontSize={["xs", "sm"]}
+            >
+              {homeSettings.sub_title}
+            </Text>
+          </Center>
+
+          <BackgroundCarousel data={homeSettings.images} />
+        </Box>
+
+        <VStack 
+          alignItems="center" 
+          space={3} 
+          bg="white" 
+          top="-3%" 
+          borderTopRadius={30} 
+          pt="5"
+        >
+          <GoalsCard 
+            navigation={navigation} 
+            goals={communityInfo.goal} 
+            community_id={community_id} 
+          />
 
           {/* User preferences card */}
-          { !preferences && (
-            <Pressable
-              onPress={() => {
-                setPreferences(true);
-                navigation.navigate("Questionnaire"); 
-              }}
-              mx={4}
-              width="100%"
-            >
-              <Box
-                shadow="1"
-                bg="white"
-                alignItems="center"
-                rounded="xl"
-                p={3}
-                mx={4}
-                borderWidth={1}
-                borderColor="primary.400"
-              >
-                <HStack alignItems="center" gap="1">
-                  <Icon
-                    as={FontAwesomeIcon}
-                    name="cog"
-                    size="lg"
-                    color="primary.600"
-                    mx={2}
-                  />
-
-                  <VStack>
-                    <Text bold fontSize="lg">Complete Your Preferences</Text>
-                    <Text fontSize="sm" color="gray.500">
-                      Help us tailor recommendations to you!
-                    </Text>
-                  </VStack>
-                </HStack>
-              </Box>
-            </Pressable>
-          )}
+          { !preferences && renderPreferences() }
           
           <HStack alignItems="center" pb={2} pt={3}>
             <HeaderText text="Recommended Actions"/>
             <Spacer/>
             <ShowMore navigation={navigation} page="Actions" text={"Show More"}/>
           </HStack>
+
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
             <HStack space={2} justifyContent="center" mx={15} marginBottom={15}>
             {
@@ -303,7 +358,8 @@ const CommunityHomeScreen = ({
                * the future) 
                */
               actions
-              .filter((action) => getActionMetric(action, "Cost") === "$" || getActionMetric(action, "Cost") === "0")
+              .filter((action) => getActionMetric(action, "Cost") === "$" || 
+                                  getActionMetric(action, "Cost") === "0")
               .map((action, index) => {
               return (
                 <ActionCard
@@ -320,7 +376,8 @@ const CommunityHomeScreen = ({
             }
             </HStack>
           </ScrollView>
-          {homeSettings.show_featured_events && homeSettings.featured_events.length !== 0 && (
+          { homeSettings.show_featured_events && 
+            homeSettings.featured_events.length !== 0 && (
             <View width="100%">
               <HStack alignItems="center" pb={2} pt={3}>
                 <HeaderText text="Featured Events"/>
@@ -367,20 +424,26 @@ const styles = StyleSheet.create({
 
 /* 
  * Transforms the local state of the app into the properties of the 
- * Upcoming function, in which it is got from the API.
+ * CommunityHomeScreen function, in which it is got from the API.
  */
-const mapStateToProps = (state) => ({
-  communityInfo: state.communityInfo,
-  events: state.events,
-  actions: state.actions,
-});
+const mapStateToProps = (state) => {
+  return {
+    communityInfo: state.communityInfo,
+    events: state.events,
+    actions: state.actions,
+    fireAuth: state.fireAuth,
+  };
+};
 
 /* 
  * Transforms the dispatch function from the API in order to get the information
  * of the current community and sends it to the CommunityHomeScreen properties.
  */
-const mapDispatchToProps = {
-  fetchAllCommunityData,
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators({
+    toggleModal: toggleUniversalModalAction,
+    fetchAllCommunityData,
+  }, dispatch);
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CommunityHomeScreen);
