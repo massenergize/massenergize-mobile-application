@@ -4,19 +4,18 @@
  *      This page is responsible for rendering the settings page, which
  *      allows the user to edit their profile, change their email, change
  *      their password, change their notification preferences, and delete
- *      their account. Most functionality comes from modals in other files
+ *      their account. Most functionality comes from modals in other files.
  * 
- *      Written by: William Soylemez
- *      Last edited: June 11, 2024
+ *      Written by: William Soylemez and Moizes Almeida
+ *      Last edited: June 26, 2024
  * 
  *****************************************************************************/
 
+/* Imports and set up */
 import React, { useState } from "react";
 import { TouchableOpacity, View } from "react-native";
-
 import { Flex, Icon, Text, VStack } from "@gluestack-ui/themed-native-base";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-
 import EditProfileModal from "./settingsModals/EditProfileModal";
 import ChangeEmailModal from "./settingsModals/ChangeEmailModal";
 import ChangePasswordModal from "./settingsModals/ChangePasswordModal";
@@ -25,6 +24,7 @@ import DeleteAccountModal from "./settingsModals/DeleteAccountModal";
 import { connect } from "react-redux";
 import { hasProvider } from "../../utils/common";
 
+/* Constant that holds the options for the settings page */
 const SettingOptions = [
   {
     name: "profile",
@@ -56,6 +56,10 @@ const SettingOptions = [
 ];
 
 function SettingsPage({ navigation, fireAuth }) {
+  /* 
+   * Uses local state to determine if the modal of each option should 
+   * be open or not.
+   */
   const [isEMPOpen, setIsEMPOpen] = useState(false);
   const [isCMEOpen, setIsCMEOpen] = useState(false);
   const [isCMPOpen, setIsCMPOpen] = useState(false);
@@ -77,6 +81,7 @@ function SettingsPage({ navigation, fireAuth }) {
     }
   };
 
+  /* Displays the settings page */
   return (
     <View style={{ height: '100%', backgroundColor: 'white' }}>
 
@@ -98,7 +103,7 @@ function SettingsPage({ navigation, fireAuth }) {
                     color="primary.600"
                     textAlign="center"
                   />
-                  <Text fontSize="md" px="5" flexGrow="1">
+                  <Text fontSize="md" flexGrow="1" style={{ marginLeft: 10}}>
                     {" "}
                     {option.label}{" "}
                   </Text>
