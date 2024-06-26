@@ -5,7 +5,7 @@
  *      of the community.
  * 
  *      Written by: Moizes Almeida
- *      Last edited: June 6, 2024
+ *      Last edited: June 25, 2024
  * 
  *****************************************************************************/
 
@@ -97,28 +97,28 @@ function ContactUsScreen({
 
   /* Displays the Contact Us page of the community */
   return (
-    <View>
+    <View bg="white" height="100%">
       <ScrollView
         showsVerticalScrollIndicator={false}
-        px={3}
+        px={5}
       >
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "position" : null}
           keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
         >
           <VStack>
-            <Text bold fontSize="lg" mt={5}>
+            <Text bold fontSize="md" mt={5}>
               Community Administrator
             </Text>
-            <Text fontSize="lg">
+            <Text fontSize="sm">
               {communityInfo.admins[0].full_name}
             </Text>
             {communityInfo.location?.city ? (
               <View>
-                <Text bold fontSize="lg" mt={3}>
+                <Text bold fontSize="md" mt={3}>
                   Location
                 </Text>
-                <Text fontSize="lg">
+                <Text fontSize="sm">
                   {communityInfo.location.city},
                   Massachusetts,{" "}
                   {communityInfo.location.zipcode}
@@ -126,7 +126,7 @@ function ContactUsScreen({
               </View>
             ) : null}
             <Divider my={5} />
-            <Text textAlign="center" fontSize="md">
+            <Text textAlign="center" fontSize="sm">
               We are always striving to make this better and welcome your
               feedback! Reach the community administrator by filling in the
               form.
@@ -262,14 +262,16 @@ function ContactUsScreen({
                     }
                   </FormControl>
                   <Button
-                    mt={3}
+                    width="50%"
+                    alignSelf="flex-end"
+                    mt={5}
                     bg="primary.400"
                     isLoading={isSubmitting}
                     loadingText="Sending..."
                     disabled={isSubmitting}
                     onPress={handleSubmit}
                   >
-                    SEND MESSAGE
+                    Send Message
                   </Button>
                 </VStack>
               )}
