@@ -5,8 +5,8 @@
  *      is also possible to filter the actions by what you are, category, 
  *      impact, and cost.
  * 
- *      Written by: William Soylemez
- *      Last edited: June 17, 2023 (by Moizes Almeida)
+ *      Written by: William Soylemez and Moizes Almeida
+ *      Last edited: June 25, 2023
  * 
  *****************************************************************************/
 

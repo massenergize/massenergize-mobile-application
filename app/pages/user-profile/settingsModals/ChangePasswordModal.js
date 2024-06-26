@@ -77,7 +77,7 @@ const ChangePasswordModal = ({ isOpen, setIsOpen, fireAuth }) => {
           errors,
           touched,
         }) => (
-          <Modal.Content maxWidth="400">
+          <Modal.Content maxWidth={400}>
             <Modal.CloseButton />
 
             {/* Header */}

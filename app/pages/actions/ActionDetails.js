@@ -123,7 +123,6 @@ const ActionDetails = ({
           "users.actions.remove",
           { id: rel_id },
           (response, error) => {
-            setIsDoneOpen(true);
             console.log(response, error);
             if (error) return console.error("Failed to remove item from completed list:", error);
             console.log("Successfully removed item from completed list");
@@ -357,7 +356,7 @@ const ActionDetails = ({
 
           {/* Modal for when the user marks the action as done */}
           <Modal isOpen={isDoneOpen} onClose={() => { }}>
-            <Modal.Content maxWidth="400">
+            <Modal.Content maxWidth={400}>
               <Modal.Body>
                 <Center mb="5">
                   <Ionicons name={"ribbon-outline"} size={90} color="#64B058" />
@@ -399,7 +398,7 @@ const ActionDetails = ({
 
           {/* Modal for when the user adds the action to their to-do list */}
           <Modal isOpen={isToDoOpen} onClose={() => { }}>
-            <Modal.Content maxWidth="400">
+            <Modal.Content maxWidth={400}>
               <Modal.Body>
                 <Center mb="5">
                   <Ionicons name={"ribbon-outline"} size={90} color="#64B058" />

@@ -397,7 +397,7 @@ function TeamDetails({
           </Formik>
 
           <Modal isOpen={isSent} onClose={() => setIsSent(false)}>
-            <Modal.Content maxWidth="400">
+            <Modal.Content maxWidth={400}>
               <Modal.Body>
                 <Center mb="5">
                     <FontAwesomeIcon name="paper-plane" size={90} color="green" />

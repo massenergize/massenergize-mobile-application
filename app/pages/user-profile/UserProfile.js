@@ -6,7 +6,7 @@
  *      actions, teams, households, and communities.
  * 
  *      Written by: William Soylemez
- *      Last edited: June 5, 2023
+ *      Last edited: June 26, 2023
  * 
  *****************************************************************************/
 
@@ -77,7 +77,7 @@ const ProfileName = ({ navigation, communityInfo, user }) => {
 };
 
 // Component to display the user's sustainability score
-const SustainScore = ({CompletedList}) => {
+const SustainScore = ({ CompletedList }) => {
   const CarbonSaved = CompletedList?.length ?? 0; // TODO: make this a real formula
   return (
     <Box>
@@ -296,11 +296,11 @@ const CommunitiesList = ({ communities }) => {
 
 // Main component
 function DashboardPage({
-  navigation, 
-  route, 
-  communityInfo, 
-  actions, 
-  completedList, 
+  navigation,
+  route,
+  communityInfo,
+  actions,
+  completedList,
   todoList,
   user,
   fetchAllUserInfo,
@@ -329,12 +329,12 @@ function DashboardPage({
     useCallback(() => {
       setRefreshing(true);
       fetchAllUserInfo(() => setRefreshing(false));
-      
+
     }, [])
   );
 
   // If the page is still loading, display a loading message
-  if (refreshing) { 
+  if (refreshing) {
     return (
       <View style={{
         display: 'flex',
@@ -370,11 +370,19 @@ function DashboardPage({
             Update action recommendation settings
           </Button> */}
 
-          {/* Todo and completed list */}
-          <Text style={styles.category}>Todo list</Text>
-          <ActionsList navigation={navigation} list={todoList} actions={actions} />
-          <Text style={styles.category}>Completed Actions</Text>
-          <ActionsList navigation={navigation} list={completedList} actions={actions} />
+          {/* Action lists */}
+          {todoList.length > 0 &&
+            <>
+              <Text style={styles.category}>Todo list</Text>
+              <ActionsList navigation={navigation} list={todoList} actions={actions} />
+            </>
+          }
+          {completedList.length > 0 &&
+            <>
+              <Text style={styles.category}>Completed Actions</Text>
+              <ActionsList navigation={navigation} list={completedList} actions={actions} />
+            </>
+          }
 
           {/* <BadgesList /> */}
 

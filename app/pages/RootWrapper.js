@@ -219,7 +219,7 @@ const RootWrapper = ({
         />
         <MainStack.Screen 
           options={{
-            headerTitle: ''
+            headerTitle: 'Add Testimonial'
           }}
           name="AddTestimonial" 
           component={AddTestimonial}

@@ -50,6 +50,7 @@ const validationSchema = Yup.object().shape({
 function ContactUsScreen({
   communityInfo,
   user,
+  navigation
 }) {
   /* Saves the community's ID into a variable */
   const community_id = communityInfo.id;
@@ -86,6 +87,12 @@ function ContactUsScreen({
     });
 
     actions.resetForm();
+  };
+
+  /* Exit modal and go back */
+  const exitModal = () => {
+    setIsSent(false);
+    navigation.goBack();
   };
 
   /* Displays the Contact Us page of the community */
@@ -271,7 +278,7 @@ function ContactUsScreen({
 
           {/* Modal for congratulating after message is sent successfully */}
           <Modal isOpen={isSent} onClose={() => setIsSent(false)}>
-            <Modal.Content maxWidth="400">
+            <Modal.Content maxWidth={400}>
               <Modal.Body>
                 <Center mb="5">
                     <FontAwesomeIcon
@@ -286,7 +293,7 @@ function ContactUsScreen({
                       The admin team will get in touch with you soon!
                     </Text>
                 </Center>
-                <Button colorScheme={"gray"} onPress={() => setIsSent(false)}>
+                <Button colorScheme={"gray"} onPress={exitModal}>
                     Back
                 </Button>
               </Modal.Body>

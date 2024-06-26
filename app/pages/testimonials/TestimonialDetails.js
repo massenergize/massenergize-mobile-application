@@ -23,12 +23,14 @@ import { getActionMetric } from "../../utils/common.js";
 import { connect } from "react-redux";
 import MEImage from "../../components/image/MEImage.js";
 
-function TestimonialDetails({ route, navigation, vendorsSettings }) {
+function TestimonialDetails({ route, navigation, vendorsSettings, actions }) {
   const { width } = useWindowDimensions();
 
   const { testimonial_id } = route.params;
   const [testimonial, isTestimonialLoading]
     = useDetails("testimonials.info", { testimonial_id: testimonial_id });
+
+  const testimonialAction = actions.find(action => action.id === testimonial?.action.id);
 
   return (
     <View style={{ height: '100%', backgroundColor: 'white' }}>
@@ -66,17 +68,17 @@ function TestimonialDetails({ route, navigation, vendorsSettings }) {
 
                 {/* Associated action */}
                 {
-                  testimonial.action != null
+                  testimonialAction
                     ? (
                       <View>
                         <Text bold fontSize="lg" mb={3} mt={5}>Associated Action</Text>
                         <ActionCard
                           navigation={navigation}
-                          id={testimonial.action?.id}
-                          title={testimonial.action?.title}
-                          imgUrl={testimonial.file?.url}
-                          impactMetric={getActionMetric(testimonial.action, "Impact")}
-                          costMetric={getActionMetric(testimonial.action, "Cost")}
+                          id={testimonialAction.id}
+                          title={testimonialAction.title}
+                          imgUrl={testimonialAction.image?.url}
+                          impactMetric={getActionMetric(testimonialAction, "Impact")}
+                          costMetric={getActionMetric(testimonialAction, "Cost")}
                         />
                       </View>
                     ) : <></>
@@ -115,7 +117,8 @@ const textStyle = {
 
 const mapStateToProps = state => {
   return {
-    vendorsSettings: state.vendorsPage
+    vendorsSettings: state.vendorsPage,
+    actions: state.actions
   }
 };
 
