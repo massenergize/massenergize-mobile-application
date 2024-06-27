@@ -30,6 +30,8 @@ import {
   Spinner,
   HStack,
   Pressable,
+  Heading,
+  Stack,
 } from "@gluestack-ui/themed-native-base";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import ActionCard from "../actions/ActionCard";
@@ -42,6 +44,9 @@ import { apiCall } from "../../api/functions";
 import { connect } from "react-redux";
 import { fetchAllUserInfo, fetchUserProfile } from "../../config/redux/actions";
 import { bindActionCreators } from "redux";
+import TeamCard from "../teams/TeamCard";
+import MEImage from "../../components/image/MEImage";
+import { FontAwesomeIcon } from "../../components/icons";
 
 // Component to display the user's name, preferred name, and community
 const ProfileName = ({ navigation, communityInfo, user }) => {
@@ -223,28 +228,160 @@ const BadgesList = () => {
 };
 
 // Component to display a list of teams
-const TeamsList = ({ teams }) => {
+const TeamsList = ({ teams, navigation }) => {
+  console.log('user teams: ', teams);
   return (
-    <Center>
+    // <Box>
+    //   <Center>
+    //     <Text fontWeight="bold" fontSize="lg" mb="5">
+    //       My Teams
+    //     </Text>
+    //   </Center>
 
-      <Text fontWeight="bold" fontSize="lg" mb="5">
+    //   {teams?.length === 0 && <Text>No teams yet!</Text>}
+
+    //   {teams?.map((team, index) => (
+    //     <ScrollView>
+    //       <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+    //         <HStack space={2} justifyContent="center" mx={15} marginBottom={15}>
+    //           <Flex
+    //             direction="column"
+    //             rounded="lg"
+    //             shadow="3"
+    //             backgroundColor="white"
+    //             overflow="hidden"
+    //           >
+    //             <Pressable
+    //               onPress={() =>
+    //                 navigation.navigate(isSubteam ? "SubteamDetails" : "TeamDetails", {
+    //                   team_id: team.id,
+    //                   team_stats: team,
+    //                   subteams: team.subteams ? team.subteams : [],
+    //                 })
+    //               }
+    //             >
+    //               <Box>
+    //                 <MEImage
+    //                   source={{ uri: team.logo }}
+    //                   altComponent={<></>}
+    //                   alt="image"
+    //                   resizeMode="contain"
+    //                 />
+    //               </Box>
+    //               <Box p="4">
+    //                 <Box py="2">
+    //                   <Heading size="md">{team.name}</Heading>
+    //                   {team.tagline !== "" ? (
+    //                     <Text color="muted.400">{team.tagline}</Text>
+    //                   ) : null}
+    //                 </Box>
+    //               </Box>
+    //             </Pressable>
+    //           </Flex>
+    //         </HStack>
+    //       </ScrollView>
+    //     </ScrollView>
+    //   ))}
+    // </Box>
+    // <Center>
+
+    //   <Text fontWeight="bold" fontSize="lg" mb="5">
+    //     My Teams
+    //   </Text>
+
+    //   {teams?.length === 0 && <Text>No teams yet!</Text>}
+
+    //   {teams?.map((team, index) => (
+    //     <Flex width="full" key={index}>
+    //       <Flex flexDirection="row" alignItems="center">
+    //         <Icon as={FontAwesome} name="home" size="sm" />
+    //         <Text px="2" flexGrow={1}>
+    //           {team.name}
+    //         </Text>
+    //         <Icon as={FontAwesome} name="pencil" size="sm" />
+    //       </Flex>
+    //     </Flex>
+    //   ))}
+    // </Center>
+    // Component to display a list of teams
+    <Box>
+      <Text alignSelf="center" bold fontSize="lg" mb="5">
         My Teams
       </Text>
 
       {teams?.length === 0 && <Text>No teams yet!</Text>}
 
-      {teams?.map((team, index) => (
-        <Flex width="full" key={index}>
-          <Flex flexDirection="row" alignItems="center">
-            <Icon as={FontAwesome} name="home" size="sm" />
-            <Text px="2" flexGrow={1}>
-              {team.name}
-            </Text>
-            <Icon as={FontAwesome} name="pencil" size="sm" />
-          </Flex>
-        </Flex>
-      ))}
-    </Center>
+      <ScrollView>
+        <ScrollView
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+        >
+          <HStack
+            space={2}
+            justifyContent="center"
+            mx={15}
+            marginBottom={15}
+          >
+            {teams?.map((team, index) => (
+              <Pressable
+                onPress={() => navigation.navigate("TeamDetails", {
+                  team_id: team.id,
+                  team_stats: team,
+                  subteams: team.subteams ? team.subteams : [],
+                })}
+              >
+                <Box
+                  key={index}
+                  width={200}
+                  borderRadius={8}
+                  bg="white"
+                  shadow={2}
+                >
+                  <MEImage
+                    source={{ uri: team.logo?.url }}
+                    alt={team.name}
+                    borderTopRadius="xl"
+                    resizeMode="cover"
+                    height={120}
+                    bg="gray.300"
+                    altComponent={
+                      <Box height={120} bg="gray.300" borderTopRadius="xl" />
+                    }
+                  />
+                  <Stack p={3} space={3}>
+                    <Stack space={2}>
+                      <Heading
+                        size="sm"
+                      > 
+                        {team.name} 
+                      </Heading>
+                      
+                      {team.tagline !== "" ? (
+                        <Text
+                          fontSize="xs"
+                          fontWeight="500"
+                        >
+                          {team.tagline}
+                        </Text>
+                      ) : (
+                        <Text
+                          fontSize="xs"
+                          fontWeight="500"
+                          isTruncated={true}
+                          noOfLines={1}
+                        >
+                          {team.description}
+                        </Text>
+                      )}
+                    </Stack>
+                  </Stack>
+                </Box>
+              </Pressable>
+            ))}
+          </HStack>
+        </ScrollView>
+      </ScrollView>
+    </Box>
   );
 };
 
@@ -373,7 +510,7 @@ function DashboardPage({
           {/* Action lists */}
           {todoList.length > 0 &&
             <>
-              <Text style={styles.category}>Todo list</Text>
+              <Text style={styles.category}>To-do list</Text>
               <ActionsList navigation={navigation} list={todoList} actions={actions} />
             </>
           }
@@ -387,7 +524,7 @@ function DashboardPage({
           {/* <BadgesList /> */}
 
           {/* Other lists */}
-          <TeamsList teams={user.teams} />
+          <TeamsList teams={user.teams} navigation={navigation} />
           <HousesList households={user.households} />
           <CommunitiesList communities={user.communities} />
 
@@ -407,6 +544,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     fontSize: 20,
     fontWeight: "bold",
+    textAlign: "center"
   },
 });
 

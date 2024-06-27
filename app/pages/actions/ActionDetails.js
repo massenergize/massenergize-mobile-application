@@ -256,16 +256,20 @@ const ActionDetails = ({
             <VStack style={{ flex: 1 }}>
 
               {/* Header image */}
-              <MEImage
-                source={{
-                  uri: action.image?.url,
-                }}
-                m={3}
-                h={250}
-                alt="image"
-                resizeMode="contain"
-                altComponent={<></>}
-              />
+              {
+                action.image?.url ? (
+                  <MEImage
+                    source={{
+                      uri: action.image?.url,
+                    }}
+                    m={3}
+                    h={250}
+                    alt="image"
+                    resizeMode="contain"
+                    altComponent={<></>}
+                  />
+                ) : <Box height={120} bg="gray.300" borderTopRadius="xl" />
+              }
 
               {/* Action details and buttons */}
               <Box bg="white" height="100%" mx={10}>
