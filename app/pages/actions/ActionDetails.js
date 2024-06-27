@@ -4,8 +4,8 @@
  *      This page is responsible for rendering details about
  *      a single action
  * 
- *      Written by: William Soylemez
- *      Last edited: June 6, 2023 (by Moizes Almeida)
+ *      Written by: William Soylemez and Moizes Almeida
+ *      Last edited: June 6, 2023
  * 
  *****************************************************************************/
 
@@ -431,6 +431,10 @@ const textStyle = {
   fontSize: "16px",
 };
 
+/* 
+ * Transforms the local state of the app into the properties of the 
+ * ActionDetails function, in which it is got from the API.
+ */
 const mapStateToProps = (state) => ({
   testimonials: state.testimonials,
   testimonialsSettings: state.testimonialsPage,
@@ -441,6 +445,10 @@ const mapStateToProps = (state) => ({
   completedList: state.userCompleted,
 });
 
+/* 
+ * Transforms the dispatch function from the API in order to get the information
+ * of the current community and sends it to the ActionDetails properties.
+ */
 const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {

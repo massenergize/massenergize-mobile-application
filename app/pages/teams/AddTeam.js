@@ -4,8 +4,8 @@
  *      This page is responsible for rendering the screen to add
  *      a team or subteam to the selected community.
  * 
- *      Written by: Moizes Almeida
- *      Last edited: June 24, 2024
+ *      Written by: Moizes Almeida and Will Soylemez
+ *      Last edited: June 27, 2024
  * 
  *****************************************************************************/
 
@@ -562,7 +562,7 @@ const AddTeam = ({
 
 /* 
  * Transforms the local state of the app into the properties of the 
- * AddTeamfunction, in which it is got from the API.
+ * AddTeam function, in which it is got from the API.
  */
 const mapStateToProps = state => {
   return {
@@ -582,7 +582,7 @@ const mapDispatchToProps = dispatch => {
   }, dispatch);
 
   return {
-    setTeams: (events) => dispatch(setActionWithValue(SET_TEAMS_STATS, teams)),
+    setTeams: (teams) => dispatch(setActionWithValue(SET_TEAMS_STATS, teams)),
   };
 }
 
