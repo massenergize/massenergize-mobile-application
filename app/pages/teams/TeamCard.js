@@ -7,7 +7,7 @@
  *      pages.
  * 
  *      Written by: Moizes Almeida
- *      Last edited: June 4, 2024
+ *      Last edited: June 27, 2024
  * 
  *****************************************************************************/
 
@@ -55,7 +55,8 @@ export default function TeamCard({
       >
         <Box>
           <MEImage
-            source={{ uri: team.logo }}
+            source={{ uri: team.team.logo?.url }}
+            height={120}
             altComponent={<></>}
             alt="image"
             resizeMode="contain"
