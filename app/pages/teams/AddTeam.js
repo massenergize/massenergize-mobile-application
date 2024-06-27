@@ -148,13 +148,13 @@ const AddTeam = ({
       community_id: community_id,
       name: values.name,
       tagline: values.tagline,
-      admins: adminsEmails,
+      admin_emails: adminsEmails,
       description: values.description,
-      image: values.image,
-      parent: values.parent
+      // image: values.image,
+      parent_id: values.parent
     };
 
-    console.log(data);
+    console.log(teams);
 
     apiCall("teams.add", data)
       .then((response) => {
@@ -167,12 +167,10 @@ const AddTeam = ({
         }
         
         setIsSent(true);
-
         console.log('TEAM_ADDED: ', response.data);
 
         /* Add the new event to the redux store */
-        setTeams([response.data, ...teams]);
-        navigation.goBack();
+        // setTeams([response.data, ...teams]); Don't do this because it has to be approved first I think?
       })
       .catch((error) => {
         console.error('ERROR_ADDING_TEAM: ', error);
