@@ -133,14 +133,16 @@ const ActionsScreen = ({ navigation, actions, questionnaire }) => {
                 {questionnaire && suggestedActions.length > 0 &&
                   ActionList(suggestedActions, "Suggested")
                 }
-                <MEButton
-                  title="Update action preferences"
-                  asLink
-                  onPress={() => navigation.navigate("Questionnaire")}
-                  style={{ margin: 15 }}
-                >
-                  Update action preferences
-                </MEButton>
+                <View width="100%" alignItems="center" justifyContent="center">
+                  <MEButton
+                    title="Update action preferences"
+                    asLink
+                    onPress={() => navigation.navigate("Questionnaire")}
+                    style={{ margin: 15 }}
+                  >
+                    Update action preferences
+                  </MEButton>
+                </View>
 
                 {/* All Actions */}
                 {ActionList(actions, "All")}
