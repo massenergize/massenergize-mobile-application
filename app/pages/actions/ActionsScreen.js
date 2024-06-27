@@ -6,7 +6,7 @@
  *      impact, and cost.
  * 
  *      Written by: William Soylemez and Moizes Almeida
- *      Last edited: June 25, 2023
+ *      Last edited: June 27, 2024
  * 
  *****************************************************************************/
 
@@ -90,7 +90,7 @@ const ActionsScreen = ({ navigation, actions, questionnaire }) => {
         {/* Header */}
         <Text style={styles.title}>Actions</Text>
 
-        {/* Expand Filter Button */}
+        {/* Expand Filters Button */}
         <Pressable
           onPress={() => setExpand(!expand)}
           style={styles.expandButton}
@@ -172,9 +172,11 @@ const ActionsScreen = ({ navigation, actions, questionnaire }) => {
       </ScrollView>
     </View>
   );
-
+  
+  /* Function that display the filter options for the user */
   function filterOptions() {
-    return <View style={styles.filterContainer}>
+    return (
+    <View style={styles.filterContainer}>
       <VStack
         space={2}
         style={styles.filterVStack}
@@ -234,9 +236,14 @@ const ActionsScreen = ({ navigation, actions, questionnaire }) => {
           <Select.Item label="$$$" value="$$$" />
         </Select>
       </VStack>
-    </View>;
+    </View>
+    );
   }
 
+  /* 
+   * Function that displays the list of actions after the user has set 
+   * the filters.
+   */
   function ActionList(actions, title) {
     return (
       <>
