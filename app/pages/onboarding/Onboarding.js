@@ -5,14 +5,13 @@
  *      for when the user accesses the app for the first time.
  * 
  *      Written by: Moizes Almeida
- *      Last edited: June 19, 2024
+ *      Last edited: June 28, 2024
  * 
  *****************************************************************************/
 
 /* Imports and set up */
 import React, { useState } from "react";
 import {
-  Image,
   Box,
   Heading,
   Flex,
@@ -22,39 +21,36 @@ import {
   HStack
 } from '@gluestack-ui/themed-native-base';
 import HTMLParser from "../../utils/HTMLParser";
-import MEImage from "../../components/image/MEImage";
+import { ImageBackground } from "@gluestack-ui/themed";
 
 /* Creates each step of the onboarding pages the user is going to see */
 const STEPS = [
   {
     title: "Take Local Climate Action",
     description: "<p><strong>MassEnergize</strong> works with community organizers and local leaders to scale household and community-level climate actions.</p>",
-    image: require("../../assets/intro-step-4.png"),
   },
   {
     title: "Witness Your Impact",
     description: "<p><strong>MassEnergize</strong> offers you access to compelling and inspirational data, presenting the number of households actively engaged in diverse actions.</p>",
-    image: require("../../assets/intro-step-2.png"),
   },
   {
     title: "Collaborate With Your Neighbor",
     description: "<p><strong>Access</strong> a diverse range of climate actions tailored to your community.</p>",
-    image: require("../../assets/intro-step-3.png"),
   },
   {
     title: "Find A Community Near You",
     description:
       "<p><strong>Connect</strong> with local communities to foster social connections, promote engagement, and achieve one common goal: <strong>take climate actions</strong>.</p>",
-    image: require("../../assets/intro-step-4.png"),
   },
 ];
 
 export default function OnboardingPage({ navigation }) {
   /*
    * Uses local state to determine the current step that the user is
-   * currently on.
+   * currently on plus the background image to display.
    */
   const [currentStep, setCurrentStep] = useState(0);
+  const [currentImage, setCurrentImage] = useState(1);
 
   /* 
    * Function to handle when the user clicks on the button to go to 
@@ -63,6 +59,7 @@ export default function OnboardingPage({ navigation }) {
   const handleNext = () => {
     if (currentStep < STEPS.length - 1) {
       setCurrentStep(currentStep + 1);
+      setCurrentImage(currentImage + 1);
     } else {
       navigation.navigate("CommunitySelectionPage");
     }
@@ -75,35 +72,49 @@ export default function OnboardingPage({ navigation }) {
   const handlePrev = () => {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
+      setCurrentImage(currentImage - 1);
     }
+  };
+
+  /* Array of images to be displayed in the background of each step */
+  const images = {
+    1: require("../../assets/intro-step-1.png"),
+    2: require("../../assets/intro-step-2.png"),
+    3: require("../../assets/intro-step-3.png"),
+    4: require("../../assets/intro-step-4.png"),
   };
 
   /* Displays the onboarding pages */
   return (
     <Box width="100%" flex="1">
       {/* Skip Button */}
-      <Button
-        position="absolute"
-        variant="ghost"
-        top="10"
-        right="5"
-        zIndex={1}
-        _text={{
-          fontWeight: "bold",
-          color: "white",
-          fontSize: "lg",
-        }}
-        onPress={() => navigation.navigate("CommunitySelectionPage")}
-      >
-        Skip
-      </Button>
+      { currentStep < STEPS.length - 1 ? (
+        <Button
+          position="absolute"
+          variant="ghost"
+          top="10"
+          right="5"
+          zIndex={1}
+          _text={{
+            fontWeight: "bold",
+            color: "white",
+            fontSize: "lg",
+          }}
+          onPress={() => navigation.navigate("CommunitySelectionPage")}
+        >
+          Skip
+        </Button>
+      ) : null}
 
       {/* Background Image */}
       <AspectRatio>
-        <Image
-          source={STEPS[currentStep].image}
-          alt="image"
-          style={{ width: '100%', height: '100%' }}
+        <ImageBackground
+          source={images[currentImage]}
+          alt={`step ${currentImage}`}
+          style={{
+            width: '100%',
+            height: '100%',
+          }}
         />
       </AspectRatio>
 

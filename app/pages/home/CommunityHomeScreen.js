@@ -315,6 +315,7 @@ const CommunityHomeScreen = ({
               color="white" 
               textAlign="center" 
               fontSize={["xs", "sm"]}
+              px={8}
             >
               {homeSettings.sub_title}
             </Text>
