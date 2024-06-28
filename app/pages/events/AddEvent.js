@@ -4,8 +4,8 @@
  *      This page is responsible for rendering the screen to add
  *      an event to the selected community.
  * 
- *      Written by: Moizes Almeida
- *      Last edited: June 21, 2024
+ *      Written by: Moizes Almeida and Will Soylemez
+ *      Last edited: June 28, 2024
  * 
  *****************************************************************************/
 
@@ -186,7 +186,7 @@ const AddEvent = ({
 
   /* Displays the screen to add an event to the selected community */
   return (
-    <View>
+    <View bg="white">
       <ScrollView
         showsVerticalScrollIndicator={false}
         px={3}

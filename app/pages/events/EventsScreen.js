@@ -6,7 +6,7 @@
  *      and the Campaigns from a community.
  * 
  *      Written by: Moizes Almeida
- *      Last edited: June 11, 2024
+ *      Last edited: June 28, 2024
  * 
  *****************************************************************************/
 
@@ -137,7 +137,7 @@ const EventsScreen = ({ navigation, events, fireAuth, toggleModal }) => {
 
     /* Displays the information for all events and campaigns */
     return (
-        <View>
+        <View bg="white" height="100%">
             { isLoading ? (
                 <Center flex="1">
                     <Spinner />
