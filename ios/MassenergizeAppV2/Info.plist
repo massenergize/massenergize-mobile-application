@@ -89,5 +89,9 @@
 	<string>We need access to your photo library to select photos.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>We need access to save photos to your photo library.</string>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
+	<key>UIStatusBarStyle</key>
+	<string>lightContent</string>
 </dict>
 </plist>

@@ -6,7 +6,7 @@
  *      actions they performed, and their team members.
  * 
  *      Written by: Moizes Almeida
- *      Last edited: June 21, 2024
+ *      Last edited: June 28, 2024
  * 
  *****************************************************************************/
 
@@ -21,7 +21,10 @@ import {
   Spacer,
   Center,
   Spinner, 
-  Button
+  Button,
+  Box,
+  Stack,
+  Heading,
 } from '@gluestack-ui/themed-native-base';
 import { StyleSheet } from 'react-native';
 import React, { useState, useEffect } from 'react';
@@ -31,8 +34,10 @@ import TeamCard from './TeamCard';
 import { bindActionCreators } from 'redux';
 import { toggleUniversalModalAction } from '../../config/redux/actions';
 import AuthOptions from '../auth/AuthOptions';
+import { fetchAllUserInfo, fetchUserProfile } from "../../config/redux/actions";
+import MEImage from '../../components/image/MEImage';
 
-const TeamsScreen = ({ navigation, teams, fireAuth, toggleModal }) => {
+const TeamsScreen = ({ navigation, teams, fireAuth, toggleModal, user }) => {
   /*
    * Uses local state to determine wheter the information about the community
    * is still loading, if the sub-team expland button is selected, and gets 
@@ -84,6 +89,7 @@ const TeamsScreen = ({ navigation, teams, fireAuth, toggleModal }) => {
     setSubteamsExpanded(copy);
   };
 
+  /* Function that renders the 'Add Team' button */
   const renderAddTeam = () => {
     return (
       <Button
@@ -104,11 +110,112 @@ const TeamsScreen = ({ navigation, teams, fireAuth, toggleModal }) => {
         Add Team
       </Button>
     );
-  }
+  };
+
+  /* Component to display a list of teams the user is part of */
+  const TeamsList = ({ teams, navigation }) => {
+    return (
+      <Box>
+        <Heading mb={5} alignSelf="center">My Teams</Heading>
+
+        {
+          teams?.length === 0 && 
+          <Text
+            fontSize="xs"
+            textAlign="center"
+            px={10}
+            color="gray.400"
+          >
+            You have not joined any teams. 
+            Explore the teams in this community below.
+          </Text>
+        }
+
+        <ScrollView>
+          <ScrollView
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+          >
+            <HStack
+              space={2}
+              justifyContent="center"
+              mx={15}
+              marginBottom={15}
+            >
+              {teams?.map((team, index) => (
+                <Pressable
+                  onPress={() => navigation.navigate("TeamDetails", {
+                    team_id: team.id,
+                    team_stats: team,
+                    subteams: team.subteams ? team.subteams : [],
+                  })}
+                >
+                  <Box
+                    key={index}
+                    width={200}
+                    height={250}
+                    borderRadius={8}
+                    bg="white"
+                    shadow={2}
+                  >
+                    {/* Team's Logo */}
+                    <MEImage
+                      source={{ uri: team.logo?.url }}
+                      alt={team.name}
+                      borderTopRadius="xl"
+                      resizeMode="cover"
+                      height={120}
+                      bg="gray.300"
+                      altComponent={
+                        <Box 
+                          height={120} 
+                          bg="gray.300" 
+                          borderTopRadius="xl" 
+                        />
+                      }
+                    />
+
+                    {/* Team's name and tagline or description */}
+                    <Stack p={3} space={3}>
+                      <Stack space={2}>
+                        <Heading
+                          size="sm"
+                        > 
+                          {team.name} 
+                        </Heading>
+                        
+                        {team.tagline !== "" ? (
+                          <Text
+                            fontSize="xs"
+                            fontWeight="500"
+                          >
+                            {team.tagline}
+                          </Text>
+                        ) : (
+                          <Text
+                            fontSize="xs"
+                            fontWeight="500"
+                            isTruncated={true}
+                            noOfLines={1}
+                          >
+                            {team.description}
+                          </Text>
+                        )}
+                      </Stack>
+                    </Stack>
+                  </Box>
+                </Pressable>
+              ))}
+            </HStack>
+          </ScrollView>
+        </ScrollView>
+      </Box>
+    );
+  };
 
   /* Displays the community's team/sub-teams information */
   return (
-    <View>
+    <View bg="white">
       {isLoading ? (
         <Center flex={1}>
           <Spinner />
@@ -119,6 +226,14 @@ const TeamsScreen = ({ navigation, teams, fireAuth, toggleModal }) => {
             {
               renderAddTeam()
             }
+
+            {
+              /* Displays the list of teams/subteams the user is part of */
+              <TeamsList teams={user.teams} navigation={navigation} />
+            }
+
+            {/* Display all community's teams and sub-teams */}
+            <Heading mb={2} alignSelf="center">All Teams</Heading>
             { teamsList.length === 0 ? (
               <View style={styles.noInfoContainer}>
                 <Text style={styles.noInfoText}>No Teams information</Text>
@@ -132,8 +247,12 @@ const TeamsScreen = ({ navigation, teams, fireAuth, toggleModal }) => {
                     team={team}
                     isSubteam={false}
                   />
+
                   {
-                  /* Display the subteams associated with a parent if expanded */
+                  /* 
+                   * Display the subteams associated with a parent if 
+                   * expanded.
+                   */
                   team.subteams.length > 0 && (
                     <View>
                       <Pressable onPress={() => changeExpanded(team.team.id)}>
@@ -152,6 +271,7 @@ const TeamsScreen = ({ navigation, teams, fireAuth, toggleModal }) => {
                           />
                         </HStack>
                       </Pressable>
+                      
                       {subteamsExpanded[team.team.id] && (
                         <VStack ml={5} space={3} mt={3}>
                           {team.subteams.map((subteam, j) => {
@@ -198,6 +318,8 @@ const mapStateToProps = (state) => {
   return {
     teams: state.teamsStats,
     fireAuth: state.fireAuth,
+    teamList: state.userTeams,
+    user: state.user,
   };
 };
 
@@ -207,7 +329,9 @@ const mapStateToProps = (state) => {
  */
 const mapDispatchToProps = dispatch => {
   return bindActionCreators({
-    toggleModal: toggleUniversalModalAction
+    toggleModal: toggleUniversalModalAction,
+    fetchAllUserInfo: fetchAllUserInfo,
+    fetchUserProfile: fetchUserProfile
   }, dispatch);
 }
 
