@@ -241,7 +241,7 @@ const MEDrawerNavigator = ({
             width: 27,
             borderRadius: 10000,
             borderWidth: 2,
-            borderColor: COLOR_SCHEME.ORANGE,
+            borderColor: COLOR_SCHEME.GREEN,
             marginRight: 15,
             objectFit: 'scale-down',
           }}
@@ -255,7 +255,7 @@ const MEDrawerNavigator = ({
         <FontAwesomeIcon
           name="user-circle"
           size={21}
-          color={user ? COLOR_SCHEME.ORANGE : 'black'}
+          color={user ? COLOR_SCHEME.GREEN : 'black'}
         />
       </TouchableOpacity>
     );
