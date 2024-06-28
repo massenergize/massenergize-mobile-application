@@ -6,7 +6,7 @@
  *      actions, teams, households, and communities.
  * 
  *      Written by: William Soylemez and Moizes Almeida
- *      Last edited: June 27, 2023
+ *      Last edited: June 28, 2023
  * 
  *****************************************************************************/
 
@@ -234,7 +234,17 @@ const TeamsList = ({ teams, navigation }) => {
         My Teams
       </Text>
 
-      {teams?.length === 0 && <Text>No teams yet!</Text>}
+      {
+          teams?.length === 0 && 
+          <Text
+            fontSize="xs"
+            textAlign="center"
+            px={10}
+            color="gray.400"
+          >
+            No teams yet!
+          </Text>
+        }
 
       <ScrollView>
         <ScrollView
