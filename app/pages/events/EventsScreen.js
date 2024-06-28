@@ -155,11 +155,15 @@ const EventsScreen = ({ navigation, events, fireAuth, toggleModal }) => {
                         style={{ 
                           justifyContent: 'center', 
                           alignItems: 'center', 
-                          marginTop: 300 
+                          marginTop: 200 
                         }}
                       >
-                          <Text style={styles.noEventsText}>
-                            No upcoming events
+                          <Text fontSize="xs"
+                            textAlign="center"
+                            px={10}
+                            color="gray.400"
+                          >
+                            No events for now... 
                           </Text>
                       </View>
                     ) : (

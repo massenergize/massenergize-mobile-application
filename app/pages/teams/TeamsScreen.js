@@ -215,7 +215,7 @@ const TeamsScreen = ({ navigation, teams, fireAuth, toggleModal, user }) => {
 
   /* Displays the community's team/sub-teams information */
   return (
-    <View bg="white">
+    <View bg="white" height="100%">
       {isLoading ? (
         <Center flex={1}>
           <Spinner />
@@ -235,8 +235,14 @@ const TeamsScreen = ({ navigation, teams, fireAuth, toggleModal, user }) => {
             {/* Display all community's teams and sub-teams */}
             <Heading mb={2} alignSelf="center">All Teams</Heading>
             { teamsList.length === 0 ? (
-              <View style={styles.noInfoContainer}>
-                <Text style={styles.noInfoText}>No Teams information</Text>
+              <View>
+                <Text fontSize="xs"
+                  textAlign="center"
+                  px={10}
+                  color="gray.400"
+                >
+                  There are curently no Teams in this community
+                </Text>
               </View>
             ) : ( 
               teamsList.map((team, i) => {
@@ -271,7 +277,7 @@ const TeamsScreen = ({ navigation, teams, fireAuth, toggleModal, user }) => {
                           />
                         </HStack>
                       </Pressable>
-                      
+
                       {subteamsExpanded[team.team.id] && (
                         <VStack ml={5} space={3} mt={3}>
                           {team.subteams.map((subteam, j) => {
@@ -300,7 +306,7 @@ const TeamsScreen = ({ navigation, teams, fireAuth, toggleModal, user }) => {
 
 const styles = StyleSheet.create({
   noInfoContainer: {
-    marginTop: 200,
+    marginTop: 100,
     justifyContent: 'center',
     alignItems: 'center',
   },
