@@ -6,7 +6,7 @@
  *      actions they performed, and their team members.
  * 
  *      Written by: Moizes Almeida
- *      Last edited: June 21, 2024
+ *      Last edited: June 28, 2024
  * 
  *****************************************************************************/
 
@@ -89,6 +89,7 @@ const TeamsScreen = ({ navigation, teams, fireAuth, toggleModal, user }) => {
     setSubteamsExpanded(copy);
   };
 
+  /* Function that renders the 'Add Team' button */
   const renderAddTeam = () => {
     return (
       <Button
@@ -227,9 +228,11 @@ const TeamsScreen = ({ navigation, teams, fireAuth, toggleModal, user }) => {
             }
 
             {
+              /* Displays the list of teams/subteams the user is part of */
               <TeamsList teams={user.teams} navigation={navigation} />
             }
 
+            {/* Display all community's teams and sub-teams */}
             <Heading mb={2} alignSelf="center">All Teams</Heading>
             { teamsList.length === 0 ? (
               <View style={styles.noInfoContainer}>
@@ -244,8 +247,12 @@ const TeamsScreen = ({ navigation, teams, fireAuth, toggleModal, user }) => {
                     team={team}
                     isSubteam={false}
                   />
+
                   {
-                  /* Display the subteams associated with a parent if expanded */
+                  /* 
+                   * Display the subteams associated with a parent if 
+                   * expanded.
+                   */
                   team.subteams.length > 0 && (
                     <View>
                       <Pressable onPress={() => changeExpanded(team.team.id)}>
@@ -264,6 +271,7 @@ const TeamsScreen = ({ navigation, teams, fireAuth, toggleModal, user }) => {
                           />
                         </HStack>
                       </Pressable>
+                      
                       {subteamsExpanded[team.team.id] && (
                         <VStack ml={5} space={3} mt={3}>
                           {team.subteams.map((subteam, j) => {

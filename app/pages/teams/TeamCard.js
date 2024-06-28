@@ -6,7 +6,7 @@
  *      is possible to keep consistency across all teams and subteams
  *      pages.
  * 
- *      Written by: Moizes Almeida
+ *      Written by: Moizes Almeida and Will Soylemez
  *      Last edited: June 28, 2024
  * 
  *****************************************************************************/
