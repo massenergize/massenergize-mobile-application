@@ -1,3 +1,15 @@
+/******************************************************************************
+ *                            CommunitySelect
+ * 
+ *      This page is responsible for rendering the page for the
+ *      user to select the community they are part of.
+ * 
+ *      Written by: Frimpong and Moizes Almeida
+ *      Last edited: June 28, 2024
+ * 
+ *****************************************************************************/
+
+/* Imports and set up */
 import {View, Text, ScrollView, TouchableOpacity, Image} from 'react-native';
 import React, {useEffect} from 'react';
 import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
@@ -25,6 +37,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {groupCommunities} from '../../utils/common';
 import CommunityCard from './CommunityCard';
+import { ImageBackground } from '@gluestack-ui/themed';
 
 const CommunitySelect = ({
   toggleModal,
@@ -85,14 +98,25 @@ const CommunitySelect = ({
   return (
     <SafeAreaView>
       <View style={{height: '100%'}}>
+        <ImageBackground 
+          source={require("../../assets/community-search.png")} 
+          style={{
+            width: "100%",
+            height: "100%",
+            flex: 1,
+          }}
+        />
         <View
           style={{
+            width: "100%",
             height: '30%',
-            backgroundColor: COLOR_SCHEME.GREEN,
+            backgroundColor: 'rgba(100, 186, 87, 0.6)',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
+            position: "absolute",
+            top: 0,
           }}>
           <FontAwesomeIcon name="group" size={32} color="white" />
           <Text
