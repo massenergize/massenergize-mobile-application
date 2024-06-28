@@ -154,8 +154,6 @@ const AddTeam = ({
       parent_id: values.parent
     };
 
-    console.log(teams);
-
     apiCall("teams.add", data)
       .then((response) => {
         setIsSubmitting(false);
@@ -183,7 +181,7 @@ const AddTeam = ({
 
   /* Displays the form to create a new team */
   return (
-    <View>
+    <View bg="white">
       <ScrollView
         showsVerticalScrollIndicator={false}
         px={3}
@@ -345,6 +343,7 @@ const AddTeam = ({
                             borderRadius: 25,
                             backgroundColor: 'white',
                           }}
+                          shadow={3}
                         >
                           <Text
                             pl={3}

@@ -7,7 +7,7 @@
  *      pages.
  * 
  *      Written by: Moizes Almeida
- *      Last edited: June 27, 2024
+ *      Last edited: June 28, 2024
  * 
  *****************************************************************************/
 
@@ -17,11 +17,9 @@ import {
   Heading,
   Text,
   VStack,
-  Image,
   Flex,
   Box,
   Pressable,
-  AspectRatio,
   Icon,
 } from '@gluestack-ui/themed-native-base';
 import { FontAwesomeIcon } from "../../components/icons";
@@ -36,23 +34,23 @@ export default function TeamCard({
 }) {
   /* Displays the TeamCard of each team or sub-team of the community */
   return (
-    <Flex
-      direction="column"
-      rounded="lg"
-      shadow="3"
+    <Pressable
+      onPress={() =>
+        navigation.navigate(isSubteam ? "SubteamDetails" : "TeamDetails", {
+          team_id: team.team.id,
+          team_stats: team,
+          subteams: team.subteams ? team.subteams : [],
+        })
+      }
       backgroundColor="white"
-      overflow="hidden"
-      {...props}
+      shadow={3}
+      rounded="lg"
     >
-      <Pressable
-        onPress={() =>
-          navigation.navigate(isSubteam ? "SubteamDetails" : "TeamDetails", {
-            team_id: team.team.id,
-            team_stats: team,
-            subteams: team.subteams ? team.subteams : [],
-          })
-        }
+      <Box
+        overflow="hidden"
+        {...props}
       >
+        {/* Team's Logo */}
         <Box>
           <MEImage
             source={{ uri: team.team.logo?.url }}
@@ -62,15 +60,21 @@ export default function TeamCard({
             resizeMode="contain"
           />
         </Box>
+
+        {/* Team information box */}
         <Box p="4">
+          {/* Team's name and tagline */}
           <Box py="2">
             <Heading size="md">{team.team.name}</Heading>
             {team.team.tagline !== "" ? (
               <Text color="muted.400">{team.team.tagline}</Text>
             ) : null}
           </Box>
+
+          {/* Team's stats */}
           <Box>
             <VStack space="2">
+              {/* Team members */}
               <Flex direction="row">
                 <Icon
                   as={FontAwesomeIcon}
@@ -84,6 +88,8 @@ export default function TeamCard({
                   <Text fontWeight="bold">{team.members}</Text> Members
                 </Text>
               </Flex>
+
+              {/* Team's completed actions */}
               <Flex direction="row">
                 <Icon
                   as={FontAwesomeIcon}
@@ -98,6 +104,8 @@ export default function TeamCard({
                   actions completed
                 </Text>
               </Flex>
+
+              {/* Team's carbon footprint reduction */}
               <Flex direction="row">
                 <Icon
                   as={FontAwesomeIcon}
@@ -114,6 +122,8 @@ export default function TeamCard({
                   Trees
                 </Text>
               </Flex>
+              
+              {/* Team's sub-teams (if any) */}
               {isSubteam ? null : (
                 <Flex direction="row">
                   <Icon
@@ -133,7 +143,7 @@ export default function TeamCard({
             </VStack>
           </Box>
         </Box>
-      </Pressable>
-    </Flex>
+      </Box>
+    </Pressable>
   );
 }

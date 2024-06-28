@@ -474,7 +474,7 @@ function TeamDetails({
 
   /* Displays the DetailsScreen of the Team of the community */
   return (
-    <View>
+    <View bg="white" height="100%">
       <ScrollView>
         {isTeamLoading || isMembersLoading ? (
           <Spinner />
@@ -491,7 +491,7 @@ function TeamDetails({
               />
             ) : null}
             <VStack space="3">
-              <Heading alignSelf="center" mt={5}>{team.name}</Heading>
+              <Heading alignSelf="center" textAlign="center" mt={5} px={5}>{team.name}</Heading>
               <Button
                 my={2}
                 mx={4}
