@@ -6,7 +6,7 @@
  *      impact, and cost.
  * 
  *      Written by: William Soylemez and Moizes Almeida
- *      Last edited: June 27, 2024
+ *      Last edited: July 1, 2024
  * 
  *****************************************************************************/
 
@@ -121,7 +121,24 @@ const ActionsScreen = ({ navigation, actions, questionnaire }) => {
             {isFilterApplied ? (
               /* Display filtered actions */
               <View>
-                {ActionList(filteredActions, "Filtered Actions")}
+                {
+                  filteredActions.length === 0 ? (
+                    <View>
+                      <Text style={styles.category}>Filtered Actions</Text>
+                      <Text 
+                        fontSize="xs"
+                        textAlign="center"
+                        px={10}
+                        color="gray.400"
+                        mt={10}
+                      >
+                        No actions were found with the filters... 
+                      </Text>
+                    </View>
+                  ) : (
+                    ActionList(filteredActions, "Filtered Actions")
+                  )
+                }
               </View>
             ) : (
               /* 

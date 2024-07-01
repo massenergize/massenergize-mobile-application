@@ -189,6 +189,7 @@ const RootWrapper = ({
           component={EventsScreen}
         />
         <MainStack.Screen
+          options={{headerTitle: ''}}
           name="SubteamDetails"
           component={TeamDetails}
         />

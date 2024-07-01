@@ -240,7 +240,7 @@ function ActionsList({ listData = [] }) {
     return (
       <View width="100%" ml={3} p={3}>
         {
-            listData.length !== 0 ? (
+            listData !== null && listData.length !== 0 ? (
                 <View>
                     <HStack 
                         width="100%" 
@@ -285,65 +285,50 @@ function ActionsList({ listData = [] }) {
                         </Text>
                     </HStack>
 
-                    <View>
-                        { listData !== null ? (
-                            listData.map((action, index) => (
-                                <HStack 
-                                    width="100%" 
-                                    alignItems="center" 
-                                    justifyContent="space-between" 
-                                    mb={4} 
-                                    key={index}
-                                >
-                                    <Text 
-                                        bold 
-                                        fontSize="sm" 
-                                        width="25%" 
-                                        textAlign="left" 
-                                        color="#64B058"
-                                    >
-                                        {action.name}
-                                    </Text>
-
-                                    <Text 
-                                        fontSize="sm" 
-                                        width="30%" 
-                                        textAlign="center"
-                                    >
-                                        {action.category}
-                                    </Text>
-
-                                    <Text 
-                                        fontSize="sm" 
-                                        width="25%" 
-                                        textAlign="center"
-                                    >
-                                        {action.carbon_total}
-                                    </Text>
-
-                                    <Text 
-                                        fontSize="sm" 
-                                        width="20%" 
-                                        textAlign="center"
-                                    >
-                                        {action.done_count}
-                                    </Text>
-                                </HStack>
-                            ))
-                        ) : (
-                            <Text 
-                                fontSize="xs"
-                                textAlign="center"
-                                px={10}
-                                color="gray.400"
-                                mt={10}
-                                mx={5}
+                    { listData.map((action, index) => (
+                            <HStack 
+                                width="100%" 
+                                alignItems="center" 
+                                justifyContent="space-between" 
+                                mb={4} 
+                                key={index}
                             >
-                                No Actions List available for 
-                                this community right now... 
-                            </Text>
-                        )}
-                    </View>
+                                <Text 
+                                    bold 
+                                    fontSize="sm" 
+                                    width="25%" 
+                                    textAlign="left" 
+                                    color="#64B058"
+                                >
+                                    {action.name}
+                                </Text>
+
+                                <Text 
+                                    fontSize="sm" 
+                                    width="30%" 
+                                    textAlign="center"
+                                >
+                                    {action.category}
+                                </Text>
+
+                                <Text 
+                                    fontSize="sm" 
+                                    width="25%" 
+                                    textAlign="center"
+                                >
+                                    {action.carbon_total}
+                                </Text>
+
+                                <Text 
+                                    fontSize="sm" 
+                                    width="20%" 
+                                    textAlign="center"
+                                >
+                                    {action.done_count}
+                                </Text>
+                            </HStack>
+                        ))
+                    }
                 </View>
             ) : (
                 <Text 
@@ -351,7 +336,7 @@ function ActionsList({ listData = [] }) {
                     textAlign="center"
                     px={10}
                     color="gray.400"
-                    mt={10}
+                    mt={5}
                     mx={5}
                 >
                     No Actions List available for this community right now... 
