@@ -43,8 +43,8 @@ import { launchImageLibrary } from "react-native-image-picker";
  */
 const validationSchema = Yup.object({
   title: Yup.string().required("Name of event is required"),
-  start_date_and_time: Yup.string().required("Start date and time is required"),
-  end_date_and_time: Yup.string().required("End date and time is required"),
+  // start_date_and_time: Yup.string().required("Start date and time is required"),
+  // end_date_and_time: Yup.string().required("End date and time is required"),
   description: Yup.string().required("Description is required")
 });
 
@@ -70,8 +70,8 @@ const AddEvent = ({
    * for the newly added event, as well as it also displays which was the 
    * start and end date on the screen once they were selected by the user.
    */
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
 
@@ -150,30 +150,29 @@ const AddEvent = ({
     /* Data that will be sent to the API. */
     const data = {
       community_id: community_id,
-      title: values.title,
-      start_date_and_time: startDate,
-      end_date_and_time: endDate,
-      format: format,
+      name: values.title,
+      start_date_and_time: startDate?.toISOString(),
+      end_date_and_time: endDate?.toISOString(),
+      // format: format,
       location: location,
-      image: imageUri,
+      // image: imageUri,
       description: values.description
     };
 
     apiCall("events.add", data).then((response) => {
       setIsSubmitting(false);
-      setIsSent(true);
-
+      
       if (!response.success) {
         showError('An error occurred while adding event. Please try again.');
         console.error('ERROR_ADDING_EVENT: ', response);
         return;
       }
-
-      console.log('EVENT_ADDED: ', response.data);
-
+      
+      console.log('EVENT_ADDED');
+      setIsSent(true);
       /* Add the new event to the redux store */
       setEvents([response.data, ...events]);
-      navigation.goBack();
+      actions.resetForm();
     })
       .catch((error) => {
         console.error('ERROR_ADDING_EVENT: ', error);
@@ -181,7 +180,6 @@ const AddEvent = ({
         return;
       });
 
-    actions.resetForm();
   };
 
   /* Displays the screen to add an event to the selected community */
@@ -596,17 +594,16 @@ const AddEvent = ({
           onClose={() => setIsSent(false)}
         >
           <Modal.Content
-            maxWidth="400px"
+            maxWidth={400}
           >
             <Modal.Body>
               <Center
                 mb="5"
               >
-                <Icon
-                  as={FontAwesomeIcon}
-                  name="circle-check"
-                  size="90px"
-                  color="primary.600"
+                <FontAwesomeIcon
+                  name="check"
+                  size={90}
+                  color="green"
                 />
                 <Text
                   fontSize="lg"
