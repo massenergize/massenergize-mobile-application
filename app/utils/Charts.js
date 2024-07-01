@@ -6,7 +6,7 @@
  *      of the actions completed by each community.
  * 
  *      Written by: Moizes Almeida
- *      Last edited: June 4, 2024
+ *      Last edited: July 1, 2024
  * 
  *****************************************************************************/
 
@@ -239,24 +239,125 @@ function TeamActionsChart({ graphData }) {
 function ActionsList({ listData = [] }) {
     return (
       <View width="100%" ml={3} p={3}>
-        <HStack width="100%" alignItems="center" justifyContent="space-between" mb={2}>
-          <Text bold fontSize="sm" width="25%" textAlign="center">Actions</Text>
-          <Text bold fontSize="sm" width="30%" textAlign="center">Category</Text>
-          <Text bold fontSize="sm" width="25%" textAlign="center">Carbon Saving</Text>
-          <Text bold fontSize="sm" width="20%" textAlign="center"># Done</Text>
-        </HStack>
-        {listData !== null ? (
-          listData.map((action, index) => (
-            <HStack width="100%" alignItems="center" justifyContent="space-between" mb={4} key={index}>
-              <Text bold fontSize="sm" width="25%" textAlign="left" color="#64B058">{action.name}</Text>
-              <Text fontSize="sm" width="30%" textAlign="center">{action.category}</Text>
-              <Text fontSize="sm" width="25%" textAlign="center">{action.carbon_total}</Text>
-              <Text fontSize="sm" width="20%" textAlign="center">{action.done_count}</Text>
-            </HStack>
-          ))
-        ) : (
-          <Text textAlign="center" color="gray.500">No actions available</Text>
-        )}
+        {
+            listData.length !== 0 ? (
+                <View>
+                    <HStack 
+                        width="100%" 
+                        alignItems="center" 
+                        justifyContent="space-between" 
+                        mb={2}
+                    >
+                        <Text 
+                            bold 
+                            fontSize="sm" 
+                            width="25%" 
+                            textAlign="center"
+                        >
+                            Actions
+                        </Text>
+
+                        <Text 
+                            bold 
+                            ontSize="sm" 
+                            width="30%" 
+                            textAlign="center"
+                        >
+                            Category
+                        </Text>
+
+                        <Text 
+                            bold 
+                            fontSize="sm" 
+                            width="25%" 
+                            textAlign="center"
+                        >
+                            Carbon Saving
+                        </Text>
+
+                        <Text 
+                            bold 
+                            fontSize="sm" 
+                            width="20%" 
+                            textAlign="center"
+                        >
+                            # Done
+                        </Text>
+                    </HStack>
+
+                    <View>
+                        { listData !== null ? (
+                            listData.map((action, index) => (
+                                <HStack 
+                                    width="100%" 
+                                    alignItems="center" 
+                                    justifyContent="space-between" 
+                                    mb={4} 
+                                    key={index}
+                                >
+                                    <Text 
+                                        bold 
+                                        fontSize="sm" 
+                                        width="25%" 
+                                        textAlign="left" 
+                                        color="#64B058"
+                                    >
+                                        {action.name}
+                                    </Text>
+
+                                    <Text 
+                                        fontSize="sm" 
+                                        width="30%" 
+                                        textAlign="center"
+                                    >
+                                        {action.category}
+                                    </Text>
+
+                                    <Text 
+                                        fontSize="sm" 
+                                        width="25%" 
+                                        textAlign="center"
+                                    >
+                                        {action.carbon_total}
+                                    </Text>
+
+                                    <Text 
+                                        fontSize="sm" 
+                                        width="20%" 
+                                        textAlign="center"
+                                    >
+                                        {action.done_count}
+                                    </Text>
+                                </HStack>
+                            ))
+                        ) : (
+                            <Text 
+                                fontSize="xs"
+                                textAlign="center"
+                                px={10}
+                                color="gray.400"
+                                mt={10}
+                                mx={5}
+                            >
+                                No Actions List available for 
+                                this community right now... 
+                            </Text>
+                        )}
+                    </View>
+                </View>
+            ) : (
+                <Text 
+                    fontSize="xs"
+                    textAlign="center"
+                    px={10}
+                    color="gray.400"
+                    mt={10}
+                    mx={5}
+                >
+                    No Actions List available for this community right now... 
+                </Text>
+            )
+        } 
       </View>
     );
 }

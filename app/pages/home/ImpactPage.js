@@ -7,7 +7,7 @@
  *      impact of the community through the CommunityHomeScreen.
  * 
  *      Written by: Moizes Almeida
- *      Last edited: June 5, 2024
+ *      Last edited: July 1, 2024
  * 
  *****************************************************************************/
 
@@ -72,7 +72,7 @@ export default function ImpactPage({ route, navigation }) {
 
     /* Displays the information about the community's impact */
     return (
-        <View>
+        <View height="100%" bg="white">
             <ScrollView>
                 <VStack alignItems="center" space={3} bg="white">
                     <Text bold fontSize="xl" mt={2}>Goals</Text>
