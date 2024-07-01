@@ -7,7 +7,7 @@
  *      of the community.
  * 
  *      Written by: Moizes Almeida
- *      Last edited: June 28, 2024
+ *      Last edited: July 1, 2024
  * 
  *****************************************************************************/
 
@@ -229,9 +229,11 @@ const CommunityHomeScreen = ({
   /* When the app is loading, display an activity indicator */
   if (isLoading) {
     return (
-      <Center flex="1">
-        <Spinner/>
-      </Center>
+      <View height="100%" bg="white">
+        <Center flex="1">
+          <Spinner/>
+        </Center>
+      </View>
     );
   }
 
@@ -239,17 +241,17 @@ const CommunityHomeScreen = ({
   const renderPreferences = () => {
     return (
       <Pressable
-      onPress={() => {
-        if (fireAuth) {
-          navigation.navigate("Questionnaire");
-        } else {
-          toggleModal({
-            isVisible: true,
-            Component: AuthOptions,
-            title: 'How would you like to sign in or Join?',
-          })
-        }
-      }}
+        onPress={() => {
+          if (fireAuth) {
+            navigation.navigate("Questionnaire");
+          } else {
+            toggleModal({
+              isVisible: true,
+              Component: AuthOptions,
+              title: 'How would you like to sign in or Join?',
+            })
+          }
+        }}
         mx={4}
         width="100%"
       >

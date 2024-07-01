@@ -58,60 +58,83 @@ export default function ImpactPage({ route, navigation }) {
     const [impactData, isImpactLoading] = useDetails('graphs.actions.completed', { community_id });
     const [actionsCompleted, isActionsLoading] = useDetails('communities.actions.completed', { community_id });
 
-    /* 
-     * While the information about the community's impact and completed 
-     * actions hasn't loaded, display an activity indicator
-     */
-    if (!impactData || !actionsCompleted) {
-        return (
-            <Center flex="1">
-              <Spinner/>
-            </Center>
-        );
-    }
-
     /* Displays the information about the community's impact */
     return (
         <View height="100%" bg="white">
-            <ScrollView>
-                <VStack alignItems="center" space={3} bg="white">
-                    <Text bold fontSize="xl" mt={2}>Goals</Text>
-                    {
-                        /* Shows the community's available goals */
-                        goalsList.map((goal, index) => <BigPieChart goal={goal} color={colors[index]} key={index}/>)
-                    }
-                    <Text bold fontSize="xl" mb={2} mt={10}>Number of Actions Completed</Text>
-                    <HStack width="100%">
-                        <Spacer />
-                        {/* Toggle between action chart and action list */}
-                        <Center>
-                            <Ionicons
-                                name={"bar-chart-outline"}
-                                color={actionDisplay == "chart" ? '#64B058' : 'black'}
-                                padding={5}
-                                size={24}
-                                onPress={() => setActionDisplay('chart')}
-                            />
-                        </Center>
-                        <Center pr={3}>
-                            <Ionicons
-                                name={"list-outline"}
-                                color={actionDisplay == "list" ? '#64B058' : 'black'}
-                                padding={5} E
-                                size={24}
-                                onPress={() => setActionDisplay('list')}
-                            />
-                        </Center>
-                    </HStack>
-                    {
-                        (actionDisplay == "chart")
-                        ?
-                        <ActionsChart graphData={impactData.data} />
-                        :
-                        <ActionsList listData={actionsCompleted} />
-                    }
-                </VStack>
-            </ScrollView>
+            {/* 
+              * While the information about the community's impact and 
+              * completed actions hasn't loaded, display an activity indicator
+              */}
+            {!impactData || !actionsCompleted ? (
+                <Center flex="1">
+                    <Spinner/>
+                </Center>
+            ) : (
+                <ScrollView>
+                    <VStack alignItems="center" space={3} bg="white">
+                        {/* 
+                          * Displays the donut charts of the completed actions
+                          * compared to the goals set by the community 
+                          */}
+                        <Text bold fontSize="xl" mt={2}>Goals</Text>
+                        {
+                            /* Shows the community's available goals */
+                            goalsList.map((goal, index) => 
+                                <BigPieChart 
+                                    goal={goal} 
+                                    color={colors[index]} 
+                                    key={index}
+                                />
+                            )
+                        }
+
+                        {/* 
+                          * Displays the Actions data either as a graph chart
+                          * or as a list 
+                          */}
+                        <Text 
+                            bold 
+                            fontSize="xl" 
+                            mb={2} 
+                            mt={10}
+                        >
+                            Number of Actions Completed
+                        </Text>
+                        <HStack width="100%">
+                            <Spacer />
+                            {/* Toggle between action chart and action list */}
+                            <Center>
+                                <Ionicons
+                                    name={"bar-chart-outline"}
+                                    color={actionDisplay == "chart" ? '#64B058' 
+                                            : 'black'}
+                                    padding={5}
+                                    size={24}
+                                    onPress={() => setActionDisplay('chart')}
+                                />
+                            </Center>
+                            <Center pr={3}>
+                                <Ionicons
+                                    name={"list-outline"}
+                                    color={actionDisplay == "list" ? '#64B058' 
+                                            : 'black'}
+                                    padding={5} E
+                                    size={24}
+                                    onPress={() => setActionDisplay('list')}
+                                />
+                            </Center>
+                        </HStack>
+                        
+                        {
+                            (actionDisplay == "chart")
+                            ?
+                            <ActionsChart graphData={impactData.data} />
+                            :
+                            <ActionsList listData={actionsCompleted} />
+                        }
+                    </VStack>
+                </ScrollView>
+            )}
         </View>
     );
 }
