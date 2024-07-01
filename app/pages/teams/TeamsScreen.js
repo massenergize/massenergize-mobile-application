@@ -241,7 +241,8 @@ const TeamsScreen = ({ navigation, teams, fireAuth, toggleModal, user }) => {
                   px={10}
                   color="gray.400"
                 >
-                  There are curently no Teams in this community
+                  There are curently no Teams in this community. 
+                  You can create the first one!
                 </Text>
               </View>
             ) : ( 

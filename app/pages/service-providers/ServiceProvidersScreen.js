@@ -4,7 +4,7 @@
  *      This page is responsible for rendering a list of service providers.
  * 
  *      Written by: William Soylemez and Moizes Almeida
- *      Last edited: June 27, 2024
+ *      Last edited: July 1, 2024
  * 
  *****************************************************************************/
 
@@ -151,6 +151,37 @@ function ServiceProvidersPage({ navigation, vendors, questionnaire }) {
         </ScrollView>
       </>
     );
+  }
+
+  /* 
+   * If the community doesn't have any service providers, display a message 
+   * saying so.
+   */
+  if (vendors.length === 0) {
+    return (
+      <View height="100%" bg="white">
+        <ScrollView px="5" showsVerticalScrollIndicator={false}>
+          <VStack mt="5">
+            <Text style={styles.title}>Vendors</Text>
+            <View 
+              style={{ 
+                justifyContent: 'center', 
+                alignItems: 'center', 
+                marginTop: 200 
+              }}
+            >
+                <Text fontSize="xs"
+                  textAlign="center"
+                  px={10}
+                  color="gray.400"
+                >
+                  No service providers for now...
+                </Text>
+            </View>
+          </VStack>
+        </ScrollView>
+      </View>
+    )
   }
 
   /* Displays the Service Providers page and the applied filters */

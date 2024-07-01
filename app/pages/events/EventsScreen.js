@@ -6,7 +6,7 @@
  *      and the Campaigns from a community.
  * 
  *      Written by: Moizes Almeida
- *      Last edited: June 28, 2024
+ *      Last edited: July 1, 2024
  * 
  *****************************************************************************/
 
@@ -163,7 +163,7 @@ const EventsScreen = ({ navigation, events, fireAuth, toggleModal }) => {
                             px={10}
                             color="gray.400"
                           >
-                            No events for now... 
+                            No events so far... You create one!
                           </Text>
                       </View>
                     ) : (
@@ -209,6 +209,7 @@ const mapStateToProps = (state) => {
     fireAuth: state.fireAuth,
   }
 }
+
 /* 
  * Transforms the dispatch function from the API in order to get the information
  * of the current community and sends it to the EventsScreen proprieties.
