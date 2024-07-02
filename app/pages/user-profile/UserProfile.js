@@ -2,11 +2,11 @@
  *                            UserProfile
  * 
  *      This page is responsible for rendering the user's profile. It displays
- *      the user's name, sustainability score, carbon saved, todo list, completed
- *      actions, teams, households, and communities.
+ *      the user's name, sustainability score, carbon saved, to-do list,
+ *      completed actions, teams, households, and communities.
  * 
  *      Written by: William Soylemez and Moizes Almeida
- *      Last edited: June 28, 2023
+ *      Last edited: July 2, 2024
  * 
  *****************************************************************************/
 
@@ -441,7 +441,7 @@ function DashboardPage({
           <CarbonSaved CompletedList={completedList} />
 
           {/* Action lists */}
-          {todoList.length > 0 &&
+          {todoList !== null && todoList.length > 0 &&
             <>
               <Text style={styles.category}>To-do list</Text>
               <ActionsList navigation={navigation} list={todoList} actions={actions} />

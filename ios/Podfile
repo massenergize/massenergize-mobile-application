@@ -8,7 +8,9 @@ require Pod::Executable.execute_command('node', ['-p',
     {paths: [process.argv[1]]},
   )', __dir__]).strip
 
-platform :ios, min_ios_version_supported
+# Set the minimum iOS deployment target
+platform :ios, '12.4'
+
 prepare_react_native_project!
 
 # If you are using a `react-native-flipper` your iOS build will fail when `NO_FLIPPER=1` is set.
@@ -54,7 +56,6 @@ target 'MassenergizeAppV2' do
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
   pod 'react-native-image-picker', :path => '../node_modules/react-native-image-picker'
   pod 'RNDateTimePicker', :path => '../node_modules/@react-native-community/datetimepicker'
-
 
   target 'MassenergizeAppV2Tests' do
     inherit! :complete

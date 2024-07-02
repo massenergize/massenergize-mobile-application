@@ -4,7 +4,7 @@
  *      This page is responsible for rendering a list of service providers.
  * 
  *      Written by: William Soylemez and Moizes Almeida
- *      Last edited: July 1, 2024
+ *      Last edited: July 2, 2024
  * 
  *****************************************************************************/
 
@@ -154,10 +154,21 @@ function ServiceProvidersPage({ navigation, vendors, questionnaire }) {
   }
 
   /* 
-   * If the community doesn't have any service providers, display a message 
-   * saying so.
+   * Function that checks if there is only one card in the list of vendors 
+   * and if that card refers to having no service providers currently. 
    */
-  if (vendors.length === 0) {
+  function comingSoonCheck(vendors) {
+    return vendors.some((vendor) => {
+      return vendor.name === "Coming soon!  We're just getting off the ground.";
+    });
+  }
+
+  /* 
+  * If the community doesn't have any service providers or if the only 
+  * card in the list of vendors refers to having no service providers 
+  * currently, display a message.
+  */
+  if (vendors.length === 0 || comingSoonCheck(vendors)) {
     return (
       <View height="100%" bg="white">
         <ScrollView px="5" showsVerticalScrollIndicator={false}>
@@ -170,19 +181,21 @@ function ServiceProvidersPage({ navigation, vendors, questionnaire }) {
                 marginTop: 200 
               }}
             >
-                <Text fontSize="xs"
-                  textAlign="center"
-                  px={10}
-                  color="gray.400"
-                >
-                  No service providers for now...
-                </Text>
+              <Text 
+                fontSize="xs"
+                textAlign="center"
+                px={10}
+                color="gray.400"
+              >
+                No service providers for now...
+              </Text>
             </View>
           </VStack>
         </ScrollView>
       </View>
-    )
+    );
   }
+
 
   /* Displays the Service Providers page and the applied filters */
   return (
