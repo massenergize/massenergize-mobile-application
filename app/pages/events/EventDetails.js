@@ -18,7 +18,6 @@ import { formatDateString } from '../../utils/Utils';
 import HTMLParser from '../../utils/HTMLParser';
 import { FontAwesomeIcon } from '../../components/icons';
 import { 
-  Button,
   ScrollView,
   VStack,
   Text,
@@ -28,13 +27,14 @@ import {
   Icon,
   AspectRatio,
   Image,
-  Actionsheet,
-  useDisclose,
   Spinner,
   Center,
   View,
   HStack,
-  Link
+  Link,
+  Pressable,
+  Modal,
+  Button,
 } from '@gluestack-ui/themed-native-base';
 
 const EventDetails = ({ route }) => {
@@ -46,7 +46,7 @@ const EventDetails = ({ route }) => {
    */
   const { event_id } = route.params;
   const [rsvp, setRsvp] = useState("");
-  const { isOpen, onOpen, onClose } = useDisclose();
+  const [isModalOpen, setModalOpen] = useState(false);
 
   /* 
    * Calls on the API again to display the information of that specific
@@ -56,12 +56,8 @@ const EventDetails = ({ route }) => {
 
   /* Marks the event as RSVPed if the user takes the action to do so */
   const handleAction = (action) => {
-    if (action === rsvp) {
-      setRsvp("");
-    } else {
-      setRsvp(action);
-    }
-    onClose();
+    setRsvp(action === rsvp ? "" : action);
+    setModalOpen(false);
   };
 
   /* 
@@ -72,7 +68,6 @@ const EventDetails = ({ route }) => {
     if (!/^(?:f|ht)tps?\:\/\//.test(url)) {
       return "http://" + url;
     }
-    
     return url;
   };
 
@@ -136,17 +131,12 @@ const EventDetails = ({ route }) => {
               >
                 Access Link
               </Text>
-
-              {event.external_link_type === "Register" ? (
-                <Text 
-                  fontWeight="300"
-                  mt={1}
-                >
+              {event.external_link_type === "Register" && (
+                <Text fontWeight="300" mt={1}>
                   Register to access link
                 </Text>
-              ) : null}
-
-              {event.external_link !== "" ? (
+              )}
+              {event.external_link !== "" && (
                 <HStack space="2" alignItems="center">
                   <Icon
                     as={FontAwesomeIcon}
@@ -161,61 +151,67 @@ const EventDetails = ({ route }) => {
                     {event.external_link}
                   </Link>
                 </HStack>
-              ) : null}
+              )}
             </VStack>
           )}
 
           {/* RSVP event */}
           {event.rsvp_enabled && (
-            <Button
-              backgroundColor={rsvp === "Going" ? 
-                                "secondary.400" : 
-                                "primary.600"}
-              onPress={onOpen}
-            >
-              <Text color="white" fontWeight="bold">
-                {rsvp || "RSVP for this event!"}
-                {"  "}
-                {isOpen ? (
-                  <Icon 
-                    as={FontAwesomeIcon} 
-                    name="chevron-up" 
-                    color="white" 
-                  />
-                ) : (
-                  <Icon 
-                    as={FontAwesomeIcon} 
-                    name="chevron-down" 
-                    color="white" 
-                  />
-                )}
-              </Text>
-            </Button>
+            <>
+              <Pressable
+                bg={rsvp === "" ? "secondary.400" : "muted.200"}
+                p={2}
+                mt={2}
+                style={{
+                  borderRadius: 5,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+                onPress={() => setModalOpen(true)}
+              >
+                <Text color="white" fontWeight="bold">
+                  { rsvp !== "" ? rsvp : "RSVP for this event!"}
+                </Text>
+                <Text>{"  "}</Text>
+                <Icon 
+                  as={FontAwesomeIcon} 
+                  name={isModalOpen ? "chevron-up" : "chevron-down"} 
+                  color="white" 
+                />
+              </Pressable>
+              
+              {/* RSVP options (shouldn't appear if RSVP button isn't enabled) */}
+              <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
+                <Modal.Content maxWidth="400px">
+                  <Modal.CloseButton />
+                  <Modal.Header>RSVP Options</Modal.Header>
+                  <Modal.Body>
+                    <Button
+                      variant={rsvp === "Interested" ? "solid" : "outline"}
+                      onPress={() => handleAction("Interested")}
+                      mb={2}
+                    >
+                      Interested
+                    </Button>
+                    <Button
+                      variant={rsvp === "Going" ? "solid" : "outline"}
+                      onPress={() => handleAction("Going")}
+                      mb={2}
+                    >
+                      Going
+                    </Button>
+                    <Button
+                      variant={rsvp === "Not Going" ? "solid" : "outline"}
+                      onPress={() => handleAction("Not Going")}
+                    >
+                      Not Going
+                    </Button>
+                  </Modal.Body>
+                </Modal.Content>
+              </Modal>
+            </>
           )}
-
-          {/* RSVP options (shouldn't appear if RSVP button isn't enabled) */}
-          <Actionsheet isOpen={isOpen} onClose={onClose}>
-            <Actionsheet.Content>
-              <Actionsheet.Item
-                backgroundColor={rsvp === "Interested" ? "muted.200" : "white"}
-                onPress={() => handleAction("Interested")}
-              >
-                Interested
-              </Actionsheet.Item>
-              <Actionsheet.Item
-                backgroundColor={rsvp === "Going" ? "muted.200" : "white"}
-                onPress={() => handleAction("Going")}
-              >
-                Going
-              </Actionsheet.Item>
-              <Actionsheet.Item
-                backgroundColor={rsvp === "Not Going" ? "muted.200" : "white"}
-                onPress={() => handleAction("Not Going")}
-              >
-                Not Going
-              </Actionsheet.Item>
-            </Actionsheet.Content>
-          </Actionsheet>
         </VStack>
 
         {/* Divisor between the upper view and the description of the event */}
