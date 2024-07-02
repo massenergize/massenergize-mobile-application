@@ -54,5 +54,40 @@ Run the app by running `npm start` in the project root directory and pressing `i
 
 That's it! Please reach out to [William Soylemez](mailto:will.soylemez@massenergize.org) or [Moizes Almeida](mailto:moizes.almeida@massenergize.org) by email or Slack with any questions.
 
+## Switching between dev and prod backend
+The instructions above will configure the app to use the developer (local) backend. To use the production backend, follow these steps:
+
+### 1. Update `config.json`
+Switch the API config to use the Canary (or Prod) API:
+```json
+{
+  "IS_LOCAL": false,
+  "IS_PROD": false,
+  "IS_CANARY": true,
+  "BUILD_VERSION": "X.X.X"
+}
+```
+
+### 2. Update `GoogleService-Info.plist`
+Replace the contents of [ios/GoogleService-Info.plist](ios/GoogleService-Info.plist) with a production version that can be found in the ME slack [here](https://massenergize.slack.com/files/UMXEAL7QB/F074K1M3YCV/googleservice-info.plist) or by reaching out to a ME team member.
+
+### 3. Update url scheme in XCode
+Open the updated `GoogleService-Info.plist` and copy the value under `REVERSED_CLIENT_ID`.
+Open XCode and click on the project in the left-hand navigator. Ensure the correct project is picked under "targets" then navigate to "info" and open "URL Types". Replace the value in "URL Schemes" with the ID you just copied from `GoogleService-Info.plist`.
+
+### 4. Copy the Firebase client id into Info.plist
+Copy the Firebase client ID, the last section of the `REVERSED_CLIENT_ID` from the section above, into the corresponding sections of the `GIDClientID` field of [ios/MassenergizeAppV2/Info.plist](ios/MassenergizeAppV2/Info.plist).
+
+### 5. Copy the Firebase client Id into rootwrapper
+Lastly, open [app/pages/RootWrapper.js](app/pages/RootWrapper.js) and update the lines under `GoogleSignIn.Configure` with the same part of the `REVERSED_CLIENT_ID` as the last step:
+```js
+GoogleSignin.configure({
+  webClientId:
+    '*YOUR_CLIENT_ID*.apps.googleusercontent.com',
+});
+```
+
+With that, the app should use the production backend. Please reach out to [William Soylemez](will.soylemez@massenergize.org) with questions!
+
 -----------------------------------------------
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
