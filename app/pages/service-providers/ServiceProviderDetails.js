@@ -4,8 +4,8 @@
  *      This page is responsible for rendering detailed information about a
  *      single service provider.
  * 
- *      Written by: William Soylemez
- *      Last edited: June 5, 2023
+ *      Written by: William Soylemez and Moizes Almeida
+ *      Last edited: July 2, 2024
  * 
  *****************************************************************************/
 
@@ -23,7 +23,7 @@ import {
   ScrollView,
   Spinner,
 } from "@gluestack-ui/themed-native-base";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
+import { FontAwesomeIcon } from "../../components/icons";
 import HTMLParser from "../../utils/HTMLParser";
 import { useDetails } from "../../utils/hooks";
 import { Linking, View } from "react-native";
@@ -108,19 +108,41 @@ export default function ServiceProviderDetails({ route, navigation }) {
                 Contact Information
               </Text>
               <VStack space="2" mt="2">
-                <HStack space="5">
-                  <Icon as={FontAwesome} name="phone" size="sm" />
+                <HStack space="5" alignItems="center">
+                  <Icon 
+                    as={FontAwesomeIcon} 
+                    name="phone" 
+                    size="sm" 
+                    color="blue.400" 
+                  />
+
                   <Text>{spDetails.phone_number || "N/A"}</Text>
                 </HStack>
-                <HStack space="5">
-                  <Icon as={FontAwesome} name="envelope" size="sm" />
+
+                <HStack space="5" alignItems="center">
+                  <Icon 
+                    as={FontAwesomeIcon} 
+                    name="envelope" 
+                    size="sm" 
+                    color="yellow.400"
+                  />
+
                   <Link isUnderlined={false}>{spDetails.email || "N/A"}</Link>
                 </HStack>
                 
                 {spDetails.website &&
-                  <HStack space="5">
-                    <Icon as={FontAwesome} name="globe" size="sm" />
-                    <Link _text={{ color: "primary.400" }} href={addHttp(spDetails.website)}>
+                  <HStack space="5" alignItems="center">
+                    <Icon 
+                      as={FontAwesomeIcon} 
+                      name="globe" 
+                      size="sm" 
+                      color="green.400"
+                    />
+
+                    <Link 
+                      _text={{ color: "primary.400" }} 
+                      href={addHttp(spDetails.website)}
+                    >
                       {spDetails.website}
                     </Link>
                   </HStack>
