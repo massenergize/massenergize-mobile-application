@@ -6,7 +6,7 @@
  *      of the actions completed by each community.
  * 
  *      Written by: Moizes Almeida
- *      Last edited: July 1, 2024
+ *      Last edited: July 2, 2024
  * 
  *****************************************************************************/
 
@@ -339,7 +339,8 @@ function ActionsList({ listData = [] }) {
                     mt={5}
                     mx={5}
                 >
-                    No Actions List available for this community right now... 
+                    Sorry, for some reason we could not load the list of 
+                    actions that people in this community have taken...
                 </Text>
             )
         } 
