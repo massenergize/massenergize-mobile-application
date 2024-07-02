@@ -5,7 +5,7 @@
  *      information as a component called EventDetails.
  * 
  *      Written by: Moizes Almeida
- *      Last edited: May 31, 2024
+ *      Last edited: July 2, 2024
  * 
  *****************************************************************************/
 
@@ -35,13 +35,12 @@ import { useDetails } from '../../utils/hooks';
 import { connect } from 'react-redux';
 import { fetchAllCommunityData } from '../../config/redux/actions';
 
-
 const EventDetails = ({ route }) => {
   /*
-   * * Gets the id of the community through the parameters of the route;
-   * * Uses local state to determine whether the user has RSVPed or no;
-   * * Uses the useDisclosure function to determine if the user is going to
-   *      be able to RSVP the event.
+   * Gets the id of the community through the parameters of the route;
+   * Uses local state to determine whether the user has RSVPed or no;
+   * Uses the useDisclosure function to determine if the user is going to
+   * be able to RSVP the event.
    */
   const { event_id } = route.params;
   const [rsvp, setRsvp] = useState("");
@@ -67,7 +66,7 @@ const EventDetails = ({ route }) => {
 
   /* Displays the community event information */
   return (
-    <View py="5" style={{backgroundColor: 'white'}}>
+    <View height="100%" py="5" style={{backgroundColor: 'white'}}>
       {isEventLoading
         ? 
         <Center width="100%" height="100%">
