@@ -4,8 +4,8 @@
  *      This component is a modal that allows the user to change their
  *      notification frequency. It is used in the settings page.
  * 
- *      Written by: William Soylemez
- *      Last edited: June 11, 2023
+ *      Written by: William Soylemez and Moizes Almeida
+ *      Last edited: July 3, 2024
  * 
  *****************************************************************************/
 
@@ -63,7 +63,7 @@ const ChangeNotificationModal = ({ isOpen, setIsOpen, user }) => {
         {/* Header */}
         <Modal.Header>Communication Preferences</Modal.Header>
         <Modal.Body>
-          <Text mb="5">
+          <Text mb="3" fontWeight="300" fontSize="md">
             How often would you like to be notified about new events?
           </Text>
 

@@ -4,8 +4,8 @@
  *      This page allows the user to change their email address. It requires
  *      the user to enter their current password to confirm the change.
  * 
- *      Written by: William Soylemez
- *      Last edited: June 11, 2024
+ *      Written by: William Soylemez and Moizes Almeida
+ *      Last edited: July 3, 2024
  * 
  *****************************************************************************/
 
@@ -92,8 +92,14 @@ const ChangeEmailModal = ({ isOpen, setIsOpen, user }) => {
             {/* Header */}
             <Modal.Header>Change My Email</Modal.Header>
             <Modal.Body>
-              <Text style={{ fontSize: 16 }}>Current email</Text>
-              <Text pb={5}>{user?.email}</Text>
+              <Text fontSize="lg">Current email:</Text>
+              <Text 
+                pb={5} 
+                fontSize="sm" 
+                fontWeight="300"
+              >
+                {user?.email}
+              </Text>
               <FormControl>
 
                 {/* New Email */}
@@ -112,7 +118,7 @@ const ChangeEmailModal = ({ isOpen, setIsOpen, user }) => {
               </FormControl>
 
               {/* Enter Password */}
-              <FormControl>
+              <FormControl mt={3}>
                 <FormControl.Label>Current Password</FormControl.Label>
                 <Input
                   variant="rounded"
