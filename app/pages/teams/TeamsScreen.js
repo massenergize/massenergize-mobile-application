@@ -6,7 +6,7 @@
  *      actions they performed, and their team members.
  * 
  *      Written by: Moizes Almeida
- *      Last edited: June 28, 2024
+ *      Last edited: July 3, 2024
  * 
  *****************************************************************************/
 
@@ -266,7 +266,11 @@ const TeamsScreen = ({ navigation, teams, fireAuth, toggleModal, user }) => {
                         <HStack mt={2} alignItems="center">
                           <Spacer />
                           <Text color="primary.600" mr={1}>
-                            Expand Subteams
+                            {
+                              subteamsExpanded[team.team.id] ? 
+                                "Show less" : 
+                                "Expand Subteams"
+                            }
                           </Text>
                           <Ionicons
                             name={
