@@ -5,7 +5,7 @@
  *      information as a component called EventDetails.
  * 
  *      Written by: Moizes Almeida
- *      Last edited: July 2, 2024
+ *      Last edited: July 3, 2024
  * 
  *****************************************************************************/
 
@@ -153,64 +153,6 @@ const EventDetails = ({ route }) => {
                 </HStack>
               )}
             </VStack>
-          )}
-
-          {/* RSVP event */}
-          {event.rsvp_enabled && (
-            <>
-              <Pressable
-                bg={rsvp === "" ? "secondary.400" : "muted.200"}
-                p={2}
-                mt={2}
-                style={{
-                  borderRadius: 5,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}
-                onPress={() => setModalOpen(true)}
-              >
-                <Text color="white" fontWeight="bold">
-                  { rsvp !== "" ? rsvp : "RSVP for this event!"}
-                </Text>
-                <Text>{"  "}</Text>
-                <Icon 
-                  as={FontAwesomeIcon} 
-                  name={isModalOpen ? "chevron-up" : "chevron-down"} 
-                  color="white" 
-                />
-              </Pressable>
-              
-              {/* RSVP options (shouldn't appear if RSVP button isn't enabled) */}
-              <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
-                <Modal.Content maxWidth="400px">
-                  <Modal.CloseButton />
-                  <Modal.Header>RSVP Options</Modal.Header>
-                  <Modal.Body>
-                    <Button
-                      variant={rsvp === "Interested" ? "solid" : "outline"}
-                      onPress={() => handleAction("Interested")}
-                      mb={2}
-                    >
-                      Interested
-                    </Button>
-                    <Button
-                      variant={rsvp === "Going" ? "solid" : "outline"}
-                      onPress={() => handleAction("Going")}
-                      mb={2}
-                    >
-                      Going
-                    </Button>
-                    <Button
-                      variant={rsvp === "Not Going" ? "solid" : "outline"}
-                      onPress={() => handleAction("Not Going")}
-                    >
-                      Not Going
-                    </Button>
-                  </Modal.Body>
-                </Modal.Content>
-              </Modal>
-            </>
           )}
         </VStack>
 
