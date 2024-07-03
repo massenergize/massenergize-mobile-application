@@ -337,7 +337,7 @@ function ActionsList({ listData = [] }) {
                     px={10}
                     color="gray.400"
                     mt={5}
-                    mx={5}
+                    mx={3}
                 >
                     Sorry, for some reason we could not load the list of 
                     actions that people in this community have taken...
