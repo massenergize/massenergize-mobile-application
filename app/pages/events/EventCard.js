@@ -6,7 +6,7 @@
  *      is possible to keep consistency across all events pages.
  * 
  *      Written by: Moizes Almeida
- *      Last edited: June 11, 2024
+ *      Last edited: July 3, 2024
  * 
  *****************************************************************************/
 
@@ -33,9 +33,6 @@ export default EventCard = React.memo(
         date,
         location,
         imgUrl,
-        canRSVP,
-        isRSVPed,
-        isShared,
         id,
         navigation,
         ...props
@@ -63,25 +60,6 @@ export default EventCard = React.memo(
                         </AspectRatio>
                     ) : (
                         <Box height={200} bg="gray.300"></Box>
-                    )}
-
-                    {isShared && (
-                        <Center
-                            bg="secondary.400"
-                            _text={{
-                                color: "white",
-                                fontWeight: "bold",
-                                fontSize: "xs",
-                            }}
-                            position="absolute"
-                            px="5"
-                            py="1.5"
-                            rounded="full"
-                            right="5"
-                            top="2"
-                        >
-                            SHARED
-                        </Center>
                     )}
                 </Flex>
 
@@ -111,31 +89,13 @@ export default EventCard = React.memo(
                     flexDirection="row" 
                     flexWrap="wrap"
                     justifyContent="space-between"
-                    py={!canRSVP && "2"}
+                    py={2}
                 >
                     <Box px="4" style={{ alignItems: 'center', justifyContent: 'center' }}>
                             <Text fontSize={events.cardMetaFontSize} color="primary.400">
                                 {date}
                             </Text>
                     </Box>
-
-                    { canRSVP ? (
-                        <Box
-                            backgroundColor={isRSVPed ? "secondary.400" : "primary.400"}
-                            flexGrow="1"
-                            ml="2"
-                        >
-                            <Button
-                                variant="ghost"
-                                _text={{
-                                    fontSize: "xs",
-                                    color: "white"
-                                }}
-                            >
-                                RSVP
-                            </Button>
-                        </Box>
-                    ) : null}
                 </Flex>
             </Box>
         </Pressable>
