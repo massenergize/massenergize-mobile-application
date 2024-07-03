@@ -10,7 +10,7 @@
  *****************************************************************************/
 
 /* Imports and set up */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { fetchAllCommunityData } from '../../config/redux/actions';
 import { useDetails } from '../../utils/hooks';
@@ -32,21 +32,25 @@ import {
   View,
   HStack,
   Link,
-  Pressable,
-  Modal,
   Button,
+  Modal,
 } from '@gluestack-ui/themed-native-base';
+import { PermissionsAndroid, Platform } from 'react-native';
+import * as AddCalendarEvent from 'react-native-add-calendar-event';
 
 const EventDetails = ({ route }) => {
   /*
    * Gets the id of the community through the parameters of the route;
-   * Uses local state to determine whether the user has RSVPed or no;
-   * Uses the useDisclosure function to determine if the user is going to
-   * be able to RSVP the event.
    */
   const { event_id } = route.params;
-  const [rsvp, setRsvp] = useState("");
-  const [isModalOpen, setModalOpen] = useState(false);
+
+  /*
+   * Uses local state to determine whether the user has added the event
+   * to their calendar, and if they did then displays a Modal to alert
+   * them that the event has been added to their calendar.
+   */
+  const [hasAdded, setHasAdded] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
 
   /* 
    * Calls on the API again to display the information of that specific
@@ -54,11 +58,86 @@ const EventDetails = ({ route }) => {
    */
   const [event, isEventLoading] = useDetails("events.info", { event_id });
 
-  /* Marks the event as RSVPed if the user takes the action to do so */
-  const handleAction = (action) => {
-    setRsvp(action === rsvp ? "" : action);
-    setModalOpen(false);
+  /* 
+   * Checked if the current platform is Android or no; in case it is, 
+   * then ask for the user's permission to access their calendar so they 
+   * can add events to their calendar. 
+   */
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      requestCalendarPermission();
+    }
+  }, []);
+
+  /* Function that asks the user for permission to access their calendar */
+  const requestCalendarPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.WRITE_CALENDAR,
+        {
+          title: 'Calendar Permission',
+          message: 'This app needs access to your calendar to add events.',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        }
+      );
+
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('You can use the calendar');
+      } else {
+        console.log('Calendar permission denied');
+      }
+    } catch (err) {
+      console.warn(err);
+    }
   };
+
+  /* Function that adds an event to the user's calendar */
+  const addEventToCalendar = () => {
+    let notes = event.description ? 
+                event.description.replace(/<\/?[^>]+(>|$)/g, "") : '';
+  
+    /* Adding access link to the notes if the event is online or both */
+    if (['online', 'both'].includes(event.event_type) && event.external_link) {
+      notes += `\nAccess Link: ${event.external_link}`;
+    }
+  
+    /* Configuring the event object */
+    const eventConfig = {
+      title: event.name,
+      startDate: new Date(event.start_date_and_time).toISOString(),
+      endDate: new Date(event.end_date_and_time).toISOString(),
+      location: ['in-person', 'both'].includes(event.event_type) && 
+                event.location ? `${event.location.city}, MA` : undefined,
+      url: ['online', 'both'].includes(event.event_type) && 
+            event.external_link ? addHttp(event.external_link) : undefined,
+      notes: notes,
+      alarms: [{
+        date: -60 * 60,
+      }]
+    };
+  
+    /* Presenting the event creating dialog */
+    AddCalendarEvent.presentEventCreatingDialog(eventConfig)
+    .then((eventInfo) => {
+      /* 
+       * If in the middle of the action the user's cancel the operation, 
+       * then they still haven't added the event to their calendar.
+       */
+      if (eventInfo.action === "CANCELED") {
+        setHasAdded(false);
+        console.log("User has cancelled adding the event to calendar.")
+      } else {
+        console.log('Event added to calendar successfully: ', eventInfo);
+        setHasAdded(true);
+        setOpenModal(true);
+      }
+    })
+    .catch((error) => {
+      console.log('Error adding event to calendar: ', error);
+    });
+  };  
 
   /* 
    * Function that handles adding the web protocol to the provided 
@@ -69,7 +148,7 @@ const EventDetails = ({ route }) => {
       return "http://" + url;
     }
     return url;
-  };
+  };  
 
   /* Displays a spinner while the information from is loading from the API */
   if (isEventLoading) {
@@ -78,6 +157,14 @@ const EventDetails = ({ route }) => {
         <Spinner />
       </Center>
     );
+  }
+
+  /* Function that checks if the event is a Past Event */
+  const isPastEvent = () => {
+    const current = new Date();
+    const eventDate = new Date(event.end_date_and_time);
+
+    return current > eventDate;
   }
 
   /* Displays the community event information */
@@ -154,6 +241,66 @@ const EventDetails = ({ route }) => {
               )}
             </VStack>
           )}
+
+          {/* 
+            * If the event is not a Past Event, then present the user 
+            * the feature to add event to their calendar 
+            */}
+          {
+            !isPastEvent() && (
+              <>
+                {/* Add Event Button */}
+                <Button
+                  mt={2}
+                  onPress={addEventToCalendar}
+                  isDisabled={hasAdded}
+                >
+                  Add Event to Calendar
+                </Button>
+
+                {/* 
+                  * Modal for alerting user that the event has been added 
+                  * to their calendar.
+                  */}
+                <Modal
+                  isOpen={openModal}
+                  onClose={() => setOpenModal(false)}
+                >
+                  <Modal.Content maxWidth={400}>
+                    <Modal.Body>
+                      <Center mb="5">
+                        <Icon
+                          as={FontAwesomeIcon}
+                          name="check-circle"
+                          size="lg"
+                          color="primary.600"
+                        />
+
+                        <Text
+                          fontSize="lg"
+                          bold
+                          py="5"
+                        >
+                          Event successfully added to your Calendar!
+                        </Text>
+                        <Text>
+                          You will be informed when the event is 
+                          happening 1 hour before.
+                        </Text>
+                      </Center>
+
+                      <Button
+                        colorScheme={"gray"}
+                        onPress={() => setOpenModal(false)}
+                      >
+                        Back
+                      </Button>
+                    </Modal.Body>
+                  </Modal.Content>
+                </Modal>
+              </>
+            )
+          }
         </VStack>
 
         {/* Divisor between the upper view and the description of the event */}
