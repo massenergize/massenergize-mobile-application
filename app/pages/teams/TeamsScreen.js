@@ -268,7 +268,7 @@ const TeamsScreen = ({ navigation, teams, fireAuth, toggleModal, user }) => {
                           <Text color="primary.600" mr={1}>
                             {
                               subteamsExpanded[team.team.id] ? 
-                                "Show less" : 
+                                "Collapse Subteams" : 
                                 "Expand Subteams"
                             }
                           </Text>
