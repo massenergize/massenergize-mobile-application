@@ -3,8 +3,8 @@
  * 
  *      Displays a modal that allows the user to change their password
  * 
- *      Written by: William Soylemez
- *      Last edited: June 10, 2023
+ *      Written by: William Soylemez and Moizes Almeida
+ *      Last edited: July 3, 2024
  * 
  *****************************************************************************/
 
@@ -81,7 +81,7 @@ const ChangePasswordModal = ({ isOpen, setIsOpen, fireAuth }) => {
             <Modal.CloseButton />
 
             {/* Header */}
-            <Modal.Header>Change My Password</Modal.Header>
+            <Modal.Header>Change Password</Modal.Header>
             <Modal.Body>
               <FormControl>
 
@@ -103,7 +103,7 @@ const ChangePasswordModal = ({ isOpen, setIsOpen, fireAuth }) => {
               </FormControl>
 
               {/* New Password */}
-              <FormControl>
+              <FormControl mt={3}>
                 <FormControl.Label>New Password</FormControl.Label>
                 <Input
                   variant="rounded"
@@ -119,7 +119,8 @@ const ChangePasswordModal = ({ isOpen, setIsOpen, fireAuth }) => {
                   <Text color="red.500">{errors.newPassword}</Text>
                 )}
               </FormControl>
-              <FormControl>
+
+              <FormControl mt={3}>
                 <FormControl.Label>Confirm Password</FormControl.Label>
                 <Input
                   variant="rounded"

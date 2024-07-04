@@ -3,8 +3,8 @@
  * 
  *      This component is a modal that allows the user to delete their account.
  * 
- *      Written by: William Soylemez
- *      Last edited: June 11, 2023
+ *      Written by: William Soylemez and Moizes Almeida
+ *      Last edited: July 3, 2024
  * 
  *****************************************************************************/
 
@@ -82,9 +82,13 @@ const DeleteAccountModal = ({
         {/* Header */}
         <Modal.Header>Delete My Account</Modal.Header>
         <Modal.Body>
-          <Text>
+          <Text fontWeight="300">
             The current email associated with your account is{" "}
-            <Text color="secondary.400" fontWeight="bold" fontSize="sm">
+            <Text 
+              color="secondary.400" 
+              fontWeight="bold" 
+              fontSize="sm"
+            >
               {user?.email}
             </Text>
           </Text>
@@ -112,7 +116,7 @@ const DeleteAccountModal = ({
               {errorMessage && <Text color="red.500">{errorMessage}</Text>}
             </FormControl>
           )}
-          <Text>
+          <Text fontWeight="300" fontSize="md">
             Are you sure you want to delete your account? This action cannot be
             undone.
           </Text>
