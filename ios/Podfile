@@ -56,6 +56,9 @@ target 'MassenergizeAppV2' do
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
   pod 'react-native-image-picker', :path => '../node_modules/react-native-image-picker'
   pod 'RNDateTimePicker', :path => '../node_modules/@react-native-community/datetimepicker'
+  
+  # Firebase
+  pod 'Firebase/Core'
   pod 'Firebase/Analytics'
 
   target 'MassenergizeAppV2Tests' do
