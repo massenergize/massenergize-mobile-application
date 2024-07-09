@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
     width: '100%',
-    minHeight: 300,
+    minHeight: 500,
   },
   header: {
     backgroundColor: '#f2f3f5',
