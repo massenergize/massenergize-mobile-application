@@ -30,6 +30,9 @@ import {
     VictoryGroup, 
     VictoryLegend 
 } from 'victory-native';
+import { useNavigation } from "@react-navigation/native";
+import { Button } from "@gluestack-ui/themed-native-base";
+import MEButton from "../components/button/MEButton";
 
 /* 
  *                              SmallChart
@@ -54,7 +57,7 @@ function SmallChart({ goal, color }) {
             labels={() => null} 
             colorScale={[color, "#f2f2f2"]}/>
         {
-            goal.nameShort === "Trees"
+            goal.nameShort === "Carbon"
             ? <Text fontSize="md">{(goal.current < 10000) ? goal.current.toFixed(1) : (goal.current / 1000).toFixed(1) + "k" } / {(goal.goal < 10000) ? goal.goal.toFixed(1) : (goal.goal / 1000).toFixed(1) + "k"}</Text>
             : <Text fontSize="md">{(goal.current < 10000) ? goal.current : (goal.current / 1000).toFixed(1) + "k" } / {(goal.goal < 10000) ? goal.goal : (goal.goal / 1000) + "k"}</Text>
         }
@@ -87,7 +90,7 @@ function BigPieChart({ goal, color }) {
             <Container width={Dimensions.get('window').width - (Dimensions.get('window').width / 2.5)}>
                 <VStack>
                     <Text bold fontSize="lg">{goal.nameLong}</Text>
-                    <Text fontSize="md">{(goal.nameShort === "Trees") ? goal.current.toFixed(1) : goal.current} / {(goal.nameShort === "Trees") ? goal.goal.toFixed(1) : goal.goal} {goal.nameShort}</Text>
+                    <Text fontSize="md">{(goal.nameShort === "Carbon") ? goal.current.toFixed(1) : goal.current} / {(goal.nameShort === "Carbon") ? goal.goal.toFixed(1) : goal.goal} {goal.nameShort}</Text>
                     <Text fontSize="sm">({(goal.current / goal.goal * 100).toFixed(1)}% of Goal)</Text>
                 </VStack>
             </Container>
@@ -122,7 +125,7 @@ function ActionsChart({ graphData }) {
             if (updatedNames[graphData[i].name] !== undefined)
                 graphData[i].name = updatedNames[graphData[i].name];
         }
-        return graphData;
+        return graphData.sort((a, b) => (a.name > b.name) ? -1 : 1);
     }
 
     return (
@@ -160,8 +163,8 @@ function ActionsChart({ graphData }) {
                     gutter={20}
                     style={{ border: { stroke: "black" }, title: {fontSize: 20 } }}
                     data={[
-                    { name: "Value", symbol: { fill: "#DC4E34", type: "square", fillOpacity: 0.9 } },
-                    { name: "Reported Value", symbol: { fill: "#DC4E34", type: "square", fillOpacity: 0.5 } },
+                    { name: "User Reported", symbol: { fill: "#DC4E34", type: "square", fillOpacity: 0.9 } },
+                    { name: "State/Partner Reported", symbol: { fill: "#DC4E34", type: "square", fillOpacity: 0.5 } },
                     ]}
                 />
             </VictoryChart>
@@ -186,7 +189,7 @@ function TeamActionsChart({ graphData }) {
             if (updatedNames[graphData[i].name] !== undefined)
                 graphData[i].name = updatedNames[graphData[i].name];
         }
-        return graphData;
+        return graphData.sort((a, b) => (a.name > b.name) ? -1 : 1);;
     }
 
     return (
@@ -237,6 +240,11 @@ function TeamActionsChart({ graphData }) {
  *              by the team in that commmunity.
  */
 function ActionsList({ listData = [] }) {
+
+    listData = listData.sort((a, b) => (a.done_count > b.done_count) ? -1 : 1);
+    
+    navigation = useNavigation();
+
     return (
       <View width="100%" ml={3} p={3}>
         {
@@ -293,15 +301,19 @@ function ActionsList({ listData = [] }) {
                                 mb={4} 
                                 key={index}
                             >
-                                <Text 
+                                <Button 
                                     bold 
                                     fontSize="sm" 
-                                    width="25%" 
-                                    textAlign="left" 
-                                    color="#64B058"
+                                    width="35%" 
+                                    // color="#64B058"
+                                    _text={{ color: "#64B058", alignSelf: "left"}}
+                                    backgroundColor="transparent"
+                                    p={0}
+                                    onPress={() => navigation.navigate("ActionDetails", { action_id: action.id })}
+                                    
                                 >
                                     {action.name}
-                                </Text>
+                                </Button>
 
                                 <Text 
                                     fontSize="sm" 

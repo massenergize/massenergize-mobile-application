@@ -229,7 +229,7 @@ const TeamsScreen = ({ navigation, teams, fireAuth, toggleModal, user }) => {
 
             {
               /* Displays the list of teams/subteams the user is part of */
-              <TeamsList teams={user.teams} navigation={navigation} />
+              user && <TeamsList teams={user.teams} navigation={navigation} />
             }
 
             {/* Display all community's teams and sub-teams */}

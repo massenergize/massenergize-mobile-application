@@ -78,7 +78,7 @@ function GoalsCard({ navigation, goals, community_id }) {
     if (goals.target_carbon_footprint_reduction != 0) {
       goalsList.push({
         nameLong: "Carbon Reduction Impact",
-        nameShort: "Trees",
+        nameShort: "Carbon",
         goal: goals.target_carbon_footprint_reduction / 133,
         current: (goals.displayed_carbon_footprint_reduction / 133)
       });
