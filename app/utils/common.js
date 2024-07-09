@@ -31,11 +31,11 @@ export const isValidZipCode = zipCode => {
  * @returns {Object} - Returns an object containing matches and near communities.
  */
 export const groupCommunities = communities => {
-  communities = communities; //.filter(c => c.is_geographically_focused);
-  const matches = communities; //.filter(c => c.location.distance === 0);
-  const near = communities;
-    //.filter(c => c.location.distance !== 0)
-    //.sort((a, b) => a.location.distance - b.location.distance);
+  communities = communities.filter(c => c.is_geographically_focused);
+  const matches = communities.filter(c => c.location.distance === 0);
+  const near = communities
+    .filter(c => c.location.distance !== 0)
+    .sort((a, b) => a.location.distance - b.location.distance);
   return {matches, near};
 };
 
