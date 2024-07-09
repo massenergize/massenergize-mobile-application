@@ -38,6 +38,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {groupCommunities} from '../../utils/common';
 import CommunityCard from './CommunityCard';
 import { ImageBackground } from '@gluestack-ui/themed';
+import Geolocation from '@react-native-community/geolocation';
 
 const CommunitySelect = ({
   toggleModal,
@@ -47,6 +48,10 @@ const CommunitySelect = ({
   setActiveCommunity,
 }) => {
   const {zipcode, miles} = zipcodeOptions || {};
+
+  useEffect(() => {
+    Geolocation.getCurrentPosition(info => console.log(info)); // TODO: make it actually do something with this...
+  }, []);
 
   const chooseCommunity = async community => {
     setActiveCommunity(community);

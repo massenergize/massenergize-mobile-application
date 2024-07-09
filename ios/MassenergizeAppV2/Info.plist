@@ -83,5 +83,9 @@
 	<false/>
 	<key>NSCalendarsUsageDescription</key>
 	<string>We need access to your calendar to add events</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>We need access to your location to show you events near you</string>
+	<!-- <string>NSLocationAlwaysAndWhenInUseUsageDescription</string>
+	<string>We need access to your location to show you events near you</string> -->
 </dict>
 </plist>

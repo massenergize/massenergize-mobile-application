@@ -1,4 +1,4 @@
-$FirebaseSDKVersion = '10.14.0'
+# $FirebaseSDKVersion = '10.14.0'
 # $FirebaseSDKVersion = '9.6.0'
 use_modular_headers!
 
@@ -40,6 +40,7 @@ target 'MassenergizeAppV2' do
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
   pod 'react-native-image-picker', :path => '../node_modules/react-native-image-picker'
   pod 'RNDateTimePicker', :path => '../node_modules/@react-native-community/datetimepicker'
+  pod 'react-native-geolocation', :path => '../node_modules/@react-native-community/geolocation'
   
   # Firebase
   pod 'Firebase/Auth'
