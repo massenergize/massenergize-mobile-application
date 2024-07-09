@@ -52,8 +52,8 @@ const ActionCard = ({
         {/* Text */}
         <Stack p={3} space={3}>
           <Stack space={2}>
-            <Heading size="sm" isTruncated={true} noOfLines={1}>
-              {title ? title : "Action Title"}
+            <Heading size="sm" noOfLines={2} minHeight={10}>
+              {title ? ((title.length > 40) ? title.slice(0, 37) + '...' : title) : "Action Title"}
             </Heading>
             <Text fontSize="xs" fontWeight="500">
               {`${impactMetric} Impact | ${costMetric}`}

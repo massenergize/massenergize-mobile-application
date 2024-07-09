@@ -272,25 +272,29 @@ const ActionDetails = ({
               }
 
               {/* Action details and buttons */}
-              <Box bg="white" height="100%" mx={10}>
+              <Box bg="white" height="100%" mx={5}>
                 <VStack>
-                  <Text bold fontSize="2xl" my={10}>
+                  <Text bold fontSize="2xl" my={5}>
                     {action.title}
                   </Text>
                   <VStack mb={4} >
                     <HStack justifyContent="space-between" width="100%">
-                      <Text bold fontSize="lg">
-                        Impact
-                      </Text>
-                      <Text fontSize="lg">
-                        {getActionMetric(action, "Impact")}
-                      </Text>
-                    </HStack>
-                    <HStack justifyContent="space-between" width="100%">
-                      <Text bold fontSize="lg">
-                        Cost
-                      </Text>
-                      <Text fontSize="lg">{getActionMetric(action, "Cost")}</Text>
+                      <HStack space={2}>
+                        <Text bold fontSize="lg">
+                          Impact
+                        </Text>
+                        <Text fontSize="lg">
+                          {getActionMetric(action, "Impact")}
+                        </Text>
+                      </HStack>
+                      <HStack space={2}>
+                        <Text bold fontSize="lg">
+                          Cost
+                        </Text>
+                        <Text fontSize="lg">
+                          {getActionMetric(action, "Cost")}
+                        </Text>
+                      </HStack>
                     </HStack>
                   </VStack>
                   <HStack justifyContent="space-between" width="100%" mb={5}>

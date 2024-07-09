@@ -14,10 +14,9 @@
 import React, { useState, useEffect } from 'react';
 import ActionCard from './ActionCard';
 import { connect } from 'react-redux';
-import { StyleSheet } from "react-native";
+import { StyleSheet, ScrollView } from "react-native";
 import {
   View,
-  ScrollView,
   HStack,
   Text,
   Spinner,
@@ -29,6 +28,8 @@ import {
 import { getActionMetric } from "../../utils/common";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MEButton from '../../components/button/MEButton';
+import { border } from 'native-base/lib/typescript/theme/styled-system';
+import { BorderlessButton } from 'react-native-gesture-handler';
 
 const ActionsScreen = ({ navigation, actions, questionnaire }) => {
   /*
@@ -103,13 +104,13 @@ const ActionsScreen = ({ navigation, actions, questionnaire }) => {
               color="#64B058"
             />
             <Text color="#64B058" ml={2}>
-              Expand Filters
+              Filter Actions
             </Text>
           </HStack>
         </Pressable>
 
         {/* Filter Options */}
-        {expand && filterOptions()}
+        {expand ? filterOptions() : ( isFilterApplied && displayAppliedFilters())}
 
         {/* Display loading spinner if actions are not loaded */}
         {!actions ? (
@@ -272,7 +273,8 @@ const ActionsScreen = ({ navigation, actions, questionnaire }) => {
         <Text style={styles.category}>{title}</Text>
         <ScrollView
           horizontal={true}
-          showsHorizontalScrollIndicator={false}
+          persistentScrollbar={true}
+          showsHorizontalScrollIndicator={true}
         >
           <HStack
             space={2}
@@ -280,6 +282,12 @@ const ActionsScreen = ({ navigation, actions, questionnaire }) => {
             mx={15}
             marginBottom={15}
           >
+            <Ionicons
+              name="chevron-forward"
+              size={40}
+              color="#64B058"
+              style={{ alignSelf: 'center' }}
+            />
             {actions
               .map((action, index) => {
                 return (
@@ -294,11 +302,43 @@ const ActionsScreen = ({ navigation, actions, questionnaire }) => {
                   />
                 );
               })}
+            <Ionicons
+              name="chevron-back"
+              size={40}
+              color="#64B058"
+              style={{ alignSelf: 'center' }}
+            />
           </HStack>
         </ScrollView>
       </>
     );
+  }
 
+  function displayAppliedFilters() {
+    return <View px={3} my={5}>
+      <View flexDirection="row" flexWrap="wrap">
+        {(userType !== 'All') && 
+          <Pressable onPress={() => setUserType('All')}>
+            <Text style={styles.appliedFilter}>{userType}</Text>
+          </Pressable>
+        }
+        {(category !== 'All') &&
+          <Pressable onPress={() => setCategory('All')}>
+            <Text style={styles.appliedFilter}>{category}</Text>
+          </Pressable>
+        }
+        {(impact !== 'All') &&
+          <Pressable onPress={() => setImpact('All')}>
+            <Text style={styles.appliedFilter}>{impact}</Text>
+          </Pressable>
+        }
+        {(cost !== 'All') &&
+          <Pressable onPress={() => setCost('All')}>
+            <Text style={styles.appliedFilter}>{cost}</Text>
+          </Pressable>
+        }
+      </View>
+    </View>;
   }
 }
 
@@ -332,7 +372,15 @@ const styles = StyleSheet.create({
   },
   filterSelect: {
     width: '90%',
-  }
+  },
+  appliedFilter: {
+    borderRadius: 10,
+    padding: 5,
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    margin: 5,
+  },
 });
 
 /* 
