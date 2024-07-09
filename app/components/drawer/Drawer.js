@@ -1,3 +1,14 @@
+/******************************************************************************
+ *                              Drawer.js
+ * 
+ *      This page is responsible for rendering the Drawer menu.
+ * 
+ *      Written by: Frimpong, William Soylemez, and Moizes Almeida
+ *      Last edited: July 9, 2024
+ * 
+ *****************************************************************************/
+
+/* Imports and set up */
 import React, {useEffect, useRef} from 'react';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import HomeScreen from '../../pages/home/HomeScreen';
@@ -260,19 +271,40 @@ const MEDrawerNavigator = ({
       </TouchableOpacity>
     );
   };
-  const options = ({navigation}) => ({
+
+  const options = ({ navigation }) => ({
     headerLeft: () => {
       return (
         <TouchableOpacity
-          style={{marginLeft: 15}}
-          onPress={() => navigation.toggleDrawer()}>
+          style={{ marginLeft: 15 }}
+          onPress={() => navigation.toggleDrawer()}
+        >
           <FontAwesomeIcon name="bars" size={21} />
         </TouchableOpacity>
       );
     },
 
-    headerRight: () => renderProfileIcon({navigation}),
+    headerRight: () => renderProfileIcon({ navigation }),
   });
+
+  const testimonialOptions = ({ navigation }) => ({
+    headerLeft: () => {
+      return (
+        <TouchableOpacity
+          style={{ marginLeft: 15 }}
+          onPress={() => navigation.toggleDrawer()}
+        >
+          <FontAwesomeIcon 
+            name="bars"
+            size={21}
+          />
+        </TouchableOpacity>
+      );
+    },
+
+    headerRight: () => renderProfileIcon({ navigation }),
+    headerTitle: "",
+  })
 
   return (
     <Drawer.Navigator
@@ -299,7 +331,7 @@ const MEDrawerNavigator = ({
         name="About" 
         component={AboutUsScreen} />
       <Drawer.Screen 
-        options={options} 
+        options={testimonialOptions} 
         name="Testimonials" 
         component={TestimonialsScreen} />
       <Drawer.Screen 
