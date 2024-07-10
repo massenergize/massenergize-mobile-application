@@ -5,40 +5,41 @@
  *      a single action
  * 
  *      Written by: William Soylemez and Moizes Almeida
- *      Last edited: June 6, 2023
+ *      Last edited: July 10, 2024
  * 
  *****************************************************************************/
 
-import React, { useState, useEffect } from "react";
+/* Imports and set up */
+import React, { useState } from "react";
 import {
   View,
   Text,
   Box,
-  Image,
   VStack,
   ScrollView,
   Button,
   Container,
   HStack,
-  Spacer,
   Spinner,
   Center,
   Modal,
-} from "@gluestack-ui/themed-native-base";
-
+} from '@gluestack-ui/themed-native-base';
+import Accordion from 'react-native-collapsible/Accordion';
 import HTMLParser from "../../utils/HTMLParser";
 import ServiceProviderCard from "../service-providers/ServiceProviderCard";
 import { useDetails } from "../../utils/hooks";
 import { TestimonialCard } from "../testimonials/TestimonialCard";
-import Ionicons from "react-native-vector-icons/Ionicons";
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { getActionMetric } from "../../utils/common";
-import { apiCall } from "../../api/functions";
-import AuthOptions from '../../pages/auth/AuthOptions';
+import AuthOptions from "../auth/AuthOptions";
 import { connect } from "react-redux";
-import { bindActionCreators } from 'redux';
-import { fetchAllUserInfo, toggleUniversalModalAction, updateUserAction } from '../../config/redux/actions';
+import { bindActionCreators } from "redux";
+import {
+  fetchAllUserInfo,
+  toggleUniversalModalAction,
+  updateUserAction,
+} from '../../config/redux/actions';
 import MEImage from "../../components/image/MEImage";
-
 
 const ActionDetails = ({
   route,
@@ -49,394 +50,444 @@ const ActionDetails = ({
   fireAuth,
   toggleModal,
   fetchAllUserInfo,
-  user,
   todoList,
-  completedList
+  completedList,
 }) => {
+  /* Saves the action ID passed through the route */
   const { action_id } = route.params;
 
-  const [activeTab, setActiveTab] = useState("description");
-  const [action, isActionLoading] = useDetails("actions.info", {
-    action_id: action_id,
-  });
-  const [isDoneOpen, setIsDoneOpen] = useState(false)
-  const [isToDoOpen, setIsToDoOpen] = useState(false)
+  /* 
+   * Based on the action ID passed through the route, access the action 
+   * information in the API.
+   */
+  const [action, isActionLoading] = useDetails("actions.info", { action_id });
 
-  // Functions to check if the action is in the user's todo or completed list
-  const actionInToDo = () => {
-    return todoList?.some((todo) => todo.action.id === action.id);
-  }
+  /* 
+   * Uses local state to determine what are the active sections in the
+   * acordian layout, if the Modal for when the user completed an action
+   * should be opened, and when the user clicks on the "Add to To-Do" 
+   * button.
+   */
+  const [activeSections, setActiveSections] = useState([]);
+  const [isDoneOpen, setIsDoneOpen] = useState(false);
+  const [isToDoOpen, setIsToDoOpen] = useState(false);
 
-  const actionCompleted = () => {
-    return completedList?.some((completed) => completed.action.id === action.id);
-  }
-
-  /* Gets the action-user relation */
-
-  // Handles a todo press, adding/removing the action to the user's todo list
-  const handleTodoPress = async () => {
-    if (fireAuth) {
-      // Action depends on whether the action is already in the user's todo list
-      if (actionInToDo()) {
-        // Updates the backend, redux, and displays a success message
-        const rel_id = todoList.find((todo) => todo.action.id === action_id).id;
-        updateUserAction(
-          "users.actions.remove",
-          { id: rel_id },
-          (response, error) => {
-            if (error) return console.error("Failed to remove item from todo list:", error);
-            setIsToDoOpen(false);
-            console.log("Removed " + action.title + " from To-do");
-          }
-        );
-
-      } else {
-        // Updates the backend, redux, and displays a success message
-        updateUserAction(
-          "users.actions.todo.add",
-          { action_id: action_id, hid: 1 },
-          (response, error) => {
-            if (error) return console.error("Failed to add item to todo list:", error);
-            setIsToDoOpen(true);
-            console.log("Added " + action.title + " to To-do");
-          }
-        );
-      }
-    } else { // if user is not logged in, prompt them to sign in
-      toggleModal({
-        isVisible: true,
-        Component: AuthOptions,
-        title: 'How would you like to sign in or Join ?',
-      });
-    }
-  };
-
-  // Handles a completed press, adding/removing the action to the user's
-  // completed list
-  const handleCompletedPress = async () => {
-    if (fireAuth) {
-      // Action depends on whether the action is already in the user's completed list
-      if (actionCompleted()) {
-        // Updates the backend, redux, and displays a success message
-        const rel_id = completedList.find((completed) => completed.action.id === action_id).id;
-        updateUserAction(
-          "users.actions.remove",
-          { id: rel_id },
-          (response, error) => {
-            console.log(response, error);
-            if (error) return console.error("Failed to remove item from completed list:", error);
-            console.log("Successfully removed item from completed list");
-          }
-        );
-      } else {
-        // Updates the backend, redux, and displays a success message
-        updateUserAction(
-          "users.actions.completed.add",
-          { action_id: action_id, hid: 1 },
-          (response, error) => {
-            setIsDoneOpen(true);
-            console.log("Successfully added item to completed list");
-          }
-        );
-      }
-    } else { // if user is not logged in, prompt them to sign in
-      toggleModal({
-        isVisible: true,
-        Component: AuthOptions,
-        title: 'How would you like to sign in or Join ?',
-      });
-    }
-  };
-
-  // get testimonials related to this action
-  const actionTestimonials = (
-    testimonialsSettings.is_published
-      ? testimonials.filter(testimonial => testimonial.action?.id === action_id)
-      : []
+  /* Function that checks if this action is in the user's to-do list */
+  const actionInToDo = () => todoList?.some(
+    (todo) => todo.action.id === action_id
   );
 
-  // individual functions to render the context for each tab in the action details page
-  const generateDescriptionTab = () => {
-    return <HTMLParser htmlString={action.about} baseStyle={textStyle} />;
-  };
+  /* Function that checks if the action was previously completed by the user */
+  const actionCompleted = () => completedList?.some(
+    (completed) => completed.action.id === action_id
+  );
+  
+  /* 
+   * Function that handles when the user clicks in the 'Add to To-Do' button. 
+   * If the user had clicked there previously, then it will remove the action 
+   * from the user's to-do list, otherwise it is going to add it to the user's
+   * to-do list. In case the user is not logged in, it will ask the user to 
+   * log in or join before adding an action to their to-do list. 
+   */
+  const handleTodoPress = async () => {
+    if (fireAuth) {
+      if (actionInToDo()) {
+        const rel_id = todoList.find(
+          (todo) => todo.action.id === action_id
+        ).id;
 
-  const generateStepsTab = () => {
-    return (
-      <HTMLParser htmlString={action.steps_to_take} baseStyle={textStyle} />
-    );
-  };
-
-  const generateDeepDiveTab = () => {
-    if (action.deep_dive === "") {
-      return <Text>No information available.</Text>;
+        updateUserAction("users.actions.remove", { id: rel_id }, (res, error) => {
+          if (error) {
+            return console.error(
+              "Failed to remove item from To-Do list: ",
+              error
+            );
+          }
+          setIsToDoOpen(false);
+        });
+      } else {
+        updateUserAction("users.actions.todo.add", { action_id, hid: 1 }, (res, error) => {
+          if (error) {
+            console.error(
+              "Failed to add item in To-Do list: ",
+              error
+            );
+          }
+          setIsToDoOpen(true);
+        });
+      }
     } else {
-      return <HTMLParser htmlString={action.deep_dive} baseStyle={textStyle} />;
+      toggleModal({
+        isVisible: true,
+        Component: AuthOptions,
+        title: 'How would you like to sign in or Join?'
+      });
     }
   };
 
-  const generateTestimonialsTab = () => {
-    return actionTestimonials.length === 0 ? (
-      <Text>No testimonials available.</Text>
-    ) : (
-      actionTestimonials.map((testimonial, index) => {
-        return (
-          <TestimonialCard
-            navigation={navigation}
-            data={testimonial}
-            key={index}
-            picture={testimonial.file != null}
-          />
-        );
-      })
-    );
+  /* 
+   * Function that handles when the user clicks in the 'Mark as Completed'
+   * button. If the user had clicked there previously, then it will remove the
+   * action from the user's completed actions list, otherwise it is going to 
+   * add it to the user's completed actions list. In case the user is not 
+   * logged in, it will ask the user to log in or join before marking an 
+   * action as completed. 
+   */
+  const handleCompletedPress = async () => {
+    if (fireAuth) {
+      if (actionCompleted()) {
+        const rel_id = completedList.find(
+          (completed) => completed.action.id === action_id
+        ).id;
+
+        updateUserAction("users.actions.remove", { id: rel_id }, (res, error) => {
+          if (error) {
+            return console.log(
+              "Failed to remove item from completed list: ",
+              error
+            );
+          }
+        });
+      } else {
+        updateUserAction("users.actions.completed.add", { action_id, hid: 1 }, (res, error) => {
+          setIsDoneOpen(true);
+        });
+      }
+    } else {
+      toggleModal({
+        isVisible: true,
+        Component: AuthOptions,
+        title: 'How would you like to sign in or Join?'
+      });
+    }
   };
 
-  const generateServiceProvidersTab = () => {
-    if (action.vendors.length === 0) {
-      return <Text>No associated service providers.</Text>;
-    }
-    return action.vendors.map((vendor, index) => {
-      return (
-        <ServiceProviderCard
-          id={vendor.id}
-          direction="row"
-          description=""
-          imageURI={vendor.logo.url}
-          name={vendor.name}
-          navigation={navigation}
-          key={index}
+  /* 
+   * Variable that holds all the testimonials associated to this action, 
+   * if there is any. 
+   */
+  const actionTestimonials =
+    testimonialsSettings.is_published
+      ? testimonials.filter(testimonial => testimonial.action?.id === action_id)
+      : [];
+  
+  /* 
+   * Function that, depending on which section the user is on in the 
+   * Accordion layout, it will generate different contents for each section 
+   * fetching the information from the API.
+   */
+  const generateSectionContent = (section) => {
+    switch (section) {
+      case "Description":
+        return <HTMLParser 
+          htmlString={action?.about || ''}
+          baseStyle={textStyle}
         />
-      );
-    });
-  };
-
-  function TabButton({ label, name }) {
-    return (
-      <Button
-        variant={activeTab === name ? "solid" : "outline"}
-        onPress={() => setActiveTab(name)}
-        mr={2}
-      >
-        {label}
-      </Button>
-    );
-  }
-
-  // render the appropriate tab content based on the active tab
-  const renderTabContent = () => {
-    switch (activeTab) {
-      case "description":
-        return generateDescriptionTab();
-      case "steps":
-        return generateStepsTab();
-      case "deep_dive":
-        return generateDeepDiveTab();
-      case "testimonials":
-        return generateTestimonialsTab();
-      case "service_providers":
-        return generateServiceProvidersTab();
+      case "Steps":
+        return <HTMLParser
+          htmlString={action?.steps_to_take || ''} 
+          baseStyle={textStyle}
+        />
+      case "Deep Dive":
+        return action?.deep_dive 
+          ? <HTMLParser
+              htmlString={action.deep_dive}
+              baseStyle={textStyle}
+            />
+          : null;
+      case "Testimonials":
+        return actionTestimonials.length === 0 
+          ? null 
+          : actionTestimonials.map(
+            (testimonial, index) => (
+              <TestimonialCard
+                navigation={navigation}
+                data={testimonial}
+                key={index}
+                picture={testimonial.file != null}
+              />
+            )
+          );
+      case "Service Providers":
+        return action?.vendors.length === 0
+          ? null
+          : action.vendors.map(
+            (vendor, index) => (
+              <ServiceProviderCard
+                id={vendor.id}
+                direction="row"
+                description=""
+                imageURI={vendor.logo.url}
+                name={vendor.name}
+                navigation={navigation}
+                key={index}
+              />
+            )
+          );
       default:
-        return generateDescriptionTab();
+        return null;
     }
   };
 
-  // Main render function
+  /* 
+   * Variable that holds all the section the user could access, 
+   * including title for the section and a condition for the section 
+   * to show up in the page. It filters the available sections for this
+   * action based on whether the condition was met.
+   */
+  const SECTIONS = [
+    { 
+      title: "Description" 
+    },
+    { 
+      title: "Steps" 
+    },
+    { 
+      title: "Deep Dive", 
+      condition: action?.deep_dive !== "",
+    },
+    { 
+      title: "Testimonials", 
+      condition: testimonialsSettings.is_published &&
+                 actionTestimonials.length > 0,
+    },
+    {
+      title: "Service Providers",
+      condition: vendorsSettings.is_published &&
+                 action?.vendors.length > 0,
+    }
+  ].filter(section => section.condition !== false);
+
+  /* Function that renders the Header of the Section in the accordion layout */
+  const renderHeader = (section, _, isActive) => {
+    return (
+      <Box>
+        <HStack
+          justifyContent="center"
+          alignItems="center"
+          p={3}
+          bg={isActive ? "gray.200" : "white"}
+          borderTopRadius={5}
+        >
+          <Text 
+            bold
+            color={isActive ? "black" : "green"}
+            mr={2}
+          >
+            {section.title}
+          </Text>
+          <Ionicons
+            name={isActive ? "chevron-up-outline" : "chevron-down-outline"}
+            size={20}
+            color={isActive ? "black" : "green"}
+          />
+        </HStack>
+      </Box>
+    );
+  };
+
+  /* Function that renders the content of the section in the accordion layout */
+  const renderContent = (section) => {
+    return (
+      <Box
+        p={3}
+        bg={"gray.100"}
+      >
+        {generateSectionContent(section.title)}
+      </Box>
+    );
+  };
+
+  /* Displays the action information in a accordion layout */
   return (
-    <View style={{ height: '100%', backgroundColor: 'white' }}>
-      {/* Loading indicator */}
-      {isActionLoading ? (
-        <Center width="100%" height="100%">
+    <View
+      height="100%"
+      bg="white"
+    >
+      {/* If the content is still loading, display a Spinner */}
+      { isActionLoading ? (
+        <Center
+          width="100%"
+          height="100%"
+        >
           <Spinner />
         </Center>
       ) : (
+        <ScrollView
+          showVerticalScrollIndicator={false}
+        >
+          <VStack
+            flex={1}
+          >
+            {/* 
+              * Checks whether the action has an image or not. 
+              * Display the image if available, or an empty, 
+              * gray box otherwise.
+              */}
+            {action.image?.url ? (
+              <MEImage
+                source={{ uri: action.image?.url }}
+                m={3}
+                h={250}
+                alt="action image"
+                resizeMode="contain"
+                altComponent={<></>}
+              />
+            ) : (
+              <Box
+                height={120}
+                bg="gray.300"
+                borderTopRadius="xl"
+              />
+            )}
 
-        // Main content
-        <View>
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <VStack style={{ flex: 1 }}>
+            <Box
+              bg="white"
+              height="100%"
+              mx={5}
+            >
+              <VStack>
+                {/* Action Title */}
+                <Text 
+                  bold
+                  fontSize="2xl"
+                  my={5}
+                >
+                  {action.title}
+                </Text>
 
-              {/* Header image */}
-              {
-                action.image?.url ? (
-                  <MEImage
-                    source={{
-                      uri: action.image?.url,
-                    }}
-                    m={3}
-                    h={250}
-                    alt="image"
-                    resizeMode="contain"
-                    altComponent={<></>}
-                  />
-                ) : <Box height={120} bg="gray.300" borderTopRadius="xl" />
-              }
-
-              {/* Action details and buttons */}
-              <Box bg="white" height="100%" mx={5}>
-                <VStack>
-                  <Text bold fontSize="2xl" my={5}>
-                    {action.title}
-                  </Text>
-                  <VStack mb={4} >
-                    <HStack justifyContent="space-between" width="100%">
-                      <HStack space={2}>
-                        <Text bold fontSize="lg">
-                          Impact
-                        </Text>
-                        <Text fontSize="lg">
-                          {getActionMetric(action, "Impact")}
-                        </Text>
-                      </HStack>
-                      <HStack space={2}>
-                        <Text bold fontSize="lg">
-                          Cost
-                        </Text>
-                        <Text fontSize="lg">
-                          {getActionMetric(action, "Cost")}
-                        </Text>
-                      </HStack>
+                {/* Action Metrics */}
+                <VStack mb={4}>
+                  <HStack
+                    justifyContent="space-between"
+                    width="100%"
+                  >
+                    {/* Impact data */}
+                    <HStack space={2}>
+                      <Text bold fontSize="lg">Impact</Text>
+                      <Text fontSize="lg">
+                        {getActionMetric(action, "Impact")}
+                      </Text>
                     </HStack>
-                  </VStack>
-                  <HStack justifyContent="space-between" width="100%" mb={5}>
-                    <Button
-                      size="md"
-                      variant={actionInToDo() ? "outline" : "solid"}
-                      key={actionInToDo() ? "todo" : "not_todo"}
-                      _text={{
-                        color: actionInToDo() ? "green" : "white",
-                        fontWeight: "bold",
-                      }}
-                      onPress={handleTodoPress}>
-                      {actionInToDo() ? "Action in To-Do list!" : "Add to To-Do"}
-                    </Button>
-                    <Button
-                      size="md"
-                      variant={actionCompleted() ? "outline" : "solid"}
-                      key={actionCompleted() ? "completed" : "not_completed"}
-                      _text={{
-                        color: actionCompleted() ? "primary.600" : "white",
-                        fontWeight: "bold",
-                      }}
-                      onPress={handleCompletedPress}>
-                      {actionCompleted() ? "Action Completed!" : "Mark as Done"}
-                    </Button>
+
+                    {/* Cost data */}
+                    <HStack space={2}>
+                      <Text bold fontSize="lg">Cost</Text>
+                      <Text fontSize="lg">
+                        {getActionMetric(action, "Cost")}
+                      </Text>
+                    </HStack>
                   </HStack>
-
-                  {/* Tab buttons */}
-                  <ScrollView
-                    horizontal={true}
-                    showsHorizontalScrollIndicator={false}
-                    borderBottomWidth={1}
-                    borderBottomColor="grey"
-                    pb={5}
-                    mb={2}
-                  >
-                    <TabButton label="Description" name="description" />
-                    <TabButton label="Steps" name="steps" />
-                    {action.deep_dive !== "" ? (
-                      <TabButton label="Deep Dive" name="deep_dive" />
-                    ) : null}
-                    {(
-                      testimonialsSettings.is_published
-                      && actionTestimonials.length > 0
-                    ) ? (
-                      <TabButton label="Testimonials" name="testimonials" />
-                    ) : null}
-                    {(
-                      vendorsSettings.is_published
-                      && action.vendors.length > 0
-                    ) ? (
-                      <TabButton
-                        label="Service Providers"
-                        name="service_providers"
-                      />
-                    ) : null}
-                    <Container width={5}></Container>
-                  </ScrollView>
-
-                  {/* Display the tab content */}
-                  <Box>{renderTabContent()}</Box>
                 </VStack>
-              </Box>
-            </VStack>
-            <Container height={20}></Container>
-          </ScrollView>
 
-          {/* Modal for when the user marks the action as done */}
-          <Modal isOpen={isDoneOpen} onClose={() => { }}>
-            <Modal.Content maxWidth={400}>
-              <Modal.Body>
-                <Center mb="5">
-                  <Ionicons name={"ribbon-outline"} size={90} color="#64B058" />
-                  <Text fontSize="xl" fontWeight="bold" py={2}>
-                    Congratulations!
-                  </Text>
-                  <Text textAlign="center" fontSize="lg">
-                    You just completed{" "}
-                    <Text bold color="primary.600">
-                      {action.title}
-                    </Text>
-                    !
-                  </Text>
-                </Center>
-                <HStack width="100%" justifyContent={"center"}>
-
-                  {/* Testimonial button temporarily disabled while waiting for user funcitonality */}
+                {/* Action buttons */}
+                <HStack
+                  justifyContent="space-between"
+                  width="100%"
+                  mb={5}
+                > 
+                  {/* Add to To-Do List button */}
                   <Button
-                    color={"primary.600"}
-                    onPress={() => {
-                      setIsDoneOpen(false);
-                      navigation.navigate("AddTestimonial", { action_id: action_id });
+                    size="md"
+                    variant={actionInToDo() ? "outline" : "solid"}
+                    key={actionInToDo() ? "todo" : "not_todo"}
+                    _text={{
+                      color: actionInToDo() ? "green" : "white",
+                      fontWeight: "bold"
                     }}
-                    mr={3}
+                    onPress={handleTodoPress}
                   >
-                    Leave a Testimonial
+                    {actionInToDo() ? "Action in To-Do list!" : "Add to To-Do"}
                   </Button>
+                  
+                  {/* Mark as Completed button */}
                   <Button
-                    variant={"outline"}
-                    px={5}
-                    onPress={() => setIsDoneOpen(false)}
+                    size="md"
+                    variant={actionCompleted() ? "outline" : "solid"}
+                    key={actionCompleted() ? "completed" : "not_completed"}
+                    _text={{
+                      color: actionCompleted() ? "primary.600" : "white",
+                      fontWeight: "bold"
+                    }}
+                    onPress={handleCompletedPress}
                   >
-                    Close
+                    {actionCompleted() ? "Action Completed!" : "Mark as Done"}
                   </Button>
                 </HStack>
-              </Modal.Body>
-            </Modal.Content>
-          </Modal>
-
-          {/* Modal for when the user adds the action to their to-do list */}
-          <Modal isOpen={isToDoOpen} onClose={() => { }}>
-            <Modal.Content maxWidth={400}>
-              <Modal.Body>
-                <Center mb="5">
-                  <Ionicons name={"ribbon-outline"} size={90} color="#64B058" />
-                  <Text fontSize="xl" fontWeight="bold" py={2}>
-                    Nice!
-                  </Text>
-                  <Text textAlign="center" fontSize="lg">
-                    You just added  <Text bold color="primary.600">{action.title}</Text> to your To-Do list!
-                  </Text>
-                </Center>
-                <HStack width="100%" justifyContent={"center"}>
-                  <Button variant={"outline"} px={5} onPress={() => setIsToDoOpen(false)}>
-                    Exit
-                  </Button>
-                </HStack>
-              </Modal.Body>
-            </Modal.Content>
-          </Modal>
-        </View>
+                
+                {/* Accordion that displays the action information */}
+                <Accordion
+                  sections={SECTIONS}
+                  activeSections={activeSections}
+                  renderHeader={renderHeader}
+                  renderContent={renderContent}
+                  onChange={setActiveSections}
+                />
+              </VStack>
+            </Box>
+          </VStack>
+          <Container height={20}></Container>
+        </ScrollView>
       )}
+
+      {/* Modal displayed when the user marks the action as completed */}
+      <Modal
+        isOpen={isDoneOpen}
+        onClose={() => { }}
+      >
+        <Modal.Content maxWidth={400}>
+          <Modal.Body>
+            <Center mb="5">
+              <Ionicons
+                name={"ribbon-outline"}
+                size={90}
+                color="#64B058"
+              />
+
+              <Text
+                fontSize="xl"
+                fontWeight="bold"
+                py={2}
+              >
+                Congratulations!
+              </Text>
+
+              <Text
+                fontSize="md"
+                textAlign="center"
+              >
+                This action has been marked as done!
+                We are so grateful for your action.
+              </Text>
+            </Center>
+          </Modal.Body>
+
+          <Button.Group
+            space={2}
+            justifyContent="center"
+            pb={2}
+          >
+            <Button
+              onPress={() => {
+                setIsDoneOpen(false);
+                fetchAllUserInfo();
+              }}
+            >
+              Awesome
+            </Button>
+          </Button.Group>
+        </Modal.Content>
+      </Modal>
     </View>
   );
-}
+};
 
 const textStyle = {
   fontSize: "16px",
 };
 
 /* 
- * Transforms the local state of the app into the properties of the 
+ * Transforms the local state of the app into the proprieties of the 
  * ActionDetails function, in which it is got from the API.
  */
 const mapStateToProps = (state) => ({
@@ -451,16 +502,12 @@ const mapStateToProps = (state) => ({
 
 /* 
  * Transforms the dispatch function from the API in order to get the information
- * of the current community and sends it to the ActionDetails properties.
+ * of the current community and sends it to the ActionDetails proprieties.
  */
-const mapDispatchToProps = dispatch => {
-  return bindActionCreators(
-    {
-      toggleModal: toggleUniversalModalAction,
-      fetchAllUserInfo: fetchAllUserInfo
-    },
-    dispatch,
-  );
-};
+const mapDispatchToProps = (dispatch) => bindActionCreators({
+  toggleModal: toggleUniversalModalAction,
+  fetchAllUserInfo,
+  updateUserAction
+}, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(ActionDetails);
