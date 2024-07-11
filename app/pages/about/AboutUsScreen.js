@@ -6,24 +6,20 @@
  *      about a community, it just displays 'loading'.
  * 
  *      Written by: Moizes Almeida
- *      Last edited: May 29, 2024
+ *      Last edited: July 11, 2024
  * 
  *****************************************************************************/
- 
+
 /* Imports and set up */
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Image, ScrollView, Text, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
 import HTMLParser from '../../utils/HTMLParser';
-import { fetchAllCommunityData } from '../../config/redux/actions';
 
-
-const AboutUsScreen = ({ communityInfo, aboutUsInfo, fetchAllCommunityData }) => {
-  /* Fetch community information from API */
-  useEffect(() => {
-    fetchAllCommunityData({ community_id: communityInfo.id });
-  }, [fetchAllCommunityData, communityInfo.id]);
-
+const AboutUsScreen = ({ 
+  communityInfo, 
+  aboutUsInfo,
+}) => {
   /* If the community info isn't provided, just display 'Loading' */
   if (!communityInfo) {
     return (
@@ -36,17 +32,50 @@ const AboutUsScreen = ({ communityInfo, aboutUsInfo, fetchAllCommunityData }) =>
   /* Display the community's aboutUs information from API */
   return (
     <View style={styles.page}>
-      <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollView}>
+      <ScrollView 
+        showsVerticalScrollIndicator={false} 
+        style={styles.scrollView}
+      >
         <View style={styles.container}>
-          <View style={styles.imageContainer}>
-            <Image
-              source={{ uri: communityInfo.logo.url }}
-              style={styles.image}
-              resizeMode="contain"
-            />
-          </View>
-          <Text style={styles.communityName}>{communityInfo.name}</Text>
-          <HTMLParser htmlString={aboutUsInfo.description} baseStyle={styles.textStyle} />
+          <ScrollView 
+            horizontal 
+            showsHorizontalScrollIndicator={false} 
+            contentContainerStyle={styles.imageContainer}
+          >
+            {/* 
+              * Loops through the images available in the aboutUsPage 
+              * data from the API and display them as a scroll view, 
+              * and in case it doesnt have any available then displays 
+              * the community logo. 
+              */}
+            {
+              aboutUsInfo.images?.length > 0 
+                ? aboutUsInfo.images.map((image, index) => (
+                    <Image
+                      key={index}
+                      source={{ uri: image.url }}
+                      style={styles.image}
+                      resizeMode="contain"
+                    />
+                  ))
+                : <Image
+                    source={{ uri: communityInfo.logo.url }}
+                    style={styles.image}
+                    resizeMode="contain"
+                  />
+            }
+          </ScrollView>
+          
+          {/* Community name */}
+          <Text style={styles.communityName}>
+            {communityInfo.name}
+          </Text>
+          
+          {/* About Us Description / Our Story */}
+          <HTMLParser 
+            htmlString={aboutUsInfo.description} 
+            baseStyle={styles.textStyle} 
+          />
         </View>
       </ScrollView>
     </View>
@@ -66,13 +95,13 @@ const styles = StyleSheet.create({
     margin: 7,
   },
   imageContainer: {
-    maxHeight: 200,
-    width: '100%',
     alignItems: 'center',
+    flexDirection: 'row',
   },
   image: {
-    height: '100%',
-    width: '100%',
+    height: 200,
+    width: 300,
+    marginHorizontal: 5,
   },
   communityName: {
     fontWeight: 'bold',
@@ -85,7 +114,7 @@ const styles = StyleSheet.create({
 });
 
 /* 
- * Transforms the local state of the app into the proprieties of the 
+ * Transforms the local state of the app into the properties of the 
  * AboutUsScreen function, in which it is got from the API.
  */
 const mapStateToProps = (state) => ({
@@ -93,12 +122,4 @@ const mapStateToProps = (state) => ({
   aboutUsInfo: state.aboutUsPage,
 });
 
-/* 
- * Transforms the dispatch function from the API in order to get the information
- * of the current community and sends it to the AboutUsScreen proprieties.
- */
-const mapDispatchToProps = {
-  fetchAllCommunityData,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(AboutUsScreen);
+export default connect(mapStateToProps)(AboutUsScreen);
