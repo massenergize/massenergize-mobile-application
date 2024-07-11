@@ -65,6 +65,7 @@ const Questionnaire = ({
    * options for the questionnaire. 
    */
   const isFormComplete = () => {
+    return true; // New plan is to just let the user submit any amount of preferences
     return selectedType &&
       selectedCategory.length > 0 &&
       selectedImpact &&
@@ -102,7 +103,7 @@ const Questionnaire = ({
                 [styles.option,
                 selectedType === type && styles.selectedOption]
               }
-              onPress={() => setSelectedType(type)}
+              onPress={() => setSelectedType(type === selectedType ? "" : type)}
             >
               <Text
                 style={
@@ -150,7 +151,7 @@ const Questionnaire = ({
                 selectedImpact === impact &&
                 styles.selectedOption]
               }
-              onPress={() => setSelectedImpact(impact)}
+              onPress={() => setSelectedImpact(impact === selectedImpact ? "" : impact)}
             >
               <Text
                 style={selectedImpact === impact ?
@@ -172,7 +173,7 @@ const Questionnaire = ({
                 [styles.option, selectedCost === cost &&
                   styles.selectedOption]
               }
-              onPress={() => setSelectedCost(cost)}
+              onPress={() => setSelectedCost(cost === selectedCost ? "" : cost)}
             >
               <Text
                 style={selectedCost === cost ?
