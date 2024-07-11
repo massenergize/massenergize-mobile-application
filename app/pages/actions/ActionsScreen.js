@@ -72,11 +72,12 @@ const ActionsScreen = ({ navigation, actions, questionnaire }) => {
   const suggestedActions = actions.filter(action => {
     const actionTags = action.tags.map(tag => tag.name);
 
+
     return (
-      (questionnaire?.categories.some(category => actionTags.includes(category))) &&
-      (questionnaire?.type === 'All' || actionTags.includes(questionnaire.type)) &&
-      (questionnaire?.impact === 'All' || actionTags.includes(questionnaire.impact)) &&
-      (questionnaire?.cost === 'All' || actionTags.includes(questionnaire.cost))
+      (questionnaire?.categories.length === 0 || questionnaire?.categories.some(category => actionTags.includes(category))) &&
+      (questionnaire?.type === '' || actionTags.includes(questionnaire.type)) &&
+      (questionnaire?.impact === '' || actionTags.includes(questionnaire.impact)) &&
+      (questionnaire?.cost === '' || actionTags.includes(questionnaire.cost))
     );
   });
 
@@ -99,7 +100,7 @@ const ActionsScreen = ({ navigation, actions, questionnaire }) => {
           <HStack mt={2} alignItems="center">
             <Ionicons
               name={
-                expand ? "chevron-up-outline" : "search"
+                expand ? "chevron-up-outline" : "filter"
               }
               color="#64B058"
             />
@@ -163,7 +164,7 @@ const ActionsScreen = ({ navigation, actions, questionnaire }) => {
                   )
                 }
                 {
-                  questionnaire && suggestedActions.length > 0 &&
+                  questionnaire && suggestedActions.length > 0 && suggestedActions.length < actions.length &&
                   ActionList(suggestedActions, "Suggested")
                 }
 
