@@ -34,7 +34,7 @@ import {
 } from './types';
 
 const DEFAULTS = {
-  ZIPCODES: {zipcode: '01778', miles: 10},
+  ZIPCODES: {zipcode: '', miles: 10},
 };
 export const testReducer = (state = {name: 'Just A Test!'}, action) => {
   if (action?.type === 'TEST') return action.payload;

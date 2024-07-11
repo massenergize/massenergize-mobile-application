@@ -11,7 +11,7 @@
 
 /* Imports and set up */
 import {View, Text, ScrollView, TouchableOpacity, Image} from 'react-native';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import {COLOR_SCHEME} from '../../stylesheet';
 import {FontAwesomeIcon} from '../../components/icons';
@@ -47,11 +47,32 @@ const CommunitySelect = ({
   navigation,
   setActiveCommunity,
 }) => {
-  const {zipcode, miles} = zipcodeOptions || {};
+  const [{zipcode, miles}, setZipcodeOptions] = useState(zipcodeOptions || {});
 
+  
   useEffect(() => {
-    Geolocation.getCurrentPosition(info => console.log(info)); // TODO: make it actually do something with this...
-  }, []);
+    if (zipcodeOptions.zipcode) {
+      setZipcodeOptions(zipcodeOptions);
+      return;
+    }
+
+    Geolocation.getCurrentPosition(position => {
+      console.log("USER_POSITION:", position);
+      // Use the nominatim API to get the zipcode
+      const params = {
+        lat: position.coords.latitude,
+        lon: position.coords.longitude,
+        format: 'json',
+      };
+      fetch(`https://nominatim.openstreetmap.org/reverse?lat=${params.lat}&lon=${params.lon}&format=json`)
+        .then(response => response.json())
+        .then(data => {
+          console.log("ZIPCODE:", data.address.postcode);
+          setZipcodeOptions({zipcode: data.address.postcode, miles: miles});
+        })
+
+    });
+  }, [zipcodeOptions]);
 
   const chooseCommunity = async community => {
     setActiveCommunity(community);
