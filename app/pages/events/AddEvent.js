@@ -5,7 +5,7 @@
  *      an event to the selected community.
  * 
  *      Written by: Moizes Almeida and Will Soylemez
- *      Last edited: June 28, 2024
+ *      Last edited: July 12, 2024
  * 
  *****************************************************************************/
 
@@ -59,6 +59,14 @@ const AddEvent = ({
   const community_id = activeCommunity.id;
 
   /* 
+   * Create a new time and set it to be a week away from now and 
+   * the time to be at 7pm. 
+   */
+  const oneWeekAway = new Date();
+  oneWeekAway.setDate(oneWeekAway.getDate() + 7);
+  oneWeekAway.setHours(19, 0, 0, 0);
+
+  /* 
    * Uses local state to determine if the event is in the 
    * process to being added to the community or if it was already added. 
    */
@@ -69,9 +77,14 @@ const AddEvent = ({
    * Uses local state to save the values of the selected start and end date
    * for the newly added event, as well as it also displays which was the 
    * start and end date on the screen once they were selected by the user.
+   * 
+   * Set the start time to be a week away from now starting at 7pm and the 
+   * end time to be 8pm on the same day.
    */
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+  const [startDate, setStartDate] = useState(oneWeekAway);
+  const [endDate, setEndDate] = useState(new Date(
+    oneWeekAway.getTime() + 60 * 60 * 1000
+  ));
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
 
