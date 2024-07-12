@@ -399,35 +399,15 @@ const AddEvent = ({
 
                 {/* Event Link and/or Location */}
                 <FormControl
-                  mt={5}
+                  mx={7}
                   isInvalid={
                     errors.location &&
                     touched.location
                   }
                 >
-                  {format === 'online' || format === 'both' ? (
-                    <View
-                      mb={5}
-                    >
-                      <FormControl.Label>
-                        Link to Join Meeting
-                      </FormControl.Label>
-                      <Input
-                        variant="rounded"
-                        size="lg"
-                        placeholder="Link to event meeting"
-                        value={values.external_link}
-                        onChangeText={handleChange("external_link")}
-                        onBlur={handleBlur("external_link")}
-                        style={{
-                          marginTop: 10,
-                        }}
-                      />
-                    </View>
-                  ) : null}
                   {format === 'in-person' || format === 'both' ? (
                     <View>
-                      <FormControl.Label>
+                      <FormControl.Label mt={5}>
                         Enter Location of Event
                       </FormControl.Label>
                       <Input
@@ -471,6 +451,26 @@ const AddEvent = ({
                         size="lg"
                         placeholder="Zipcode"
                         value={location.zipcode}
+                        style={{
+                          marginTop: 10,
+                        }}
+                      />
+                    </View>
+                  ) : null}
+                  {format === 'online' || format === 'both' ? (
+                    <View
+                      mt={5}
+                    >
+                      <FormControl.Label>
+                        Link to Join Meeting
+                      </FormControl.Label>
+                      <Input
+                        variant="rounded"
+                        size="lg"
+                        placeholder="Link to event meeting"
+                        value={values.external_link}
+                        onChangeText={handleChange("external_link")}
+                        onBlur={handleBlur("external_link")}
                         style={{
                           marginTop: 10,
                         }}
