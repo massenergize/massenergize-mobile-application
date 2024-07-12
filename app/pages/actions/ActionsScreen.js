@@ -6,7 +6,7 @@
  *      impact, and cost.
  * 
  *      Written by: William Soylemez and Moizes Almeida
- *      Last edited: July 1, 2024
+ *      Last edited: July 12, 2024
  * 
  *****************************************************************************/
 
@@ -72,12 +72,17 @@ const ActionsScreen = ({ navigation, actions, questionnaire }) => {
   const suggestedActions = actions.filter(action => {
     const actionTags = action.tags.map(tag => tag.name);
 
-
     return (
-      (questionnaire?.categories.length === 0 || questionnaire?.categories.some(category => actionTags.includes(category))) &&
-      (questionnaire?.type === '' || actionTags.includes(questionnaire.type)) &&
-      (questionnaire?.impact === '' || actionTags.includes(questionnaire.impact)) &&
-      (questionnaire?.cost === '' || actionTags.includes(questionnaire.cost))
+      (questionnaire?.categories.length === 0 || 
+       questionnaire?.categories.some(
+        category => actionTags.includes(category)
+       )) &&
+      (questionnaire?.type === '' || 
+       actionTags.includes(questionnaire.type)) &&
+      (questionnaire?.impact === '' || 
+       actionTags.includes(questionnaire.impact)) &&
+      (questionnaire?.cost === '' || 
+       actionTags.includes(questionnaire.cost))
     );
   });
 
@@ -105,7 +110,7 @@ const ActionsScreen = ({ navigation, actions, questionnaire }) => {
               color="#64B058"
             />
             <Text color="#64B058" ml={2}>
-              Filter Actions
+              {expand ? "Collapse Filters" : "Filter Actions"}
             </Text>
           </HStack>
         </Pressable>
@@ -164,7 +169,9 @@ const ActionsScreen = ({ navigation, actions, questionnaire }) => {
                   )
                 }
                 {
-                  questionnaire && suggestedActions.length > 0 && suggestedActions.length < actions.length &&
+                  questionnaire && 
+                  suggestedActions.length > 0 && 
+                  suggestedActions.length < actions.length &&
                   ActionList(suggestedActions, "Suggested")
                 }
 

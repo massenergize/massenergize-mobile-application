@@ -4,7 +4,7 @@
  *      This page is responsible for rendering a list of service providers.
  * 
  *      Written by: William Soylemez and Moizes Almeida
- *      Last edited: July 2, 2024
+ *      Last edited: July 12, 2024
  * 
  *****************************************************************************/
 
@@ -213,13 +213,13 @@ function ServiceProvidersPage({ navigation, vendors, questionnaire }) {
             <HStack alignItems="center">
               <Ionicons
                 name={
-                  expand ? "chevron-up-outline" : "search"
+                  expand ? "chevron-up-outline" : "filter"
                 }
                 color="#64B058"
               />
 
               <Text color="#64B058" ml={2}>
-                Apply Filter
+                {expand ? "Collapse Filters" : "Filter Vendors"}
               </Text>
             </HStack>
           </Pressable>

@@ -4,7 +4,7 @@
  *      This page is responsible for rendering a list of testimonials.
  * 
  *      Written by: William Soylemez and Moizes Almeida
- *      Last edited: July 9, 2024
+ *      Last edited: July 12, 2024
  * 
  *****************************************************************************/
 
@@ -46,7 +46,6 @@ function TestimonialsPage({
   const [filter, setFilter] = useState('All');
   const [isFilterApplied, setIsFilterApplied] = useState(false);
   const [filteredTestimonials, setFilteredTestimonials] = useState([]);
-  console.log('testimonials: ', testimonials);
 
   /* Check whether any filter is applied */
   useEffect(() => {
@@ -222,7 +221,7 @@ function TestimonialsPage({
         >
           <HStack alignItems="center">
             <Ionicons
-              name={expand ? "chevron-up-outline" : "search"}
+              name={expand ? "chevron-up-outline" : "filter"}
               color="#64B058"
             />
             <Text color="#64B058" ml="2">
