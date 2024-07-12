@@ -7,7 +7,7 @@
  *      pages.
  * 
  *      Written by: Moizes Almeida and Will Soylemez
- *      Last edited: June 28, 2024
+ *      Last edited: July 12, 2024
  * 
  *****************************************************************************/
 
@@ -119,7 +119,7 @@ export default function TeamCard({
                   <Text fontWeight="bold">
                     {(team.carbon_footprint_reduction / 133).toFixed(2)}
                   </Text>{" "}
-                  Trees
+                  Carbon Reduction Impact
                 </Text>
               </Flex>
               
