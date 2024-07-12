@@ -25,6 +25,7 @@ import {
   Modal,
   Center,
   Icon,
+  Select,
 } from '@gluestack-ui/themed-native-base';
 import { FontAwesomeIcon } from "../../components/icons";
 import { Formik } from "formik";
@@ -97,6 +98,8 @@ const AddEvent = ({
   /* Uses local state to save the uri of the selected image. */
   const [imageUri, setImageUri] = useState(null);
 
+  const [linkType, setLinkType] = useState("");
+
   /* 
    * Saves the information about the location the event will take 
    * place. This is an optional field completed by the user, 
@@ -108,8 +111,8 @@ const AddEvent = ({
     "city": null,
     "country": "US",
     "state": "MA",
-    "unit": null,
-    "zipcode": null
+    "building_name": "",
+    "room": "",
   }
 
   /* 
@@ -169,7 +172,9 @@ const AddEvent = ({
       // format: format,
       location: location,
       // image: imageUri,
-      description: values.description
+      description: values.description,
+      link_type: linkType,
+      external_link: values.external_link,
     };
 
     apiCall("events.add", data).then((response) => {
@@ -413,8 +418,8 @@ const AddEvent = ({
                       <Input
                         variant="rounded"
                         size="lg"
-                        placeholder="Street Address"
-                        value={location.address}
+                        placeholder="Building Name"
+                        value={location.building_name}
                         style={{
                           marginTop: 10,
                         }}
@@ -422,8 +427,17 @@ const AddEvent = ({
                       <Input
                         variant="rounded"
                         size="lg"
-                        placeholder="Unit Number"
-                        value={location.unit}
+                        placeholder="Room"
+                        value={location.room}
+                        style={{
+                          marginTop: 10,
+                        }}
+                      />
+                      <Input
+                        variant="rounded"
+                        size="lg"
+                        placeholder="Street Address"
+                        value={location.address}
                         style={{
                           marginTop: 10,
                         }}
@@ -446,28 +460,43 @@ const AddEvent = ({
                           marginTop: 10,
                         }}
                       />
-                      <Input
-                        variant="rounded"
-                        size="lg"
-                        placeholder="Zipcode"
-                        value={location.zipcode}
-                        style={{
-                          marginTop: 10,
-                        }}
-                      />
                     </View>
                   ) : null}
                   {format === 'online' || format === 'both' ? (
                     <View
                       mt={5}
+                      gap={2}
                     >
                       <FormControl.Label>
                         Link to Join Meeting
                       </FormControl.Label>
+
+                      <View>
+                        <Text
+                        >
+                          Select the type of link
+                        </Text>
+
+                        <Select
+                          selectedValue={linkType}
+                          onValueChange={(value) => setLinkType(value)}
+                          mt={1}
+                        >
+                          <Select.Item 
+                            label="Join" 
+                            value="join"
+                          />
+                          <Select.Item 
+                            label="Registration" 
+                            value="registration" 
+                          />
+                        </Select>
+                      </View>
+
                       <Input
                         variant="rounded"
                         size="lg"
-                        placeholder="Link to event meeting"
+                        placeholder="Paste link here"
                         value={values.external_link}
                         onChangeText={handleChange("external_link")}
                         onBlur={handleBlur("external_link")}
