@@ -46,6 +46,7 @@ function TestimonialsPage({
   const [filter, setFilter] = useState('All');
   const [isFilterApplied, setIsFilterApplied] = useState(false);
   const [filteredTestimonials, setFilteredTestimonials] = useState([]);
+  console.log('testimonials: ', testimonials);
 
   /* Check whether any filter is applied */
   useEffect(() => {

@@ -83,7 +83,7 @@ function TestimonialDetails({
                 <Text bold fontSize="2xl" mt={3}>{testimonial.title}</Text>
                 <Text fontSize="md" color="#BAB9C0" mb={3}>
                   {/* If there's no author, display it as Anonymous */}
-                  By {testimonial.preferred_name || 'Anonymous'} | 
+                  By {testimonial.preferred_name || 'Anonymous'} | {""}
                      {Moment(testimonial.created_at).format('ll')}
                 </Text>
 
