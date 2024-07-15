@@ -158,7 +158,7 @@ const EventDetails = ({ route }) => {
   };
 
   /* 
-   * Functions that renders the Social Icon button that allows the user 
+   * Function that renders the Social Icon button that allows the user 
    * to share the event.
    */
   const SocialIcon = ({ name, onPress }) => {
@@ -214,9 +214,18 @@ const EventDetails = ({ route }) => {
     
     /* Renders the Social Icons */
     return (
-      <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+      <View 
+        style={{ 
+          flexDirection: 'row', 
+          justifyContent: 'center' 
+        }}
+      >
         {socialIcons.map((icon, index) => (
-          <SocialIcon key={index} name={icon.name} onPress={icon.onPress} />
+          <SocialIcon 
+            key={index} 
+            name={icon.name} 
+            onPress={icon.onPress} 
+          />
         ))}
       </View>
     );
@@ -399,6 +408,7 @@ const EventDetails = ({ route }) => {
           { 
             !isPastEvent() && <>
               <Divider my="4" />
+
               <Text 
                 fontSize="xs"
                 textAlign="center"
@@ -408,6 +418,7 @@ const EventDetails = ({ route }) => {
               >
                 Share this Event!
               </Text>
+              
               { shareEventButtons() }
             </>
           }
