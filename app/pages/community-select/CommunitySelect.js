@@ -165,32 +165,34 @@ const CommunitySelect = ({
             borderTopRightRadius: 10,
             borderTopLeftRadius: 10,
           }}>
-          <HStack
+          <TouchableOpacity
             style={{
               paddingVertical: 15,
               paddingHorizontal: 20,
               alignItems: 'center',
               width: '100%',
+              flexDirection: 'row',
               backgroundColor: COLOR_SCHEME.LIGHT_GREY,
-            }}>
-            <VStack>
-              <MEButton
-                onPress={() =>
-                  toggleModal({
-                    isVisible: true,
-                    Component: ZipCodeInput,
-                    title: 'Find your community with your zipcode',
-                  })
-                }
-                asLink
-                icon="search"
-                noArrow
-                style={{fontSize: 16}}
-                iconStyle={{fontSize: 15}}>
-                Find communities with your zipcode
-              </MEButton>
-            </VStack>
-          </HStack>
+              justifyContent: 'center',
+            }}
+            onPress={() =>
+              toggleModal({
+                isVisible: true,
+                Component: ZipCodeInput,
+                title: 'Find your community with your zipcode',
+              })
+            }
+          >
+            <FontAwesomeIcon name="search" size={20} color={COLOR_SCHEME.GREEN} />
+            <Text
+              asLink
+              icon="search"
+              noArrow
+              style={{fontSize: 16, fontWeight: 'bold', color: COLOR_SCHEME.GREEN, marginLeft: 10}}
+              iconStyle={{fontSize: 15}}>
+              Find communities with your zipcode
+            </Text>
+          </TouchableOpacity>
           <HStack
             style={{
               width: '100%',
