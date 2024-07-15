@@ -16,9 +16,14 @@ import { showError, showSuccess } from '../../utils/common';
 import MEButton from '../../components/button/MEButton';
 import { connect } from 'react-redux';
 import firebase from '@react-native-firebase/app';
+import { deleteFirebaseUser } from '../../config/firebase';
+import { useNavigation } from '@react-navigation/native';
+import { signOutAction } from '../../config/redux/actions';
 
-const ConfirmEmail = ({ fireAuth, nextStep }) => {
+const ConfirmEmail = ({ fireAuth, nextStep, signMeOut }) => {
   const [loading, setLoading] = useState(false);
+
+  const navigation = useNavigation();
 
   // Checks for email verification and proceeds to the next step
   const confirmEmail = () => {
@@ -53,8 +58,23 @@ const ConfirmEmail = ({ fireAuth, nextStep }) => {
       })
       .catch(error => {
         console.error('ERROR_RESENDING_EMAIL:', error);
-        showError('Error resending email. Please try again');
+        showError('Email resend failed. Please wait a few moments and try again!');
       });
+  }
+
+  // Cancel button
+  const cancel = () => {
+    deleteFirebaseUser((response, error) => {
+      if (error) {
+        console.error('ERROR_DELETING_USER:', error);
+        showError('Error deleting user. Please try again');
+        return;
+      }
+      signMeOut();
+      console.log('USER_DELETED');
+      navigation.navigate('Login');
+      showSuccess('User deleted');
+    })
   }
 
   // Move to the next step if the email is already verified
@@ -101,6 +121,15 @@ const ConfirmEmail = ({ fireAuth, nextStep }) => {
       >
         I've confirmed my email
       </MEButton>
+
+      {/* Cancel */}
+      <MEButton
+        onPress={cancel}
+        style={{marginTop: 20, justifyContent: 'center', color: 'red'}}
+        asLink
+      >
+        Cancel registration
+      </MEButton>
       
     </View>
   );
@@ -110,4 +139,8 @@ const mapStateToProps = state => ({
   fireAuth: state.fireAuth,
 });
 
-export default connect(mapStateToProps)(ConfirmEmail);
+const mapDispatchToProps = dispatch => ({
+  signMeOut: () => dispatch(signOutAction()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ConfirmEmail);

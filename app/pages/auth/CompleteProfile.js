@@ -6,7 +6,7 @@
  *      but has not yet completed their profile.
  * 
  *      Written by: William Soylemez
- *      Last edited: June 15, 2023
+ *      Last edited: July 15, 2023
  * 
  *****************************************************************************/
 
@@ -15,14 +15,16 @@ import React, { useState } from 'react';
 import { Image } from 'react-native';
 import Textbox from '../../components/textbox/Textbox';
 import MEButton from '../../components/button/MEButton';
-import { createUserProfile } from '../../config/firebase';
+import { createUserProfile, deleteFirebaseUser } from '../../config/firebase';
 import {
   fetchUserProfile,
   setFirebaseAuthenticationAction,
+  signOutAction,
 } from '../../config/redux/actions';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { firebase } from '@react-native-firebase/auth';
+import { showSuccess, showError } from '../../utils/common';
 
 const CompleteProfile = ({
   navigation,
@@ -30,6 +32,7 @@ const CompleteProfile = ({
   activeCommunity,
   putFirebaseUserInRedux,
   fetchMEUser,
+  signMeOut
 }) => {
   const [preferredName, setPreferredName] = useState('');
   const [firstName, setFirstName] = useState('');
@@ -84,6 +87,21 @@ const CompleteProfile = ({
           });
         });
       });
+    })
+  }
+
+  // Cancel button
+  const cancel = () => {
+    deleteFirebaseUser((response, error) => {
+      if (error) {
+        console.error('ERROR_DELETING_USER:', error);
+        showError('Error deleting user. Please try again');
+        return;
+      }
+      signMeOut();
+      console.log('USER_DELETED');
+      navigation.navigate('Login');
+      showSuccess('User deleted');
     })
   }
 
@@ -155,6 +173,16 @@ const CompleteProfile = ({
               >
                 COMPLETE
               </MEButton>
+
+              {/* Cancel button */}
+              <MEButton
+                containerStyle={{ width: '100%' }}
+                onPress={cancel}
+                style={{ marginTop: 20, justifyContent: 'center', color: 'red' }}
+                asLink
+              >
+                Cancel registration
+              </MEButton>
             </View>
           </View>
         </ScrollView>
@@ -168,6 +196,7 @@ const mapDispatchToProps = dispatch => {
     {
       putFirebaseUserInRedux: setFirebaseAuthenticationAction,
       fetchMEUser: fetchUserProfile,
+      signMeOut: signOutAction,
     },
     dispatch,
   );
