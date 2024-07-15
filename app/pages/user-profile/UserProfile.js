@@ -6,7 +6,7 @@
  *      completed actions, teams, households, and communities.
  * 
  *      Written by: William Soylemez and Moizes Almeida
- *      Last edited: July 2, 2024
+ *      Last edited: July 15, 2024
  * 
  *****************************************************************************/
 
@@ -264,9 +264,9 @@ const TeamsList = ({ teams, navigation }) => {
                   team_stats: team,
                   subteams: team.subteams ? team.subteams : [],
                 })}
+                key={index}
               >
                 <Box
-                  key={index}
                   width={200}
                   borderRadius={8}
                   bg="white"
@@ -447,7 +447,7 @@ function DashboardPage({
               <ActionsList navigation={navigation} list={todoList} actions={actions} />
             </>
           }
-          {completedList.length > 0 &&
+          {completedList?.length > 0 &&
             <>
               <Text style={styles.category}>Completed Actions</Text>
               <ActionsList navigation={navigation} list={completedList} actions={actions} />
