@@ -5,7 +5,7 @@
  *      of the community.
  * 
  *      Written by: Moizes Almeida
- *      Last edited: June 25, 2024
+ *      Last edited: July 15, 2024
  * 
  *****************************************************************************/
 
@@ -111,7 +111,7 @@ function ContactUsScreen({
               Community Administrator
             </Text>
             <Text fontSize="sm">
-              {communityInfo.admins[0].full_name}
+              {communityInfo.owner_name}
             </Text>
             {communityInfo.location?.city ? (
               <View>
