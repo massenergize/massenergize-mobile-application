@@ -5,7 +5,7 @@
  *      a single action
  * 
  *      Written by: William Soylemez and Moizes Almeida
- *      Last edited: July 10, 2024
+ *      Last edited: July 15, 2024
  * 
  *****************************************************************************/
 
@@ -23,6 +23,7 @@ import {
   Spinner,
   Center,
   Modal,
+  Divider,
 } from '@gluestack-ui/themed-native-base';
 import Accordion from 'react-native-collapsible/Accordion';
 import HTMLParser from "../../utils/HTMLParser";
@@ -40,6 +41,9 @@ import {
   updateUserAction,
 } from '../../config/redux/actions';
 import MEImage from "../../components/image/MEImage";
+import { TouchableOpacity } from "react-native";
+import { Icon as SocialIcons } from 'react-native-elements';
+import Share from 'react-native-share';
 
 const ActionDetails = ({
   route,
@@ -52,6 +56,7 @@ const ActionDetails = ({
   fetchAllUserInfo,
   todoList,
   completedList,
+  communityInfo
 }) => {
   /* Saves the action ID passed through the route */
   const { action_id } = route.params;
@@ -298,6 +303,117 @@ const ActionDetails = ({
     );
   };
 
+  /* 
+   * Function that renders the Social Icon button that allows the user
+   * to share the action.
+   */
+  const SocialIcon = ({ name, onPress }) => {
+    /* Configuration of styling for the button */
+    let iconName, colorHex;
+
+    if (name === 'facebook') {
+      iconName = 'facebook';
+      colorHex = '#3b5998';
+    } else if (name === 'linkedin') {
+      iconName = 'linkedin';
+      colorHex = '#0a66c2';
+    } else if (name === 'email') {
+      iconName = 'envelope';
+      colorHex = '#004f9f';
+    }
+
+    /* Calls on the onPress function passed as a parameter to this function */
+    const handlePress = () => {
+      onPress();
+    };
+
+    /* Displays the Social icon button */
+    return (
+      <TouchableOpacity
+        onPress={handlePress}
+        style={{
+          marginHorizontal: 15,
+          paddingBottom: 20,
+        }}
+      >
+        <SocialIcons
+          name={iconName}
+          type='font-awesome'
+          color={colorHex}
+          size={30}
+        />
+      </TouchableOpacity>
+    );
+  };
+  
+  /* 
+   * Function that handles displaying the Social Icon buttons for the user
+   * to share about the action with others.
+   */
+  const shareActionButtons = () => {
+    /* Creates an array with all the options of sharing for the user */
+    const socialIcons = [
+      { name: 'facebook', onPress: () => shareAction('facebook') },
+      { name: 'linkedin', onPress: () => shareAction('linkedin') },
+      { name: 'email', onPress: () => shareAction('email') },
+    ];
+
+    /* Renders the Social Icons */
+    return (
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'center',
+        }}
+      >
+        {socialIcons.map((icon, index) => (
+          <SocialIcon
+            key={index}
+            name={icon.name}
+            onPress={icon.onPress}
+          />
+        ))}
+      </View>
+    );
+  };
+
+  /* Function that handles the action of pressing in one of the Social Icons */
+  const shareAction = async (platform) => {
+    /* 
+     * Creates the share option for the user, including a title, message,
+     * description, and url.
+     */
+    const shareOptions = {
+      title: 'Share Action',
+      message: `Check out this cool action: ${action.title}\n\nDescription: ${action.about}\n.`,
+      url: `https://community.massenergize.org/${communityInfo.subdomain}/actions/${action_id}`,
+      failOnCancel: false,
+    };
+
+    /* Share on social media or email or copy to clipboard */
+    try {
+      if (platform === 'facebook') {
+        await Share.shareSingle({
+          ...shareOptions,
+          social: Share.Social.FACEBOOK,
+        });
+      } else if (platform === 'linkedin') {
+        await Share.shareSingle({
+          ...shareOptions,
+          social: Share.Social.LINKEDIN,
+        });
+      } else if (platform === 'email') {
+        await Share.open({
+          ...shareOptions,
+          social: Share.Social.EMAIL,
+          email: '',
+        });
+      }
+    } catch (error) {
+      console.log('Error sharing action: ', error);
+    }
+  }
+
   /* Displays the action information in a accordion layout */
   return (
     <View
@@ -423,6 +539,23 @@ const ActionDetails = ({
                   renderContent={renderContent}
                   onChange={setActiveSections}
                 />
+
+                {/* Display the option to share the action with others. */}
+                <>
+                  <Divider my={4} />
+
+                  <Text
+                    fontSize="xs"
+                    textAlign="center"
+                    px={10}
+                    pb={3}
+                    color="gray.400"
+                  >
+                    Share this Action!
+                  </Text>
+
+                  { shareActionButtons() }
+                </>
               </VStack>
             </Box>
           </VStack>
@@ -498,6 +631,7 @@ const mapStateToProps = (state) => ({
   user: state.user,
   todoList: state.userTodo,
   completedList: state.userCompleted,
+  communityInfo: state.communityInfo,
 });
 
 /* 
