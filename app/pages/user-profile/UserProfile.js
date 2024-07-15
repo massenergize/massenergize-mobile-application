@@ -40,7 +40,7 @@ import CommunityCard from "../community-select/CommunityCard";
 import { getActionMetric } from "../../utils/common";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { connect } from "react-redux";
-import { fetchAllUserInfo, fetchUserProfile } from "../../config/redux/actions";
+import { fetchAllUserInfo } from "../../config/redux/actions";
 import { bindActionCreators } from "redux";
 import MEImage from "../../components/image/MEImage";
 
@@ -501,8 +501,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
-      fetchAllUserInfo: fetchAllUserInfo,
-      fetchUserProfile: fetchUserProfile
+      fetchAllUserInfo: fetchAllUserInfo
     },
     dispatch,
   );

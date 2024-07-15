@@ -34,7 +34,7 @@ import TeamCard from './TeamCard';
 import { bindActionCreators } from 'redux';
 import { toggleUniversalModalAction } from '../../config/redux/actions';
 import AuthOptions from '../auth/AuthOptions';
-import { fetchAllUserInfo, fetchUserProfile } from "../../config/redux/actions";
+import { fetchAllUserInfo } from "../../config/redux/actions";
 import MEImage from '../../components/image/MEImage';
 
 const TeamsScreen = ({ navigation, teams, fireAuth, toggleModal, user }) => {
@@ -341,8 +341,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => {
   return bindActionCreators({
     toggleModal: toggleUniversalModalAction,
-    fetchAllUserInfo: fetchAllUserInfo,
-    fetchUserProfile: fetchUserProfile
+    fetchAllUserInfo: fetchAllUserInfo
   }, dispatch);
 }
 

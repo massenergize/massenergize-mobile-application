@@ -106,14 +106,17 @@ const RootWrapper = ({
 
   /* Check if user is authenticated */
   useEffect(() => {
+    console.log("Effecting going downnn");
     isUserAuthenticated((yes, user) => {
       console.log('USER IS FIREBASE_AUTHENTICATED: ', user?.email);
       if (yes) {
         setFirebaseAuth(user);
-        user?.getIdToken().then(token => {
-          fetchMEUser(token);
-        });
-        fetchAllUserInfo();
+        if (user.emailVerified) {
+          user?.getIdToken().then(token => {
+            fetchMEUser(token);
+          });
+          fetchAllUserInfo();
+        } else console.log('User is not verified yet!');
       } else console.log('User is not signed in yet!');
     });
   }, []);
