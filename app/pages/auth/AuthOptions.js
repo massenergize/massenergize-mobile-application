@@ -4,7 +4,7 @@
  *      Renders a list of authentication options for the user to choose from.
  * 
  *      Written by: Frimpong Opoku-Agyemang
- *      Last edited: 
+ *      Last edited: Jul 15
  * 
  *****************************************************************************/
 
@@ -52,11 +52,11 @@ const AuthOptions = ({closeModal, fetchMEUser, putFirebaseUserInRedux}) => {
 
   // List of authentication options
   const options = [
-    {
-      key: 'EmailOnly',
-      name: 'With Email Only (No Password)',
-      icon: 'envelope',
-    },
+    // {
+    //   key: 'EmailOnly',
+    //   name: 'With Email Only (No Password)',
+    //   icon: 'envelope',
+    // },
     {key: 'Login', name: 'Email & Password', icon: 'lock'},
     {
       key: 'google',
@@ -65,13 +65,13 @@ const AuthOptions = ({closeModal, fetchMEUser, putFirebaseUserInRedux}) => {
       theme: {text: {color: 'red'}, icon: {color: 'red'}},
       onPress: doGoogleAuth,
     },
-    {
-      key: 'facbeook',
-      name: 'Facebook',
-      icon: 'facebook',
-      theme: {text: {color: '#1877F2'}, icon: {color: '#1877F2'}},
-      disabled: true,
-    },
+    // {
+    //   key: 'facbeook',
+    //   name: 'Facebook',
+    //   icon: 'facebook',
+    //   theme: {text: {color: '#1877F2'}, icon: {color: '#1877F2'}},
+    //   disabled: true,
+    // },
   ];
 
   
