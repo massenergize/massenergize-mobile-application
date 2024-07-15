@@ -147,3 +147,14 @@ export const reauthenticateWithGoogle = async () => {
 
   return auth().currentUser.reauthenticateWithCredential(credential);
 };
+
+/**
+ * Deletes the user from firebase and calls the callback function with the response.
+ * To be used after deleting the user from the backend, or before registration is compelte.
+ * @returns {Promise} - A promise that resolves after re-authentication.
+ */
+export const deleteFirebaseUser = cb => {
+  auth().currentUser.delete()
+    .then(() => cb && cb())
+    .catch(e => cb && cb(e?.toString()));
+}
