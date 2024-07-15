@@ -8,6 +8,8 @@ import {
   TouchableWithoutFeedback,
   Animated,
   Easing,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -73,36 +75,40 @@ const MEBottomSheet = ({
       <TouchableWithoutFeedback onPress={onClose}>
         <Animated.View style={[styles.modalContainer, { opacity }]}>
           <TouchableWithoutFeedback onPress={(e) => e.stopPropagation()}>
-            <Animated.View
-              style={[
-                styles.modalContent,
-                {
-                  transform: [{ translateY }],
-                },
-              ]}>
-              <View style={styles.header}>
-                {title && (
-                  <Text
-                    style={{
-                      fontWeight: 'bold',
-                      fontSize: 15,
-                      ...(titleStyle || {}),
-                    }}>
-                    {title}
-                  </Text>
-                )}
-                <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-                  <Icon
-                    color="grey"
-                    name="times-circle"
-                    size={24}
-                  />
-                </TouchableOpacity>
-              </View>
-              <View style={[styles.content, contentStyle]}>
-                {renderComponent()}
-              </View>
-            </Animated.View>
+            <KeyboardAvoidingView
+              behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+              style={{ width: '100%' }}>
+              <Animated.View
+                style={[
+                  styles.modalContent,
+                  {
+                    transform: [{ translateY }],
+                  },
+                ]}>
+                <View style={styles.header}>
+                  {title && (
+                    <Text
+                      style={{
+                        fontWeight: 'bold',
+                        fontSize: 15,
+                        ...(titleStyle || {}),
+                      }}>
+                      {title}
+                    </Text>
+                  )}
+                  <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+                    <Icon
+                      color="grey"
+                      name="times-circle"
+                      size={24}
+                    />
+                  </TouchableOpacity>
+                </View>
+                <View style={[styles.content, contentStyle]}>
+                  {renderComponent()}
+                </View>
+              </Animated.View>
+            </KeyboardAvoidingView>
           </TouchableWithoutFeedback>
         </Animated.View>
       </TouchableWithoutFeedback>
@@ -122,7 +128,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
     width: '100%',
-    minHeight: 500,
+    minHeight: 350,
   },
   header: {
     backgroundColor: '#f2f3f5',
