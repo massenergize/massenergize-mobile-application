@@ -17,6 +17,7 @@ import { useDetails } from '../../utils/hooks';
 import { formatDateString } from '../../utils/Utils';
 import HTMLParser from '../../utils/HTMLParser';
 import { FontAwesomeIcon } from '../../components/icons';
+import Share from 'react-native-share';
 import { 
   ScrollView,
   VStack,
@@ -35,8 +36,14 @@ import {
   Button,
   Modal,
 } from '@gluestack-ui/themed-native-base';
-import { PermissionsAndroid, Platform } from 'react-native';
+import { 
+  PermissionsAndroid, 
+  Platform, 
+  TouchableOpacity,
+  Linking
+} from 'react-native';
 import * as AddCalendarEvent from 'react-native-add-calendar-event';
+import { Icon as SocialIcons } from 'react-native-elements';
 
 const EventDetails = ({ route }) => {
   /*
@@ -148,6 +155,113 @@ const EventDetails = ({ route }) => {
       return "http://" + url;
     }
     return url;
+  };
+
+  /* 
+   * Functions that renders the Social Icon button that allows the user 
+   * to share the event.
+   */
+  const SocialIcon = ({ name, onPress }) => {
+    /* Configuration of styling for the button */
+    let iconName, colorName;
+  
+    if (name === 'facebook') {
+      iconName = 'facebook';
+      colorName = '#3b5998';
+    } else if (name === 'linkedin') {
+      iconName = 'linkedin';
+      colorName = '#0a66c2';
+    } else if (name === 'email') {
+      iconName = 'envelope';
+      colorName = '#004f9f';
+    }
+    
+    /* Calls on the onPress function passed as a parameter for this function */
+    const handlePress = () => {
+      onPress();
+    };
+    
+    /* Displays the Social Icon button */
+    return (
+      <TouchableOpacity 
+        onPress={handlePress} 
+        style={{ 
+          marginHorizontal: 15, 
+          paddingBottom: 20,
+        }}
+      >
+        <SocialIcons 
+          name={iconName} 
+          type='font-awesome' 
+          color={colorName}
+          size={30} 
+        />
+      </TouchableOpacity>
+    );
+  };
+
+  /* 
+   * Function that handles displaying the Social Icon buttons for the user
+   * to share about the event with others.
+   */
+  const shareEventButtons = () => {
+    /* Creates an array with all the options of sharing for the user */
+    const socialIcons = [
+      { name: 'facebook', onPress: () => shareEvent('facebook') },
+      { name: 'linkedin', onPress: () => shareEvent('linkedin') },
+      { name: 'email', onPress: () => shareEvent('email') },
+    ];
+    
+    /* Renders the Social Icons */
+    return (
+      <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+        {socialIcons.map((icon, index) => (
+          <SocialIcon key={index} name={icon.name} onPress={icon.onPress} />
+        ))}
+      </View>
+    );
+  };
+
+  /* Function that handles the action of pressing in one of the Social Icons */
+  const shareEvent = async (platform) => {
+    /* 
+     * Creates the share option for the user, including a title, message, 
+     * description, and url.
+     */
+    const shareOptions = {
+      title: 'Share Event',
+      message: `Check out this event: ${event.name}\n\nDate: ${formatDateString(
+        new Date(event.start_date_and_time), 
+        new Date(event.end_date_and_time)
+      )}\n\nDescription: ${event.description 
+        ? event.description.replace(/<\/?[^>]+(>|$)/g, "") 
+        : ''}\n\nLink: ${addHttp(event.external_link)}`,
+      url: `https://community.massenergize.org/${event.community.subdomain}/events/${event_id}`,
+      failOnCancel: false,
+    };
+    
+    /* Share on social media or email or copy to clipboard */
+    try {
+      if (platform === 'facebook') {
+        await Share.shareSingle({
+          ...shareOptions,
+          social: Share.Social.FACEBOOK,
+        });
+      } else if (platform === 'linkedin') {
+        await Share.shareSingle({
+          ...shareOptions,
+          social: Share.Social.LINKEDIN,
+        });
+      } else if (platform === 'email') {
+        await Share.open({
+          ...shareOptions,
+          social: Share.Social.EMAIL,
+          email: '',
+        });
+      }
+    } catch (error) {
+      console.log('Error sharing event: ', error);
+    }
   };  
 
   /* Displays a spinner while the information from is loading from the API */
@@ -270,12 +384,33 @@ const EventDetails = ({ route }) => {
           <Heading textAlign="center">
             {event.name || "Event Name"}
           </Heading>
+
           {event.description && (
             <HTMLParser 
               htmlString={event.description}
               baseStyle={textStyle}
             />
           )}
+
+          {/* 
+            * If the event is not past, then display the option to share 
+            * that event with other people.
+            */}
+          { 
+            !isPastEvent() && <>
+              <Divider my="4" />
+              <Text 
+                fontSize="xs"
+                textAlign="center"
+                px={10}
+                pb={3}
+                color="gray.400"
+              >
+                Share this Event!
+              </Text>
+              { shareEventButtons() }
+            </>
+          }
         </Box>
       </ScrollView>
 
