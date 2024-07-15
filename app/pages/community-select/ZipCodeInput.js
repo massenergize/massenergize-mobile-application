@@ -16,20 +16,19 @@ const ZipCodeInput = ({
 }) => {
   const [loading, setLoading] = useState(false);
   const {zipcode, miles} = zipcodeOptions || {};
+  const [newZipcode, setNewZipcode] = useState(zipcode);
+  const [newMiles, setNewMiles] = useState(miles);
 
-  const doUpdate = (name, value) => {
-    const data = {...zipcodeOptions, [name]: value};
-    updateOptions(data);
-  };
 
   const search = () => {
-    const data = {zipcode, maxDistance: miles};
+    const newZipcodeOptions = {zipcode: newZipcode, miles: newMiles};
     setLoading(true);
-    fetchCommunitiesFromBackend(data, (data, error) => {
+    fetchCommunitiesFromBackend(newZipcodeOptions, (data, error) => {
       if (!data) {
         setLoading(false);
         return Alert.alert(error);
       }
+      updateOptions(newZipcodeOptions);
       setLoading(false);
       closeModal();
     });
@@ -38,21 +37,21 @@ const ZipCodeInput = ({
     <View style={{padding: 20}}>
       <Textbox
         generics={{keyboardType: 'decimal-pad', maxLength: 5}}
-        onChange={code => doUpdate('zipcode', code)}
+        onChange={code => setNewZipcode(code)}
         label="What's your community's zipcode? *"
         placeholder="Enter zipcode here..."
-        value={zipcode}
+        value={newZipcode}
       />
       <Text>Include nearby communities (Optional) </Text>
       <Slider
-        onValueChange={value => doUpdate('miles', value)}
+        onValueChange={value => setNewMiles(value)}
         step={1}
         minimumTrackTintColor={COLOR_SCHEME.GREEN}
         thumbTintColor={COLOR_SCHEME.GREEN}
         maximumValue={100}
         minimumValue={0}
-        value={miles}></Slider>
-      <Text>Within {miles} Miles</Text>
+        value={newMiles}></Slider>
+      <Text>Within {newMiles} Miles</Text>
       <MEButton loading={loading} onPress={search}>
         SEARCH
       </MEButton>

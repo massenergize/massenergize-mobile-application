@@ -50,7 +50,10 @@ const CommunitySelect = ({
   const [{zipcode, miles}, setZipcodeOptions] = useState(zipcodeOptions || {});
 
   
+  console.log(zipcodeOptions);
+  console.log("hello?")
   useEffect(() => {
+    // If the zipcode is already set, then we don't need to do anything
     if (zipcodeOptions.zipcode) {
       setZipcodeOptions(zipcodeOptions);
       return;
