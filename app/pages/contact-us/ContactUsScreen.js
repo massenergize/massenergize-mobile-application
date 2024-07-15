@@ -52,6 +52,8 @@ function ContactUsScreen({
   user,
   navigation
 }) {
+  console.log(communityInfo);
+
   /* Saves the community's ID into a variable */
   const community_id = communityInfo.id;
 

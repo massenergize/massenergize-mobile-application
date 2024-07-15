@@ -5,7 +5,7 @@
  *      information as a component called EventDetails.
  * 
  *      Written by: Moizes Almeida
- *      Last edited: July 3, 2024
+ *      Last edited: July 15, 2024
  * 
  *****************************************************************************/
 
@@ -257,47 +257,6 @@ const EventDetails = ({ route }) => {
                 >
                   Add Event to Calendar
                 </Button>
-
-                {/* 
-                  * Modal for alerting user that the event has been added 
-                  * to their calendar.
-                  */}
-                <Modal
-                  isOpen={openModal}
-                  onClose={() => setOpenModal(false)}
-                >
-                  <Modal.Content maxWidth={400}>
-                    <Modal.Body>
-                      <Center mb="5">
-                        <Icon
-                          as={FontAwesomeIcon}
-                          name="check-circle"
-                          size="lg"
-                          color="primary.600"
-                        />
-
-                        <Text
-                          fontSize="lg"
-                          bold
-                          py="5"
-                        >
-                          Event successfully added to your Calendar!
-                        </Text>
-                        <Text>
-                          You will be informed when the event is 
-                          happening 1 hour before.
-                        </Text>
-                      </Center>
-
-                      <Button
-                        colorScheme={"gray"}
-                        onPress={() => setOpenModal(false)}
-                      >
-                        Back
-                      </Button>
-                    </Modal.Body>
-                  </Modal.Content>
-                </Modal>
               </>
             )
           }
@@ -319,6 +278,47 @@ const EventDetails = ({ route }) => {
           )}
         </Box>
       </ScrollView>
+
+      {/* 
+        * Modal for alerting user that the event has been added 
+        * to their calendar.
+        */}
+      <Modal
+        isOpen={openModal}
+        onClose={() => setOpenModal(false)}
+      >
+        <Modal.Content maxWidth={400}>
+          <Modal.Body>
+            <Center mb="5">
+              <Icon
+                as={FontAwesomeIcon}
+                name="check-circle"
+                size="lg"
+                color="primary.600"
+              />
+
+              <Text
+                fontSize="lg"
+                bold
+                py="5"
+              >
+                Event successfully added to your Calendar!
+              </Text>
+              <Text>
+                You will be informed when the event is 
+                happening 1 hour before.
+              </Text>
+            </Center>
+
+            <Button
+              colorScheme={"gray"}
+              onPress={() => setOpenModal(false)}
+            >
+              Back
+            </Button>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal>
     </View>
   );
 };
