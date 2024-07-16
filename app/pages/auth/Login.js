@@ -5,15 +5,15 @@
  *      and password
  * 
  *      Written by: William Soylemez and Frimpong Opoku-Agyemang
- *      Last edited: June 5, 2023
+ *      Last edited: July 16, 2023
  * 
  *****************************************************************************/
 
-import {View, Text, TouchableOpacity, Image} from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {bindActionCreators} from 'redux';
-import {connect} from 'react-redux';
-import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import { View, Text, TouchableOpacity, Image } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import auth from '@react-native-firebase/auth';
 import {
   fetchUserProfile,
@@ -22,11 +22,11 @@ import {
   toggleUniversalModalAction,
 } from '../../config/redux/actions';
 import Textbox from '../../components/textbox/Textbox';
-import {COLOR_SCHEME} from '../../stylesheet';
+import { COLOR_SCHEME } from '../../stylesheet';
 import MEButton from '../../components/button/MEButton';
 import Snackbar from 'react-native-snackbar';
-import {showError, showSnackBar, showSuccess} from '../../utils/common';
-import {authenticateWithEmailAndPassword} from '../../config/firebase';
+import { showError, showSnackBar, showSuccess } from '../../utils/common';
+import { authenticateWithEmailAndPassword } from '../../config/firebase';
 
 const Login = ({
   navigation,
@@ -86,17 +86,17 @@ const Login = ({
       <Image
         src={activeCommunity?.logo?.url}
         alt="Community Logo"
-        style={{width: 120, height: 120, objectFit: 'contain'}}
+        style={{ width: 120, height: 120, objectFit: 'contain' }}
       />
-      <Text style={{fontWeight: '600', fontSize: 18, marginBottom: 20}}>
+      <Text style={{ fontWeight: '600', fontSize: 18, marginBottom: 20 }}>
         Sign in with email & password
       </Text>
-      
+
       {/* Email and password input */}
-      <View style={{width: '100%', paddingHorizontal: '10%'}}>
+      <View style={{ width: '100%', paddingHorizontal: '10%' }}>
         <Textbox
           value={email}
-          generics={{keyboardType: 'email-address'}}
+          generics={{ keyboardType: 'email-address' }}
           onChange={text => setEmail(text)}
           label="Email"
           placeholder="Enter email here..."
@@ -104,13 +104,13 @@ const Login = ({
         <Textbox
           value={password}
           onChange={text => setPassword(text)}
-          generics={{keyboardType: 'visible-password', secureTextEntry: true}}
+          generics={{ keyboardType: 'visible-password', secureTextEntry: true }}
           label="Password"
           placeholder="Enter your password here..."
         />
 
         {/* Forgot password */}
-        <MEButton asLink onPress={() => navigation.navigate("ForgotPassword")}>
+        <MEButton asLink onPress={() => navigation.navigate("ForgotPassword")} style={{ fontSize: 16 }}>
           Forgot password
         </MEButton>
 
@@ -118,19 +118,20 @@ const Login = ({
         <MEButton
           disabled={notReadyToSubmit()}
           loading={loading}
-          onPress={() => signUserIn()}>
+          onPress={() => signUserIn()}
+        >
           LOGIN
         </MEButton>
 
         {/* Register */}
         <MEButton
-          containerStyle={{marginVertical: 5}}
-          style={{color: COLOR_SCHEME.ORANGE, fontSize: 16}}
-          iconStyle={{color: COLOR_SCHEME.ORANGE}}
+          containerStyle={{ marginVertical: 10 }}
+          style={{ color: COLOR_SCHEME.ORANGE, fontSize: 16 }}
+          iconStyle={{ color: COLOR_SCHEME.ORANGE }}
           asLink
           onPress={() => navigation.navigate('Register')}
         >
-          Haven't joined yet? Join{' '}
+          Haven't joined yet? Make an account{' '}
         </MEButton>
       </View>
     </View>
