@@ -1,3 +1,15 @@
+/******************************************************************************
+ *                            ZipCodeInput
+ * 
+ *      This page is responsible for rendering the zip code input
+ *      component use to get the user's zipcode.
+ * 
+ *      Written by: Frimpong and Will Soylemez
+ *      Last edited: July 16, 2024
+ * 
+ *****************************************************************************/
+
+/* Imports and set up */
 import {View, Text, Checkbox, Alert} from 'react-native';
 import React, {useState} from 'react';
 import Textbox from '../../components/textbox/Textbox';

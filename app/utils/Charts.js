@@ -5,8 +5,8 @@
  *      that are going to be used to display graphs and charts
  *      of the actions completed by each community.
  * 
- *      Written by: Moizes Almeida
- *      Last edited: July 2, 2024
+ *      Written by: Moizes Almeida and Will Soylemez
+ *      Last edited: July 16, 2024
  * 
  *****************************************************************************/
 
@@ -17,7 +17,8 @@ import {
   HStack,
   Text,
   Container,
-  View
+  View,
+  Button
 } from "@gluestack-ui/themed-native-base";
 import { Dimensions, Pressable } from 'react-native';
 import {
@@ -31,7 +32,6 @@ import {
   VictoryLegend
 } from 'victory-native';
 import { useNavigation } from "@react-navigation/native";
-import { Button } from "@gluestack-ui/themed-native-base";
 import Icon from 'react-native-vector-icons/Ionicons';
 
 
@@ -48,19 +48,43 @@ function SmallChart({ goal, color }) {
   return (
     <VStack alignItems="center">
       <Text bold fontSize="lg">{goal.nameShort}</Text>
+
       <VictoryPie
-        data={[{ x: "current", y: goal.current }, { x: "remaining", y: goal.goal - goal.current }]}
-        containerComponent={<VictoryContainer disableContainerEvents standalone={false} responsive={true} />}
+        data={[
+          { x: "current", y: goal.current }, 
+          { x: "remaining", y: goal.goal - goal.current }
+        ]}
+        containerComponent={
+          <VictoryContainer 
+            disableContainerEvents 
+            standalone={false} 
+            responsive={true} 
+          />
+        }
         innerRadius={Dimensions.get('window').width / 15}
         height={Dimensions.get('window').width / 3.5}
         width={Dimensions.get('window').width / 3.5}
         padding={10}
         labels={() => null}
-        colorScale={[color, "#f2f2f2"]} />
+        colorScale={[color, "#f2f2f2"]}
+      />
+
       {
         goal.nameShort === "Carbon"
-          ? <Text fontSize="md">{(goal.current < 10000) ? goal.current.toFixed(1) : (goal.current / 1000).toFixed(1) + "k"} / {(goal.goal < 10000) ? goal.goal.toFixed(1) : (goal.goal / 1000).toFixed(1) + "k"}</Text>
-          : <Text fontSize="md">{(goal.current < 10000) ? goal.current : (goal.current / 1000).toFixed(1) + "k"} / {(goal.goal < 10000) ? goal.goal : (goal.goal / 1000) + "k"}</Text>
+          ? <Text fontSize="md">
+              {
+                (goal.current < 10000) 
+                  ? goal.current.toFixed(1) 
+                  : (goal.current / 1000).toFixed(1) + "k"} / {(goal.goal < 10000) ? goal.goal.toFixed(1) : (goal.goal / 1000).toFixed(1) + "k"
+              }
+            </Text>
+          : <Text fontSize="md">
+              {
+                (goal.current < 10000) 
+                  ? goal.current 
+                  : (goal.current / 1000).toFixed(1) + "k"} / {(goal.goal < 10000) ? goal.goal : (goal.goal / 1000) + "k"
+              }
+            </Text>
       }
     </VStack>
   )
@@ -80,19 +104,38 @@ function BigPieChart({ goal, color }) {
   return (
     <HStack alignItems="center">
       <VictoryPie
-        data={[{ x: "current", y: goal.current }, { x: "remaining", y: goal.goal - goal.current }]}
-        containerComponent={<VictoryContainer standalone={false} responsive={true} />}
+        data={[
+          { x: "current", y: goal.current }, 
+          { x: "remaining", y: goal.goal - goal.current }
+        ]}
+        containerComponent={
+          <VictoryContainer 
+            standalone={false} 
+            responsive={true} 
+          />
+        }
         innerRadius={Dimensions.get('window').width / 12}
         height={Dimensions.get('window').width / 2.7}
         width={Dimensions.get('window').width / 2.7}
         padding={10}
         labels={() => null}
-        colorScale={[color, "#f2f2f2"]} />
-      <Container width={Dimensions.get('window').width - (Dimensions.get('window').width / 2.5)}>
+        colorScale={[color, "#f2f2f2"]}
+      />
+
+      <Container 
+        width={Dimensions.get('window').width - (Dimensions.get('window').width / 2.5)}
+      >
         <VStack>
           <Text bold fontSize="lg">{goal.nameLong}</Text>
-          <Text fontSize="md">{(goal.nameShort === "Carbon") ? goal.current.toFixed(1) : goal.current} / {(goal.nameShort === "Carbon") ? goal.goal.toFixed(1) : goal.goal} {goal.nameShort}</Text>
-          <Text fontSize="sm">({(goal.current / goal.goal * 100).toFixed(1)}% of Goal)</Text>
+          <Text fontSize="md">
+            {
+              (goal.nameShort === "Carbon") 
+                ? goal.current.toFixed(1) 
+                : goal.current} / {(goal.nameShort === "Carbon") ? goal.goal.toFixed(1) : goal.goal} {goal.nameShort}
+          </Text>
+          <Text fontSize="sm">
+            ({(goal.current / goal.goal * 100).toFixed(1)}% of Goal)
+          </Text>
         </VStack>
       </Container>
     </HStack>
@@ -122,56 +165,117 @@ const updatedNames = {
  */
 function ActionsChart({ graphData }) {
   const getData = () => {
-    for (let i = 0; i < graphData.length; i++) {
-      if (updatedNames[graphData[i].name] !== undefined)
-        graphData[i].name = updatedNames[graphData[i].name];
-    }
-    return graphData.sort((a, b) => (a.name > b.name) ? -1 : 1);
+      for (let i = 0; i < graphData.length; i++) {
+          if (updatedNames[graphData[i].name] !== undefined)
+              graphData[i].name = updatedNames[graphData[i].name];
+      }
+      return graphData.sort((a, b) => (a.name > b.name) ? -1 : 1);
   }
 
   return (
-    <VStack alignItems="center">
-      <VictoryChart
-        theme={VictoryTheme.material}
-        domainPadding={10}
-        padding={{ top: 40, right: 20, bottom: 30, left: 110 }}
-      >
-        <VictoryAxis dependentAxis />
-        <VictoryAxis style={{
-          // tickLabels: { fill:"transparent"} 
-        }} />
-        <VictoryGroup offset={10}>
-          <VictoryBar
-            data={getData()}
-            x="name"
-            y="reported_value"
-            horizontal={true}
-            style={{ data: { fill: "#DC4E34", fillOpacity: 0.5 }, labels: { fontSize: 15 } }}
-            barRatio={0.9}
-          />
-          <VictoryBar
-            data={getData()}
-            x="name"
-            y="value"
-            horizontal={true}
-            style={{ data: { fill: "#DC4E34", fillOpacity: 0.9 }, labels: { fontSize: 15 } }}
-            barRatio={0.9}
-          />
-        </VictoryGroup>
-        <VictoryLegend x={110} y={0}
-          centerTitle
-          orientation="horizontal"
-          gutter={20}
-          style={{ border: { stroke: "black" }, title: { fontSize: 20 } }}
-          data={[
-            { name: "User Reported", symbol: { fill: "#DC4E34", type: "square", fillOpacity: 0.9 } },
-            { name: "State/Partner Reported", symbol: { fill: "#DC4E34", type: "square", fillOpacity: 0.5 } },
-          ]}
-        />
-      </VictoryChart>
-      <Container h={10} />
-    </VStack>
-  )
+      <VStack alignItems="center">
+          <VictoryChart
+              theme={VictoryTheme.material}
+              domainPadding={10}
+              padding={{ top: 40, right: 60, bottom: 30, left: 150 }}
+              width={Dimensions.get('window').width + 90}
+          >
+              <VictoryAxis 
+                dependentAxis 
+                style={{ 
+                  tickLabels: { 
+                    fontSize: 10, 
+                    padding: 5, 
+                    angle: 0, 
+                    textAnchor: 'end', 
+                    verticalAnchor: 'middle' 
+                  } 
+                }}
+              />
+
+              <VictoryAxis 
+                style={{ 
+                  tickLabels: { 
+                    fontSize: 10, 
+                    padding: 5, 
+                    angle: 45, 
+                    textAnchor: 'end', 
+                    verticalAnchor: 'middle' 
+                  } 
+                }} 
+              />
+
+              <VictoryGroup offset={10}>
+                  <VictoryBar
+                    data={getData()}
+                    x="name"
+                    y="reported_value"
+                    horizontal={true}
+                    style={{ 
+                      data: { 
+                        fill: "#DC4E34", 
+                        fillOpacity: 0.5 
+                      }, 
+                      labels: { 
+                        fontSize: 12 
+                      } 
+                    }}
+                    barRatio={0.9}
+                  />
+                  <VictoryBar
+                    data={getData()}
+                    x="name"
+                    y="value"
+                    horizontal={true}
+                    style={{ 
+                      data: { 
+                        fill: "#DC4E34", 
+                        fillOpacity: 0.9 
+                      }, 
+                      labels: { 
+                        fontSize: 12 
+                      } 
+                    }}
+                    barRatio={0.9}
+                  />
+              </VictoryGroup>
+
+              <VictoryLegend 
+                x={140} 
+                y={0}
+                centerTitle
+                orientation="horizontal"
+                gutter={20}
+                style={{ 
+                  border: { 
+                    stroke: "black" 
+                  }, 
+                  title: { 
+                    fontSize: 12 
+                  } 
+                }}
+                data={[
+                    { 
+                      name: "User Reported", 
+                      symbol: { 
+                        fill: "#DC4E34", 
+                        type: "square", 
+                        fillOpacity: 0.9 
+                      } 
+                    },
+                    { 
+                      name: "State/Partner Reported", 
+                      symbol: { 
+                        fill: "#DC4E34", 
+                        type: "square", 
+                        fillOpacity: 0.5 
+                      } 
+                    },
+                ]}
+              />
+          </VictoryChart>
+      </VStack>
+  );
 }
 
 /* 
@@ -209,16 +313,38 @@ function TeamActionsChart({ graphData }) {
           x="name"
           y="value"
           horizontal={true}
-          style={{ data: { fill: "#DC4E34", fillOpacity: 0.9 }, labels: { fontSize: 15 } }}
+          style={{ 
+            data: { 
+              fill: "#DC4E34", 
+              fillOpacity: 0.9 
+            }, 
+            labels: { 
+              fontSize: 15 
+            } 
+          }}
           barRatio={0.7}
         />
         <VictoryLegend x={110} y={0}
           centerTitle
           orientation="horizontal"
           gutter={20}
-          style={{ border: { stroke: "black" }, title: { fontSize: 20 } }}
+          style={{ 
+            border: { 
+              stroke: "black" 
+            }, 
+            title: { 
+              fontSize: 20 
+            } 
+          }}
           data={[
-            { name: "Actions", symbol: { fill: "#DC4E34", type: "square", fillOpacity: 0.9 } },
+            { 
+              name: "Actions", 
+              symbol: { 
+                fill: "#DC4E34", 
+                type: "square", 
+                fillOpacity: 0.9 
+              } 
+            },
           ]}
         />
       </VictoryChart>
@@ -241,8 +367,10 @@ function TeamActionsChart({ graphData }) {
  *              by the team in that commmunity.
  */
 function ActionsList({ listData = [] }) {
+  listData = listData.sort(
+    (a, b) => (a.done_count > b.done_count) ? -1 : 1
+  );
 
-  listData = listData.sort((a, b) => (a.done_count > b.done_count) ? -1 : 1)
   const [sortedData, setSortedData] = useState(listData);
 
   const navigation = useNavigation();
@@ -250,21 +378,37 @@ function ActionsList({ listData = [] }) {
   const [sortMode, setSortMode] = useState(["count", -1]);
 
   const sortItems = (column) => {
-    const newDirection = sortMode[0] === column ? sortMode[1] * -1 : -1;
+    const newDirection = sortMode[0] === column 
+      ? sortMode[1] * -1 
+      : -1;
+
     if (column === "count") {
-      const newList = [...listData].sort((a, b) => (a.done_count > b.done_count) ? newDirection : -newDirection);
+      const newList = [...listData].sort(
+        (a, b) => (a.done_count > b.done_count) 
+          ? newDirection 
+          : -newDirection
+      );
       setSortedData(newList);
-    }
-    else if (column === "carbon") {
-      const newList = [...listData].sort((a, b) => (a.carbon_total > b.carbon_total) ? newDirection : -newDirection);
+    } else if (column === "carbon") {
+      const newList = [...listData].sort(
+        (a, b) => (a.carbon_total > b.carbon_total) 
+          ? newDirection 
+          : -newDirection
+      );
       setSortedData(newList);
-    }
-    else if (column === "category") {
-      const newList = [...listData].sort((a, b) => (a.category > b.category) ? newDirection : -newDirection);
+    } else if (column === "category") {
+      const newList = [...listData].sort(
+        (a, b) => (a.category > b.category) 
+          ? newDirection 
+          : -newDirection
+      );
       setSortedData(newList);
-    }
-    else if (column === "name") {
-      const newList = [...listData].sort((a, b) => (a.name > b.name) ? newDirection : -newDirection);
+    } else if (column === "name") {
+      const newList = [...listData].sort(
+        (a, b) => (a.name > b.name) 
+          ? newDirection 
+          : -newDirection
+      );
       setSortedData(newList);
     }
 
@@ -285,52 +429,127 @@ function ActionsList({ listData = [] }) {
               <Pressable
                 onPress={() => sortItems("name")}
                 width="35%"
-                style={{ flexDirection: "row", alignItems: "center", justifyContent: "flex-start"}}
+                style={{ 
+                  flexDirection: "row", 
+                  alignItems: "center", 
+                  justifyContent: "flex-start"
+                }}
               >
-                <Text bold fontSize="sm" textAlign="center" pl={5} pr={1}>
+                <Text 
+                  bold 
+                  fontSize="sm" 
+                  textAlign="center" 
+                  pl={5} 
+                  pr={1}
+                >
                   Actions
                 </Text>
+
                 { sortMode[0] === "name" && 
-                  <Icon name={sortMode[1] === -1 ? "chevron-down" : "chevron-up"} color="gray.400"/>
+                  <Icon 
+                    name={
+                      sortMode[1] === -1 
+                        ? "chevron-down" 
+                        : "chevron-up"
+                    } 
+                    color="gray.400"
+                  />
                 }
               </Pressable>
 
               <Pressable
                 onPress={() => sortItems("category")}
                 width="25%"
-                style={{ flexDirection: "row", alignItems: "center", justifyContent: "center"}}
+                style={{ 
+                  flexDirection: "row", 
+                  alignItems: "center", 
+                  justifyContent: "center"
+                }}
               >
-                <Text bold ontSize="sm" textAlign="center" pl={1} pr={1}>
+                <Text 
+                  bold 
+                  fontSize="sm" 
+                  textAlign="center" 
+                  pl={1} 
+                  pr={1}
+                >
                   Category
                 </Text>
-                { sortMode[0] === "category" && 
-                  <Icon name={sortMode[1] === -1 ? "chevron-down" : "chevron-up"} color="gray.400"/>
+
+                { 
+                  sortMode[0] === "category" && 
+                  <Icon 
+                    name={
+                      sortMode[1] === -1 
+                        ? "chevron-down" 
+                        : "chevron-up"
+                    } 
+                    color="gray.400"
+                  />
                 }
               </Pressable>
 
               <Pressable
                 onPress={() => sortItems("carbon")}
                 width="20%"
-                style={{ flexDirection: "row", alignItems: "center", justifyContent: "center"}}
+                style={{ 
+                  flexDirection: "row", 
+                  alignItems: "center", 
+                  justifyContent: "center"
+                }}
               >
-                <Text bold ontSize="sm" textAlign="center" pl={1} pr={1}>
+                <Text 
+                  bold 
+                  fontSize="sm" 
+                  textAlign="center" 
+                  pl={1} 
+                  pr={1}
+                >
                   Carbon Saving
                 </Text>
-                { sortMode[0] === "carbon" && 
-                  <Icon name={sortMode[1] === -1 ? "chevron-down" : "chevron-up"} color="gray.400"/>
+
+                { 
+                  sortMode[0] === "carbon" && 
+                  <Icon 
+                    name={
+                      sortMode[1] === -1 
+                        ? "chevron-down" 
+                        : "chevron-up"
+                      } 
+                      color="gray.400"
+                    />
                 }
               </Pressable>
 
               <Pressable
                 onPress={() => sortItems("count")}
                 width="20%"
-                style = {{ flexDirection: "row", alignItems: "center", justifyContent: "center"}}
+                style = {{ 
+                  flexDirection: "row", 
+                  alignItems: "center", 
+                  justifyContent: "center"
+                }}
               >
-                <Text bold ontSize="sm" textAlign="center" pl={1} pr={1}>
+                <Text 
+                  bold 
+                  fontSize="sm" 
+                  textAlign="center" 
+                  pl={1} 
+                  pr={1}
+                >
                   # Done
                 </Text>
-                { sortMode[0] === "count" && 
-                  <Icon name={sortMode[1] === -1 ? "chevron-down" : "chevron-up"} color="gray.400"/>
+
+                { 
+                  sortMode[0] === "count" && 
+                  <Icon 
+                    name={
+                      sortMode[1] === -1 
+                        ? "chevron-down" 
+                        : "chevron-up"
+                      } 
+                      color="gray.400"
+                    />
                 }
               </Pressable>
             </HStack>
@@ -347,12 +566,12 @@ function ActionsList({ listData = [] }) {
                   bold
                   fontSize="sm"
                   width="35%"
-                  // color="#64B058"
                   _text={{ color: "#64B058" }}
                   backgroundColor="transparent"
                   p={0}
-                  onPress={() => navigation.navigate("ActionDetails", { action_id: action.id })}
-
+                  onPress={() => navigation.navigate(
+                    "ActionDetails", { action_id: action.id }
+                  )}
                 >
                   {action.name}
                 </Button>

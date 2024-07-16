@@ -7,13 +7,13 @@
  *      impact of the community through the CommunityHomeScreen.
  * 
  *      Written by: Moizes Almeida
- *      Last edited: July 1, 2024
+ *      Last edited: July 16, 2024
  * 
  *****************************************************************************/
 
 /* Imports and set up */
-import { ScrollView, StyleSheet } from "react-native";
-import React, { useState, useEffect } from "react";
+import { Dimensions, ScrollView, StyleSheet } from "react-native";
+import React, { useState } from "react";
 import {
     VStack,
     HStack,
@@ -26,7 +26,6 @@ import {
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { BigPieChart, ActionsChart, ActionsList } from "../../utils/Charts";
 import { useDetails } from "../../utils/hooks";
-import { ActivityIndicator } from "react-native-paper";
 
 /* Defines the colors of the three charts of the impact of the community */
 const colors = [
@@ -40,8 +39,7 @@ export default function ImpactPage({ route, navigation }) {
      * Gets the goalsList and community_id parameters through the route 
      * component 
      */
-    const { goalsList } = route.params;
-    const { community_id } = route.params;
+    const { goalsList, community_id } = route.params;
     
     /* 
      * Uses the local state to determine which component of the Action 
@@ -55,8 +53,14 @@ export default function ImpactPage({ route, navigation }) {
      * community and all the community's completed action to create 
      * informative impact graphs 
      */
-    const [impactData, isImpactLoading] = useDetails('graphs.actions.completed', { community_id });
-    const [actionsCompleted, isActionsLoading] = useDetails('communities.actions.completed', { community_id });
+    const [impactData, isImpactLoading] = useDetails(
+        'graphs.actions.completed', 
+        { community_id }
+    );
+    const [actionsCompleted, isActionsLoading] = useDetails(
+        'communities.actions.completed', 
+        { community_id }
+    );
 
     /* Displays the information about the community's impact */
     return (
@@ -71,7 +75,11 @@ export default function ImpactPage({ route, navigation }) {
                 </Center>
             ) : (
                 <ScrollView>
-                    <VStack alignItems="center" space={3} bg="white">
+                    <VStack 
+                        alignItems="center" 
+                        space={3} 
+                        bg="white"
+                    >
                         {/* 
                           * Displays the donut charts of the completed actions
                           * compared to the goals set by the community 
@@ -100,24 +108,31 @@ export default function ImpactPage({ route, navigation }) {
                         >
                             Number of Actions Completed
                         </Text>
+
                         <HStack width="100%">
                             <Spacer />
+
                             {/* Toggle between action chart and action list */}
                             <Center>
                                 <Ionicons
                                     name={"bar-chart-outline"}
-                                    color={actionDisplay == "chart" ? '#64B058' 
-                                            : 'black'}
+                                    color={actionDisplay === "chart" 
+                                            ? '#64B058' 
+                                            : 'black'
+                                    }
                                     padding={5}
                                     size={24}
                                     onPress={() => setActionDisplay('chart')}
                                 />
                             </Center>
+
                             <Center pr={3}>
                                 <Ionicons
                                     name={"list-outline"}
-                                    color={actionDisplay == "list" ? '#64B058' 
-                                            : 'black'}
+                                    color={actionDisplay === "list" 
+                                            ? '#64B058' 
+                                            : 'black'
+                                    }
                                     padding={5} E
                                     size={24}
                                     onPress={() => setActionDisplay('list')}
@@ -126,9 +141,18 @@ export default function ImpactPage({ route, navigation }) {
                         </HStack>
                         
                         {
-                            (actionDisplay == "chart")
-                            ?
-                            <ActionsChart graphData={impactData.data} />
+                            (actionDisplay === "chart")
+                                ? (
+                                    <View
+                                        style={styles.chartContainer}
+                                        mb={10}
+                                        mr={6}
+                                    >
+                                        <ActionsChart 
+                                            graphData={impactData.data}
+                                        />
+                                    </View>
+                                )
                             :
                             <ActionsList listData={actionsCompleted} />
                         }
@@ -140,18 +164,8 @@ export default function ImpactPage({ route, navigation }) {
 }
 
 const styles = StyleSheet.create({
-    noInfoContainer: {
-        height: '100%',
-        justifyContent: 'center',
-        alignItems: 'center',
-      },
-      noInfoText: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#64B058',
-      },
-      activity: {
-        alignSelf: 'center',
-        marginTop: 300
-      },
+    chartContainer: {
+        width: Dimensions.get("window").width - 40,
+        paddingHorizontal: 20,
+    }
 });
