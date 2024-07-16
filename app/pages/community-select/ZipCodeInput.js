@@ -21,14 +21,14 @@ const ZipCodeInput = ({
 
 
   const search = () => {
-    const newZipcodeOptions = {zipcode: newZipcode, miles: newMiles};
+    const newZipcodeOptions = {zipcode: newZipcode, max_distance: newMiles};
     setLoading(true);
     fetchCommunitiesFromBackend(newZipcodeOptions, (data, error) => {
       if (!data) {
         setLoading(false);
         return Alert.alert(error);
       }
-      updateOptions(newZipcodeOptions);
+      updateOptions({zipcode: newZipcode, miles: newMiles});
       setLoading(false);
       closeModal();
     });
