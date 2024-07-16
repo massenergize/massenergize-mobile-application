@@ -8,7 +8,8 @@ import {fetchAllCommunityData} from '../../config/redux/actions';
 import HStack from '../../components/stacks/HStack';
 import {connect} from 'react-redux';
 
-const LoadingScreen = ({route, fetchAll, navigation}) => {
+const LoadingScreen = ({route, fetchAll, navigation, communityInfo }) => {
+  // if we already have the community data, we can skip this screen
   const [hasError, setError] = useState(null);
 
   const {community_id} = route?.params || {};
@@ -25,7 +26,7 @@ const LoadingScreen = ({route, fetchAll, navigation}) => {
   };
   useEffect(() => {
     fetch();
-  }, [community_id]);
+  });
 
   return (
     <VStack center style={{height: '100%', backgroundColor: 'white'}}>
@@ -51,6 +52,11 @@ const LoadingScreen = ({route, fetchAll, navigation}) => {
   );
 };
 
+const mapState = state => {
+  return {
+    communityInfo: state.communityInfo,
+  };
+}
 
 const mapDispatch = dispatch => {
   return bindActionCreators(
@@ -60,4 +66,4 @@ const mapDispatch = dispatch => {
     dispatch,
   );
 };
-export default connect(null, mapDispatch)(LoadingScreen);
+export default connect(mapState, mapDispatch)(LoadingScreen);

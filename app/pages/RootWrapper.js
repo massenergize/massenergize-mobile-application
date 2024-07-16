@@ -106,7 +106,6 @@ const RootWrapper = ({
 
   /* Check if user is authenticated */
   useEffect(() => {
-    console.log("Effecting going downnn");
     isUserAuthenticated((yes, user) => {
       console.log('USER IS FIREBASE_AUTHENTICATED: ', user?.email);
       if (yes) {

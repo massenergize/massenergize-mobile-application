@@ -12,7 +12,6 @@
 /* Imports and set up */
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { fetchAllCommunityData } from '../../config/redux/actions';
 import { useDetails } from '../../utils/hooks';
 import { formatDateString } from '../../utils/Utils';
 import HTMLParser from '../../utils/HTMLParser';
@@ -482,12 +481,4 @@ const mapStateToProps = (state) => ({
   events: state.events
 });
 
-/* 
- * Transforms the dispatch function from the API in order to get the information
- * of the current community and sends it to the EventDetails proprieties.
- */
-const mapDispatchToProps = {
-  fetchAllCommunityData,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(EventDetails);
+export default connect(mapStateToProps)(EventDetails);
