@@ -6,7 +6,7 @@
  *      completed actions, teams, households, and communities.
  * 
  *      Written by: William Soylemez and Moizes Almeida
- *      Last edited: July 15, 2024
+ *      Last edited: July 16, 2024
  * 
  *****************************************************************************/
 
@@ -360,7 +360,11 @@ const CommunitiesList = ({ communities }) => {
       <Text fontWeight="bold" fontSize="lg" mb="5">
         My Communities
       </Text>
-      <View>
+      <View 
+        bg="white" 
+        shadow={2} 
+        p={2} 
+        borderRadius={8}>
         {communities?.length === 0 && <Text>No communities yet!</Text>}
         {communities?.map((community, index) => (
           <CommunityCard

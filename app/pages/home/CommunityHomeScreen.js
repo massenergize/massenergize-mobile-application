@@ -6,7 +6,7 @@
  *      community through graphs and displays the featured events
  *      of the community.
  * 
- *      Written by: Moizes Almeida
+ *      Written by: Moizes Almeida and Will Soylemez
  *      Last edited: July 16, 2024
  * 
  *****************************************************************************/
@@ -170,7 +170,10 @@ function ShowMore({ navigation, page, text }) {
  */
 function BackgroundCarousel({ data }) {
   return (
-    <Box height="100%" bgColor={"amber.100"}>
+    <Box 
+      height="100%" 
+      bgColor={"amber.100"}
+    >
       <Carousel
         showsControls={false}
         showsDots={false}
@@ -178,9 +181,19 @@ function BackgroundCarousel({ data }) {
         loop={true}
       >
         {data.map((item) => (
-          <View key={item.id} flex={1} backgroundColor={"amber.400"}>
-            <AspectRatio width="100%" backgroundColor={"amber.700"}>
-              <Image source={{ uri: item.url }} alt={item.name} />
+          <View 
+            key={item.id} 
+            flex={1} 
+            backgroundColor={"amber.400"}
+          >
+            <AspectRatio 
+              width="100%" 
+              backgroundColor={"amber.700"}
+            >
+              <Image 
+                source={{ uri: item.url }} 
+                alt={item.name} 
+              />
             </AspectRatio>
           </View>
         ))}
@@ -209,22 +222,17 @@ const CommunityHomeScreen = ({
 }) => {
   /* Saves the community's ID into a variable */
   const community_id = communityInfo.id;
-  /* Uses local state to determine if the app is refreshing or no */
-  const [refreshing, setRefreshing] = useState(false);
 
   /* Fetch the information from the community */
   useEffect(() => {
     fetchAllCommunityData({ community_id: communityInfo.id });
   }, [fetchAllCommunityData, communityInfo.id]);
 
-  /* Fetches the community information when the app is refreshing */
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    fetchAllCommunityData({ community_id: communityInfo.id }, () => setRefreshing(false));
-  }, [communityInfo.id, fetchAllCommunityData]);
-
   /* Gets the homeSettings information from the API */
-  const [homeSettings, isLoading] = useDetails('home_page_settings.info', { community_id });
+  const [homeSettings, isLoading] = useDetails(
+    'home_page_settings.info', 
+    { community_id }
+  );
 
   /* When the app is loading, display an activity indicator */
   if (isLoading) {
@@ -286,12 +294,17 @@ const CommunityHomeScreen = ({
     );
   }
 
+  const onRefresh = () => {
+    navigation.navigate('Loading', { community_id: communityInfo.id });
+  }
+
   /* Displays the community home screen and its information */
   return (
     <View bg="white">
       <ScrollView 
-      nestedScrollEnabled = {true} 
-      showsVerticalScrollIndicator={false}
+        nestedScrollEnabled = {true} 
+        showsVerticalScrollIndicator={false}
+        onRefresh={onRefresh}
       >
         <Box 
           maxHeight={[200, 300]} 
@@ -375,15 +388,24 @@ const CommunityHomeScreen = ({
             }
             </HStack>
           </ScrollView>
+
           { homeSettings.show_featured_events && 
             homeSettings.featured_events.length !== 0 && (
             <View width="100%">
               <HStack alignItems="center" pb={2} pt={3}>
                 <HeaderText text="Featured Events"/>
                 <Spacer/>
-                <ShowMore navigation={navigation} page="Events" text={"Show More"}/>
+                <ShowMore 
+                  navigation={navigation} 
+                  page="Events" 
+                  text={"Show More"}
+                />
               </HStack>
-              <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+
+              <ScrollView 
+                horizontal={true} 
+                showsHorizontalScrollIndicator={false}
+              >
                 <HStack space={3} mx={15}>
                   {homeSettings.featured_events.map((event) => (
                     <EventCard
