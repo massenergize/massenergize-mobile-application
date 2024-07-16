@@ -5,7 +5,7 @@
  *      user to select the community they are part of.
  * 
  *      Written by: Frimpong, Moizes Almeida, and Will Soylemez
- *      Last edited: June 28, 2024
+ *      Last edited: July 16, 2024
  * 
  *****************************************************************************/
 
