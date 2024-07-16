@@ -118,7 +118,7 @@ const Questionnaire = ({
         </View>
 
         {/* Category */}
-        <Text style={styles.sectionTitle}>Category</Text>
+        <Text style={styles.sectionTitle}>Preferred Action Category</Text>
         <View style={styles.optionsContainer}>
           {categories.map(category => (
             <TouchableOpacity
@@ -141,7 +141,7 @@ const Questionnaire = ({
         </View>
 
         {/* Impact */}
-        <Text style={styles.sectionTitle}>Impact</Text>
+        <Text style={styles.sectionTitle}>Preferred Action Impact</Text>
         <View style={styles.optionsContainer}>
           {impacts.map(impact => (
             <TouchableOpacity
@@ -164,7 +164,7 @@ const Questionnaire = ({
         </View>
 
         {/* Cost */}
-        <Text style={styles.sectionTitle}>Cost</Text>
+        <Text style={styles.sectionTitle}>Preferred Action Cost</Text>
         <View style={[styles.optionsContainer, styles.lastOptionContainer]}>
           {costs.map(cost => (
             <TouchableOpacity
