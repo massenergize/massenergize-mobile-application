@@ -18,7 +18,8 @@ import {
   Text,
   Container,
   View,
-  Button
+  Button,
+  Spacer
 } from "@gluestack-ui/themed-native-base";
 import { Dimensions, Pressable } from 'react-native';
 import {
@@ -47,7 +48,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 function SmallChart({ goal, color }) {
   return (
     <VStack alignItems="center">
-      <Text bold fontSize="lg">{goal.nameShort}</Text>
+      {/* <Text bold fontSize="lg">{goal.nameShort}</Text> */}
 
       <VictoryPie
         data={[
@@ -71,20 +72,87 @@ function SmallChart({ goal, color }) {
 
       {
         goal.nameShort === "Carbon"
-          ? <Text fontSize="md">
+          ? <>
+              <Text fontSize="md" textAlign="center">
+                {
+                  (goal.current < 10000) 
+                    ? goal.current.toFixed(1) 
+                    : (goal.current / 1000).toFixed(1) + "k"
+                } / {
+                  (goal.goal < 10000) 
+                    ? goal.goal.toFixed(1) 
+                    : (goal.goal / 1000).toFixed(1) + "k"
+                }
+              </Text>
+
+              <Text 
+                textAlign="center"
+                fontSize="sm" 
+                fontWeight="300"
+                mt={1.5}
+                mb={1}
+              >
+                <Text 
+                  fontWeight="bold" 
+                  fontSize="lg"
+                  color={color}
+                >
+                  Carbon
+                </Text>
+                {"\n"}Reduced
+              </Text>
+            </>
+          : <>
+              <Text fontSize="md" textAlign="center">
+                {
+                  (goal.current < 10000) 
+                    ? goal.current 
+                    : (goal.current / 1000).toFixed(1) + "k"
+                } / {
+                  (goal.goal < 10000) ? goal.goal : (goal.goal / 1000) + "k"
+                }
+              </Text>
+
               {
-                (goal.current < 10000) 
-                  ? goal.current.toFixed(1) 
-                  : (goal.current / 1000).toFixed(1) + "k"} / {(goal.goal < 10000) ? goal.goal.toFixed(1) : (goal.goal / 1000).toFixed(1) + "k"
+                goal.nameShort === "Actions"
+                  ? (
+                      <Text 
+                        fontSize="sm" 
+                        fontWeight="300"
+                        textAlign="center"
+                        mt={1.5}
+                        mb={1}
+                      >
+                        <Text 
+                          fontWeight="bold" 
+                          fontSize="lg"
+                          color={color}
+                        >
+                          Actions
+                        </Text>
+                        {"\n"}Taken
+                      </Text>
+                    )
+                  : (
+                      <Text 
+                        textAlign="center"
+                        fontSize="sm" 
+                        fontWeight="300"
+                        mt={1.5}
+                        mb={1}
+                      >
+                        <Text 
+                          fontWeight="bold" 
+                          fontSize="lg"
+                          color={color} 
+                        >
+                          Households
+                        </Text>
+                        {"\n"}Joined
+                      </Text>
+                    )
               }
-            </Text>
-          : <Text fontSize="md">
-              {
-                (goal.current < 10000) 
-                  ? goal.current 
-                  : (goal.current / 1000).toFixed(1) + "k"} / {(goal.goal < 10000) ? goal.goal : (goal.goal / 1000) + "k"
-              }
-            </Text>
+            </>
       }
     </VStack>
   )
@@ -131,7 +199,14 @@ function BigPieChart({ goal, color }) {
             {
               (goal.nameShort === "Carbon") 
                 ? goal.current.toFixed(1) 
-                : goal.current} / {(goal.nameShort === "Carbon") ? goal.goal.toFixed(1) : goal.goal} {goal.nameShort}
+                : goal.current
+            } / {
+              (goal.nameShort === "Carbon") 
+                ? goal.goal.toFixed(1) 
+                : goal.goal
+            } 
+            
+            {goal.nameShort}
           </Text>
           <Text fontSize="sm">
             ({(goal.current / goal.goal * 100).toFixed(1)}% of Goal)
@@ -452,7 +527,7 @@ function ActionsList({ listData = [] }) {
                         ? "chevron-down" 
                         : "chevron-up"
                     } 
-                    color="gray.400"
+                    color="gray"
                   />
                 }
               </Pressable>
@@ -484,7 +559,7 @@ function ActionsList({ listData = [] }) {
                         ? "chevron-down" 
                         : "chevron-up"
                     } 
-                    color="gray.400"
+                    color="gray"
                   />
                 }
               </Pressable>
@@ -516,7 +591,7 @@ function ActionsList({ listData = [] }) {
                         ? "chevron-down" 
                         : "chevron-up"
                       } 
-                      color="gray.400"
+                      color="gray"
                     />
                 }
               </Pressable>
@@ -548,7 +623,7 @@ function ActionsList({ listData = [] }) {
                         ? "chevron-down" 
                         : "chevron-up"
                       } 
-                      color="gray.400"
+                      color="gray"
                     />
                 }
               </Pressable>

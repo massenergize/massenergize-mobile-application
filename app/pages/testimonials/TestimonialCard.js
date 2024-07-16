@@ -4,7 +4,7 @@
  *      This page is responsible for rendering the card that displays
  *      a single testimonial.
  * 
- *      Written by: William Soylemez and Moizes
+ *      Written by: William Soylemez and Moizes Almeida
  *      Last edited: July 12, 2024
  * 
  *****************************************************************************/

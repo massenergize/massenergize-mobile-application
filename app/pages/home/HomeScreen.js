@@ -6,7 +6,7 @@
  *      screen, the Events screens, and the Teams screen. The
  *      Community Home screen is the default (first) screen.
  * 
- *      Written by: Moizes Almeida
+ *      Written by: Moizes Almeida and Frimpong
  *      Last edited: June 5, 2024
  * 
  *****************************************************************************/

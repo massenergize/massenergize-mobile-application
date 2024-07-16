@@ -7,7 +7,7 @@
  *      of the community.
  * 
  *      Written by: Moizes Almeida
- *      Last edited: July 1, 2024
+ *      Last edited: July 16, 2024
  * 
  *****************************************************************************/
 
@@ -27,24 +27,23 @@ import {
   Image,
   AspectRatio,
   Spinner,
-  Button,
   Icon
 } from '@gluestack-ui/themed-native-base';
-import { RefreshControl } from 'react-native-gesture-handler';
 import Carousel from 'pinar';
 import ActionCard from '../actions/ActionCard';
 import EventCard from '../events/EventCard';
 import { SmallChart } from '../../utils/Charts';
 import { formatDateString } from '../../utils/Utils';
 import { getActionMetric } from '../../utils/common';
-import { fetchAllCommunityData, toggleUniversalModalAction } from '../../config/redux/actions';
+import { 
+  fetchAllCommunityData, 
+  toggleUniversalModalAction 
+} from '../../config/redux/actions';
 import { connect } from 'react-redux';
 import { useDetails } from '../../utils/hooks';
-import { ActivityIndicator } from 'react-native-paper';
 import { StyleSheet } from 'react-native';
 import { FontAwesomeIcon } from '../../components/icons';
 import { bindActionCreators } from 'redux';
-import { set } from '@gluestack-style/react';
 import AuthOptions from '../auth/AuthOptions';
 
 /* Defines the colors of the three charts of the impact of the community */
@@ -120,6 +119,7 @@ function GoalsCard({ navigation, goals, community_id }) {
               })
             }
           </HStack>
+
           <Text
             alignSelf="flex-end"
             mr={2}
