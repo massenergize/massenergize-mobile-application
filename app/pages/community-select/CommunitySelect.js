@@ -10,23 +10,19 @@
  *****************************************************************************/
 
 /* Imports and set up */
-import {View, Text, ScrollView, TouchableOpacity, Image} from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
-import {COLOR_SCHEME} from '../../stylesheet';
-import {FontAwesomeIcon} from '../../components/icons';
+import { View, Text, ScrollView, TouchableOpacity, Image } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { COLOR_SCHEME } from '../../stylesheet';
+import { FontAwesomeIcon } from '../../components/icons';
 
 import HStack from '../../components/stacks/HStack';
-import VStack from '../../components/stacks/VStack';
-import Textbox from '../../components/textbox/Textbox';
-import Slider from '@react-native-community/slider';
-import MEButton from '../../components/button/MEButton';
-import {bindActionCreators} from 'redux';
+import { bindActionCreators } from 'redux';
 import {
   setActiveCommunityAction,
   toggleUniversalModalAction,
 } from '../../config/redux/actions';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import ZipCodeInput from './ZipCodeInput';
 import Loader from '../../components/loaders/Loader';
 import {
@@ -35,7 +31,7 @@ import {
   ZIP_CODE_OPTIONS_STORAGE_KEY,
 } from '../../utils/values';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {groupCommunities} from '../../utils/common';
+import { groupCommunities } from '../../utils/common';
 import CommunityCard from './CommunityCard';
 import { ImageBackground } from '@gluestack-ui/themed';
 import Geolocation from '@react-native-community/geolocation';
@@ -47,11 +43,8 @@ const CommunitySelect = ({
   navigation,
   setActiveCommunity,
 }) => {
-  const [{zipcode, miles}, setZipcodeOptions] = useState(zipcodeOptions || {});
+  const [{ zipcode, miles }, setZipcodeOptions] = useState(zipcodeOptions || {});
 
-  
-  console.log(zipcodeOptions);
-  console.log("hello?")
   useEffect(() => {
     // If the zipcode is already set, then we don't need to do anything
     if (zipcodeOptions.zipcode) {
@@ -71,7 +64,7 @@ const CommunitySelect = ({
         .then(response => response.json())
         .then(data => {
           console.log("ZIPCODE:", data.address.postcode);
-          setZipcodeOptions({zipcode: data.address.postcode, miles: miles});
+          setZipcodeOptions({ zipcode: data.address.postcode, miles: miles });
         })
 
     });
@@ -81,54 +74,49 @@ const CommunitySelect = ({
     setActiveCommunity(community);
     const id = community?.id;
     await AsyncStorage.setItem(COMMUNITY_CHOICE, id?.toString());
-    navigation.navigate('Loading', {community_id: id});
+    navigation.navigate('Loading', { community_id: id });
   };
 
   const organisedData = () => {
     if (communities === LOADING)
-      return {fetchingContent: true, matches: [], near: []};
+      return { fetchingContent: true, matches: [], near: [] };
 
     return groupCommunities(communities);
     // return communities;
   };
-  let {fetchingContent, matches, near} = organisedData();
+  let { fetchingContent, matches, near } = organisedData();
 
-  const renderMatches = () => {
-    if (fetchingContent) return <></>;
-    if ((!fetchingContent && !matches?.length) || !communities)
+  const renderCommunityList = (communityList, title) => {
+    if (fetchingContent) return <Loader />;
+    if ((!fetchingContent && !communityList?.length) || !communities)
       return (
-        <Text style={{marginVertical: 10}}>
-          Sorry we could not find any communities in the zipcode...
+        <Text style={{ marginVertical: 10 }}>
+          No matching communities found.
         </Text>
       );
-    return matches?.map((community, index) => (
-      <View key={index.toString()}>
-        <CommunityCard
-          {...community}
-          onPress={() => chooseCommunity(community)}
-        />
-      </View>
-    ));
-  };
+    return (
+      <View style={{ marginVertical: 10 }}>
+        <Text style={{ fontWeight: 'bold', fontSize: 20, textAlign: 'center', color: COLOR_SCHEME.GREEN, marginBottom: 15 }}>
+          {title}
+        </Text>
 
-  const renderNearByCommunities = () => {
-    if (fetchingContent || (!fetchingContent && !near?.length)) return <></>;
-
-    return near?.map((community, index) => (
-      <View key={index.toString()}>
-        <CommunityCard
-          {...community}
-          onPress={() => chooseCommunity(community)}
-        />
+        {communityList?.map((community, index) => (
+          <View key={index.toString()}>
+            <CommunityCard
+              {...community}
+              onPress={() => chooseCommunity(community)}
+            />
+          </View>
+        ))}
       </View>
-    ));
+    );
   };
 
   return (
-    <SafeAreaView>
-      <View style={{height: '100%', backgroundColor: 'white'}}>
-        <ImageBackground 
-          source={require("../../assets/community-search.png")} 
+    <SafeAreaView edges={['top']}>
+      <View style={{ height: '100%', backgroundColor: 'white' }}>
+        <ImageBackground
+          source={require("../../assets/community-search.png")}
           style={{
             width: "100%",
             height: "100%",
@@ -147,10 +135,10 @@ const CommunitySelect = ({
             position: "absolute",
             top: 0,
           }}>
-          <FontAwesomeIcon name="group" size={32} color="white" />
+          <FontAwesomeIcon name="group" size={48} color="white" />
           <Text
             style={{
-              fontSize: 22,
+              fontSize: 32,
               fontWeight: 'bold',
               color: 'white',
               marginTop: 20,
@@ -191,48 +179,31 @@ const CommunitySelect = ({
               asLink
               icon="search"
               noArrow
-              style={{fontSize: 16, fontWeight: 'bold', color: COLOR_SCHEME.GREEN, marginLeft: 10}}
-              iconStyle={{fontSize: 15}}>
-              Find communities with your zipcode
+              style={{ fontSize: 16, fontWeight: 'bold', color: COLOR_SCHEME.GREEN, marginLeft: 10 }}
+              iconStyle={{ fontSize: 15 }}>
+              Find communities near your zipcode
             </Text>
           </TouchableOpacity>
-          <HStack
+          <View
             style={{
               width: '100%',
-              backgroundColor: '#e3e1e1',
+              backgroundColor: COLOR_SCHEME.MEDIUM_GREY,
               paddingVertical: 5,
-              paddingHorizontal: 45,
+              paddingHorizontal: 30,
+              alignItems: 'center',
             }}>
-            <Text style={{fontSize: 12, fontWeight: 'bold', color: 'black'}}>
-              Zipcode: {zipcode}, ({miles} miles) Near me
+            <Text style={{ fontSize: 12, fontWeight: 'bold', color: 'black' }}>
+              Showing communities near {zipcode} (within {miles} miles)
             </Text>
-          </HStack>
+          </View>
 
           <ScrollView
             verticals
-            style={{paddingHorizontal: 20, paddingVertical: 20}}>
-            <Text style={{fontWeight: '400', color: 'grey', fontSize: 12}}>
-              MATCHED COMMUNITIES
-            </Text>
+            style={{ paddingHorizontal: 20, paddingVertical: 20 }}
+          >
+            {renderCommunityList(matches, "MATCHED COMMUNITIES")}
 
-            {fetchingContent && <Loader />}
-
-            {renderMatches()}
-            {near.length ? (
-              <Text
-                style={{
-                  fontWeight: '400',
-                  paddingTop: 15,
-                  color: 'grey',
-                  fontSize: 12,
-                }}>
-                COMMUNITIES NEARBY
-              </Text>
-            ) : (
-              <></>
-            )}
-
-            {renderNearByCommunities()}
+            {renderCommunityList(near, "COMMUNITIES NEARBY")}
           </ScrollView>
         </View>
       </View>
