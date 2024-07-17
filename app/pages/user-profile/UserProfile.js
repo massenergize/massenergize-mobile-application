@@ -88,50 +88,28 @@ const ProfileName = ({ navigation, communityInfo, user }) => {
   );
 };
 
-/* Component to display the user's sustainability score */
-const SustainScore = ({ CompletedList }) => {
-  /* TODO: make this a real formula */
-  const CarbonSaved = sumOfCarbonScores(CompletedList);
-  return (
-    <Box>
-      <Text fontSize="4xl" color="primary.400" textAlign="center">
-        {parseFloat(50.0 + (Math.sqrt(100 + CarbonSaved * 20))).toFixed(1)}
-      </Text>
-      <Text fontSize="lg" fontWeight="light" textAlign="center">
-        Sustainability Score
-      </Text>
-    </Box>
-  );
-};
 
 /* Component to display the user's carbon saved, trees saved, and points */
 const CarbonSaved = ({ CompletedList }) => {
   /* TODO: make this a real formula */
-  const CarbonSaved = sumOfCarbonScores(CompletedList);
+  const carbonSaved = sumOfCarbonScores(CompletedList);
+  const actionsCompleted = CompletedList?.length ?? 0;
 
   return (
     <Flex flexDirection="row" justifyContent="space-evenly" width="full">
       <Box alignItems="center">
         <Text fontSize="lg" fontWeight="medium">
-          {CarbonSaved}
+          {carbonSaved}
         </Text>
-        <Text>CO2 Saved</Text>
+        <Text>Lbs CO2 Saved</Text>
       </Box>
 
       <Divider orientation="vertical" />
       <Box alignItems="center">
         <Text fontSize="lg" fontWeight="medium">
-          {CarbonSaved / 10}
+          {actionsCompleted}
         </Text>
-        <Text>Trees</Text>
-      </Box>
-
-      <Divider orientation="vertical" />
-      <Box alignItems="center">
-        <Text fontSize="lg" fontWeight="medium">
-          {CarbonSaved * 10}
-        </Text>
-        <Text>Points</Text>
+        <Text>Actions Completed</Text>
       </Box>
     </Flex>
   );
@@ -452,7 +430,6 @@ function DashboardPage({
       >
         <VStack space={10} mb="20">
           <ProfileName navigation={navigation} communityInfo={communityInfo} user={user} />
-          <SustainScore CompletedList={completedList} />
           <CarbonSaved CompletedList={completedList} />
 
           {/* Action lists */}
