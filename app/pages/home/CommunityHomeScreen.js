@@ -228,12 +228,13 @@ const CommunityHomeScreen = ({
   //   fetchAllCommunityData({ community_id: communityInfo.id });
   // }, [fetchAllCommunityData, communityInfo.id]);
 
-  const recommendedActions = questionnaire ?
-    getSuggestedActions(questionnaire, actions) :
-    actions.filter((action) => (
+  let recommendedActions = getSuggestedActions(questionnaire, actions);
+  if (recommendedActions.length === 0 || !questionnaire) {
+    recommendedActions = actions.filter((action) => (
       getActionMetric(action, "Cost") === "$" ||
       getActionMetric(action, "Cost") === "0"
     ));
+  }
 
   /* Gets the homeSettings information from the API */
   const [homeSettings, isLoading] = useDetails(
