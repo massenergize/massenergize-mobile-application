@@ -367,7 +367,7 @@ const CommunityHomeScreen = ({
           </HStack>
 
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-            <HStack space={2} justifyContent="center" mx={15}>
+            <HStack space={2} justifyContent="center" mx={15} mb={15}>
               {
                 /* 
                  * Displays all recommended actions based on the user's
