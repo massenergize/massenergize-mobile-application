@@ -6,7 +6,7 @@
  *      of the actions completed by each community.
  * 
  *      Written by: Moizes Almeida and Will Soylemez
- *      Last edited: July 16, 2024
+ *      Last edited: July 17, 2024
  * 
  *****************************************************************************/
 
@@ -442,58 +442,57 @@ function TeamActionsChart({ graphData }) {
  *              by the team in that commmunity.
  */
 function ActionsList({ listData = [] }) {
-  listData = listData.sort(
-    (a, b) => (a.done_count > b.done_count) ? -1 : 1
-  );
+  const validListData = listData || [];
 
-  const [sortedData, setSortedData] = useState(listData);
+  const [sortedData, setSortedData] = useState(validListData.sort(
+    (a, b) => (a.done_count > b.done_count) ? -1 : 1
+  ));
 
   const navigation = useNavigation();
+  const [sortMode, setSortMode] = useState(["count"], -1);
 
-  const [sortMode, setSortMode] = useState(["count", -1]);
-
-  const sortItems = (column) => {
-    const newDirection = sortMode[0] === column 
-      ? sortMode[1] * -1 
-      : -1;
+  const sortItems = (count) => {
+    const newDirection = sortMode[0] === column ? sortMode[1] * -1 : 1;
+    let newList = [...validListData];
 
     if (column === "count") {
-      const newList = [...listData].sort(
+      newList = newList.sort(
         (a, b) => (a.done_count > b.done_count) 
           ? newDirection 
           : -newDirection
       );
-      setSortedData(newList);
     } else if (column === "carbon") {
-      const newList = [...listData].sort(
+      newList = newList.sort(
         (a, b) => (a.carbon_total > b.carbon_total) 
           ? newDirection 
           : -newDirection
       );
-      setSortedData(newList);
     } else if (column === "category") {
-      const newList = [...listData].sort(
+      newList = newList.sort(
         (a, b) => (a.category > b.category) 
           ? newDirection 
           : -newDirection
       );
-      setSortedData(newList);
     } else if (column === "name") {
-      const newList = [...listData].sort(
+      newList = newList.sort(
         (a, b) => (a.name > b.name) 
           ? newDirection 
           : -newDirection
       );
-      setSortedData(newList);
     }
 
-    setSortMode([column, newDirection]);
-  }
+    setSortedData(newList);
+    setSortMode([column], newDirection);
+  };
 
   return (
-    <View width="100%" ml={3} p={3}>
+    <View 
+      width="100%" 
+      ml={3} 
+      p={3}
+    >
       {
-        listData !== null && listData.length !== 0 ? (
+        validListData.length !== 0 ? (
           <View>
             <HStack
               width="100%"
@@ -507,7 +506,7 @@ function ActionsList({ listData = [] }) {
                 style={{ 
                   flexDirection: "row", 
                   alignItems: "center", 
-                  justifyContent: "flex-start"
+                  justifyContent: "flex-start" 
                 }}
               >
                 <Text 
@@ -522,12 +521,11 @@ function ActionsList({ listData = [] }) {
 
                 { sortMode[0] === "name" && 
                   <Icon 
-                    name={
-                      sortMode[1] === -1 
-                        ? "chevron-down" 
-                        : "chevron-up"
+                    name={sortMode[1] === -1 
+                      ? "chevron-down" 
+                      : "chevron-up"
                     } 
-                    color="gray"
+                    color="gray" 
                   />
                 }
               </Pressable>
@@ -538,7 +536,7 @@ function ActionsList({ listData = [] }) {
                 style={{ 
                   flexDirection: "row", 
                   alignItems: "center", 
-                  justifyContent: "center"
+                  justifyContent: "center" 
                 }}
               >
                 <Text 
@@ -551,15 +549,13 @@ function ActionsList({ listData = [] }) {
                   Category
                 </Text>
 
-                { 
-                  sortMode[0] === "category" && 
+                { sortMode[0] === "category" && 
                   <Icon 
-                    name={
-                      sortMode[1] === -1 
-                        ? "chevron-down" 
-                        : "chevron-up"
+                    name={sortMode[1] === -1 
+                      ? "chevron-down" 
+                      : "chevron-up"
                     } 
-                    color="gray"
+                    color="gray" 
                   />
                 }
               </Pressable>
@@ -570,7 +566,7 @@ function ActionsList({ listData = [] }) {
                 style={{ 
                   flexDirection: "row", 
                   alignItems: "center", 
-                  justifyContent: "center"
+                  justifyContent: "center" 
                 }}
               >
                 <Text 
@@ -583,26 +579,24 @@ function ActionsList({ listData = [] }) {
                   Carbon Saving
                 </Text>
 
-                { 
-                  sortMode[0] === "carbon" && 
+                { sortMode[0] === "carbon" && 
                   <Icon 
-                    name={
-                      sortMode[1] === -1 
-                        ? "chevron-down" 
-                        : "chevron-up"
-                      } 
-                      color="gray"
-                    />
+                    name={sortMode[1] === -1 
+                      ? "chevron-down" 
+                      : "chevron-up"
+                    } 
+                    color="gray" 
+                  />
                 }
               </Pressable>
 
               <Pressable
                 onPress={() => sortItems("count")}
                 width="20%"
-                style = {{ 
+                style={{ 
                   flexDirection: "row", 
                   alignItems: "center", 
-                  justifyContent: "center"
+                  justifyContent: "center" 
                 }}
               >
                 <Text 
@@ -615,16 +609,14 @@ function ActionsList({ listData = [] }) {
                   # Done
                 </Text>
 
-                { 
-                  sortMode[0] === "count" && 
+                { sortMode[0] === "count" && 
                   <Icon 
-                    name={
-                      sortMode[1] === -1 
-                        ? "chevron-down" 
-                        : "chevron-up"
-                      } 
-                      color="gray"
-                    />
+                    name={sortMode[1] === -1 
+                      ? "chevron-down" 
+                      : "chevron-up"
+                    } 
+                    color="gray" 
+                  />
                 }
               </Pressable>
             </HStack>
@@ -650,33 +642,17 @@ function ActionsList({ listData = [] }) {
                 >
                   {action.name}
                 </Button>
-
-                <Text
-                  fontSize="sm"
-                  width="25%"
-                  textAlign="center"
-                >
+                <Text fontSize="sm" width="25%" textAlign="center">
                   {action.category}
                 </Text>
-
-                <Text
-                  fontSize="sm"
-                  width="20%"
-                  textAlign="center"
-                >
+                <Text fontSize="sm" width="20%" textAlign="center">
                   {action.carbon_total}
                 </Text>
-
-                <Text
-                  fontSize="sm"
-                  width="20%"
-                  textAlign="center"
-                >
+                <Text fontSize="sm" width="20%" textAlign="center">
                   {action.done_count}
                 </Text>
               </HStack>
-            ))
-            }
+            ))}
           </View>
         ) : (
           <Text
@@ -684,11 +660,10 @@ function ActionsList({ listData = [] }) {
             textAlign="center"
             px={10}
             color="gray.400"
-            mt={5}
             mx={3}
           >
-            Sorry, for some reason we could not load the list of
-            actions that people in this community have taken...
+            Sorry, for some reason we could not load the list 
+            of actions that people in this community have taken...
           </Text>
         )
       }
