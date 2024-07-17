@@ -9,7 +9,8 @@ import HStack from '../../components/stacks/HStack';
 import {connect} from 'react-redux';
 
 const LoadingScreen = ({route, fetchAll, navigation, communityInfo }) => {
-  // if we already have the community data, we can skip this screen
+  console.log("Component reloaded!");
+
   const [hasError, setError] = useState(null);
 
   const {community_id} = route?.params || {};
@@ -21,12 +22,13 @@ const LoadingScreen = ({route, fetchAll, navigation, communityInfo }) => {
         console.log('ERROR_LOADING_COMMUNITY_DATA', error);
         return setError(error);
       }
-      navigation.navigate('CommunityPages');
+      navigation.replace('CommunityPages');
     });
   };
+  
   useEffect(() => {
     fetch();
-  });
+  }, [community_id]);
 
   return (
     <VStack center style={{height: '100%', backgroundColor: 'white'}}>
