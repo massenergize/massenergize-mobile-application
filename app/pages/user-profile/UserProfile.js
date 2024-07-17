@@ -44,6 +44,17 @@ import { fetchAllUserInfo } from "../../config/redux/actions";
 import { bindActionCreators } from "redux";
 import MEImage from "../../components/image/MEImage";
 
+const sumOfCarbonScores = (data) => {
+  if (!data) return 0;
+  return data
+    .map((t) =>
+      t.action && t.action.calculator_action
+        ? t.action.calculator_action.average_points
+        : 0
+    )
+    .reduce((partial_sum, a) => partial_sum + a, 0);
+};
+
 /* Component to display the user's name, preferred name, and community */
 const ProfileName = ({ navigation, communityInfo, user }) => {
   return (
@@ -66,7 +77,7 @@ const ProfileName = ({ navigation, communityInfo, user }) => {
       <Box alignItems="center">
         <Text fontSize="xl">{user.preferred_name || "Your Name"}</Text>
         <Text>{user.full_name}</Text>
-        <Text>{communityInfo.name}</Text>
+        {/* <Text>{communityInfo.name}</Text> */}
       </Box>
 
       {/* Settings button */}
@@ -80,7 +91,7 @@ const ProfileName = ({ navigation, communityInfo, user }) => {
 /* Component to display the user's sustainability score */
 const SustainScore = ({ CompletedList }) => {
   /* TODO: make this a real formula */
-  const CarbonSaved = CompletedList?.length ?? 0; 
+  const CarbonSaved = sumOfCarbonScores(CompletedList);
   return (
     <Box>
       <Text fontSize="4xl" color="primary.400" textAlign="center">
@@ -96,7 +107,7 @@ const SustainScore = ({ CompletedList }) => {
 /* Component to display the user's carbon saved, trees saved, and points */
 const CarbonSaved = ({ CompletedList }) => {
   /* TODO: make this a real formula */
-  const CarbonSaved = CompletedList?.length ?? 0;
+  const CarbonSaved = sumOfCarbonScores(CompletedList);
 
   return (
     <Flex flexDirection="row" justifyContent="space-evenly" width="full">
