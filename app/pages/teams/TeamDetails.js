@@ -31,7 +31,7 @@ import {
 import React, { useState } from 'react';
 import TeamCard from './TeamCard';
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { TeamActionsChart, ActionsList } from '../../utils/Charts';
+import { TeamActionsChart, ActionsList, ActionsChart } from '../../utils/Charts';
 import { useDetails } from '../../utils/hooks';
 import HTMLParser from '../../utils/HTMLParser';
 import { connect } from 'react-redux';
@@ -46,7 +46,7 @@ import { Formik } from 'formik';
 import { FontAwesomeIcon } from '../../components/icons';
 import { apiCall } from '../../api/functions';
 import MEImage from '../../components/image/MEImage';
-import { Platform } from 'react-native';
+import { Dimensions, Platform, StyleSheet } from 'react-native';
 
 /* 
  * This serves as a validation schema to prevent the user to send a 
@@ -241,48 +241,58 @@ function TeamDetails({
   }
 
   /* Generates the Tabs components of the Details screen */
+  /* Generates the Tabs components of the Details screen */
   const generateActionsTab = () => {
     return (
       <VStack space="5">
-        <Text style={{ alignSelf: 'center' }}>
-          <Text fontWeight="bold">
+        <Text alignSelf="center">
+          <Text bold>
             {team_stats.actions_completed}
           </Text>{" "}
           Actions Completed
         </Text>
+
         <Text alignSelf="center">
-          <Text fontWeight="bold">
+          <Text bold>
             {(team_stats.carbon_footprint_reduction / 133).toFixed(2)}
           </Text>{" "}
           Number of Trees
         </Text>
+
         <HStack width="100%">
           <Spacer />
+
           <Center>
             <Ionicons
               name={"bar-chart-outline"}
-              color={actionDisplay == "chart" ? '#64B058' : 'black'}
+              color={actionDisplay === "chart" 
+                      ? '#64B058' 
+                      : 'black'
+              }
               padding={5}
               size={24}
               onPress={() => setActionDisplay('chart')}
             />
           </Center>
-          <Center pr={3}>
+
+          <Center>
             <Ionicons
               name={"list-outline"}
-              color={actionDisplay == "list" ? '#64B058' : 'black'}
+              color={actionDisplay === "list" 
+                      ? '#64B058' 
+                      : 'black'
+              }
               padding={5}
               size={24}
               onPress={() => setActionDisplay('list')}
             />
           </Center>
         </HStack>
+
         {
-          (actionDisplay == "chart")
-            ?
-            <TeamActionsChart graphData={getGraphData()} />
-            :
-            <ActionsList listData={actions} />
+          (actionDisplay === "chart")
+            ? <TeamActionsChart graphData={getGraphData()} />
+            : <ActionsList listData={actions} />
         }
       </VStack>
     );
@@ -559,6 +569,13 @@ function TeamDetails({
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  chartContainer: {
+    width: Dimensions.get("window").width - 40,
+    paddingHorizontal: 20,
+  }
+})
 
 /* 
  * Generates a 'Tab' component used in the display member of the 
