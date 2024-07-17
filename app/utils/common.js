@@ -120,3 +120,31 @@ export function getActionMetric(action, metric) {
 export const hasProvider = (user, provider) => {
   return user?.providerData.some(p => p.providerId === provider);
 }
+
+/** 
+ * Gets user suggested actions based on questionnaire info
+ * @param {Object} questionnaire - The questionnaire info object.
+ * @param {Object} actions - The list of actions to be filtered.
+ */
+export const getSuggestedActions = (questionnaire, actions) => {
+  if (!questionnaire) return actions;
+  const suggestedActions = actions.filter(action => {
+    const actionTags = action.tags.map(tag => tag.name);
+
+    return (
+      (questionnaire?.categories.length === 0 || 
+       questionnaire?.categories.some(
+        category => actionTags.includes(category)
+       )) &&
+      (questionnaire?.type === '' || 
+       actionTags.includes(questionnaire.type)) &&
+      (questionnaire?.impact === '' || 
+       actionTags.includes(questionnaire.impact)) &&
+      (questionnaire?.cost === '' || 
+       actionTags.includes(questionnaire.cost))
+    );
+  });
+
+  return suggestedActions;
+}
+  

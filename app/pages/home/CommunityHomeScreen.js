@@ -34,10 +34,10 @@ import ActionCard from '../actions/ActionCard';
 import EventCard from '../events/EventCard';
 import { SmallChart } from '../../utils/Charts';
 import { formatDateString } from '../../utils/Utils';
-import { getActionMetric } from '../../utils/common';
-import { 
-  fetchAllCommunityData, 
-  toggleUniversalModalAction 
+import { getActionMetric, getSuggestedActions } from '../../utils/common';
+import {
+  fetchAllCommunityData,
+  toggleUniversalModalAction
 } from '../../config/redux/actions';
 import { connect } from 'react-redux';
 import { useDetails } from '../../utils/hooks';
@@ -111,11 +111,11 @@ function GoalsCard({ navigation, goals, community_id }) {
           >
             {
               getGoalsList().map((goal, index) => {
-                return <SmallChart 
-                          goal={goal}
-                          color={colors[index]} 
-                          key={index}
-                        />
+                return <SmallChart
+                  goal={goal}
+                  color={colors[index]}
+                  key={index}
+                />
               })
             }
           </HStack>
@@ -170,8 +170,8 @@ function ShowMore({ navigation, page, text }) {
  */
 function BackgroundCarousel({ data }) {
   return (
-    <Box 
-      height="100%" 
+    <Box
+      height="100%"
       bgColor={"amber.100"}
     >
       <Carousel
@@ -181,18 +181,18 @@ function BackgroundCarousel({ data }) {
         loop={true}
       >
         {data.map((item) => (
-          <View 
-            key={item.id} 
-            flex={1} 
+          <View
+            key={item.id}
+            flex={1}
             backgroundColor={"amber.400"}
           >
-            <AspectRatio 
-              width="100%" 
+            <AspectRatio
+              width="100%"
               backgroundColor={"amber.700"}
             >
-              <Image 
-                source={{ uri: item.url }} 
-                alt={item.name} 
+              <Image
+                source={{ uri: item.url }}
+                alt={item.name}
               />
             </AspectRatio>
           </View>
@@ -224,13 +224,20 @@ const CommunityHomeScreen = ({
   const community_id = communityInfo.id;
 
   /* Fetch the information from the community */
-  useEffect(() => {
-    fetchAllCommunityData({ community_id: communityInfo.id });
-  }, [fetchAllCommunityData, communityInfo.id]);
+  // useEffect(() => {
+  //   fetchAllCommunityData({ community_id: communityInfo.id });
+  // }, [fetchAllCommunityData, communityInfo.id]);
+
+  const recommendedActions = questionnaire ?
+    getSuggestedActions(questionnaire, actions) :
+    actions.filter((action) => (
+      getActionMetric(action, "Cost") === "$" ||
+      getActionMetric(action, "Cost") === "0"
+    ));
 
   /* Gets the homeSettings information from the API */
   const [homeSettings, isLoading] = useDetails(
-    'home_page_settings.info', 
+    'home_page_settings.info',
     { community_id }
   );
 
@@ -239,7 +246,7 @@ const CommunityHomeScreen = ({
     return (
       <View height="100%" bg="white">
         <Center flex="1">
-          <Spinner/>
+          <Spinner />
         </Center>
       </View>
     );
@@ -301,34 +308,34 @@ const CommunityHomeScreen = ({
   /* Displays the community home screen and its information */
   return (
     <View bg="white">
-      <ScrollView 
-        nestedScrollEnabled = {true} 
+      <ScrollView
+        nestedScrollEnabled={true}
         showsVerticalScrollIndicator={false}
         onRefresh={onRefresh}
       >
-        <Box 
-          maxHeight={[200, 300]} 
+        <Box
+          maxHeight={[200, 300]}
           width="100%"
         >
-          <Center 
-            position="absolute" 
-            zIndex={1} 
-            height="100%" 
-            width="100%" 
+          <Center
+            position="absolute"
+            zIndex={1}
+            height="100%"
+            width="100%"
             px="2"
           >
-            <Heading 
-              color="white" 
-              fontWeight="bold" 
-              size="xl" 
+            <Heading
+              color="white"
+              fontWeight="bold"
+              size="xl"
               textAlign="center"
             >
               {communityInfo.name}
             </Heading>
 
-            <Text 
-              color="white" 
-              textAlign="center" 
+            <Text
+              color="white"
+              textAlign="center"
               fontSize={["xs", "sm"]}
               px={8}
             >
@@ -339,97 +346,95 @@ const CommunityHomeScreen = ({
           <BackgroundCarousel data={homeSettings.images} />
         </Box>
 
-        <VStack 
-          alignItems="center" 
-          space={3} 
-          bg="white" 
-          top="-3%" 
-          borderTopRadius={30} 
+        <VStack
+          alignItems="center"
+          space={3}
+          bg="white"
+          top="-3%"
+          borderTopRadius={30}
           pt="5"
         >
-          <GoalsCard 
-            navigation={navigation} 
-            goals={communityInfo.goal} 
-            community_id={community_id} 
+          <GoalsCard
+            navigation={navigation}
+            goals={communityInfo.goal}
+            community_id={community_id}
           />
 
           {/* User preferences card */}
-          { !questionnaire && renderPreferences() }
-          
+          {!questionnaire && renderPreferences()}
+
           <HStack alignItems="center" pb={2} pt={3}>
-            <HeaderText text="Recommended Actions"/>
-            <Spacer/>
-            <ShowMore navigation={navigation} page="Actions" text={"Show More"}/>
+            <HeaderText text="Recommended Actions" />
+            <Spacer />
+            <ShowMore navigation={navigation} page="Actions" text={"Show More"} />
           </HStack>
 
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
             <HStack space={2} justifyContent="center" mx={15} marginBottom={15}>
-            {
-              /* 
-               * Displays all low cost actions for v1 (recommended in 
-               * the future) 
-               */
-              actions
-              .filter((action) => getActionMetric(action, "Cost") === "$" || 
-                                  getActionMetric(action, "Cost") === "0")
-              .map((action, index) => {
-              return (
-                <ActionCard
-                  key={index}
-                  navigation={navigation}
-                  id={action.id}
-                  title={action.title}
-                  imgUrl={action.image?.url}
-                  impactMetric={getActionMetric(action, "Impact")}
-                  costMetric={getActionMetric(action, "Cost")}
-                />
-              );
-              })
-            }
+              {
+                /* 
+                 * Displays all low cost actions for v1 (recommended in 
+                 * the future) 
+                 */
+                recommendedActions
+                  .map((action, index) => {
+                    return (
+                      <ActionCard
+                        key={index}
+                        navigation={navigation}
+                        id={action.id}
+                        title={action.title}
+                        imgUrl={action.image?.url}
+                        impactMetric={getActionMetric(action, "Impact")}
+                        costMetric={getActionMetric(action, "Cost")}
+                      />
+                    );
+                  })
+              }
             </HStack>
           </ScrollView>
 
-          { homeSettings.show_featured_events && 
+          {homeSettings.show_featured_events &&
             homeSettings.featured_events.length !== 0 && (
-            <View width="100%">
-              <HStack alignItems="center" pb={2} pt={3}>
-                <HeaderText text="Featured Events"/>
-                <Spacer/>
-                <ShowMore 
-                  navigation={navigation} 
-                  page="Events" 
-                  text={"Show More"}
-                />
-              </HStack>
-
-              <ScrollView 
-                horizontal={true} 
-                showsHorizontalScrollIndicator={false}
-              >
-                <HStack space={3} mx={15}>
-                  {homeSettings.featured_events.map((event) => (
-                    <EventCard
-                      key={event.id}
-                      title={event.name}
-                      date={formatDateString(
-                        new Date(event.start_date_and_time),
-                        new Date(event.end_date_and_time)
-                      )}
-                      location = {event.location}
-                      imgUrl={event.image?.url}
-                      canRSVP={event.rsvp_enabled}
-                      isRSVPED={event.is_rsvped}
-                      isShared={event.is_shared}
-                      id={event.id}
-                      navigation={navigation}
-                      my={3}
-                      shadow={3}
-                    />
-                  ))}
+              <View width="100%">
+                <HStack alignItems="center" pb={2} pt={3}>
+                  <HeaderText text="Featured Events" />
+                  <Spacer />
+                  <ShowMore
+                    navigation={navigation}
+                    page="Events"
+                    text={"Show More"}
+                  />
                 </HStack>
-              </ScrollView>
-            </View>
-          )}
+
+                <ScrollView
+                  horizontal={true}
+                  showsHorizontalScrollIndicator={false}
+                >
+                  <HStack space={3} mx={15}>
+                    {homeSettings.featured_events.map((event) => (
+                      <EventCard
+                        key={event.id}
+                        title={event.name}
+                        date={formatDateString(
+                          new Date(event.start_date_and_time),
+                          new Date(event.end_date_and_time)
+                        )}
+                        location={event.location}
+                        imgUrl={event.image?.url}
+                        canRSVP={event.rsvp_enabled}
+                        isRSVPED={event.is_rsvped}
+                        isShared={event.is_shared}
+                        id={event.id}
+                        navigation={navigation}
+                        my={3}
+                        shadow={3}
+                      />
+                    ))}
+                  </HStack>
+                </ScrollView>
+              </View>
+            )}
         </VStack>
       </ScrollView>
     </View>
