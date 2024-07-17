@@ -6,7 +6,7 @@
  *      and the Campaigns from a community.
  * 
  *      Written by: Moizes Almeida
- *      Last edited: July 1, 2024
+ *      Last edited: July 17, 2024
  * 
  *****************************************************************************/
 
@@ -163,7 +163,7 @@ const EventsScreen = ({ navigation, events, fireAuth, toggleModal }) => {
                             px={10}
                             color="gray.400"
                           >
-                            No events so far... You create one!
+                            No events so far...{"\n"}You can create one!
                           </Text>
                       </View>
                     ) : (
