@@ -41,7 +41,6 @@ import {
 } from '../../config/redux/actions';
 import { connect } from 'react-redux';
 import { useDetails } from '../../utils/hooks';
-import { StyleSheet } from 'react-native';
 import { FontAwesomeIcon } from '../../components/icons';
 import { bindActionCreators } from 'redux';
 import AuthOptions from '../auth/AuthOptions';

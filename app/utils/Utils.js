@@ -1,3 +1,15 @@
+/******************************************************************************
+ *                              Utils.js
+ * 
+ *      This page is responsible for storing the 'formatDateString'
+ *      function, used to display the date of a upcoming or past
+ *      event.
+ * 
+ *      Written by: Moizes Almeida
+ *      Last edited: July 17, 2024
+ * 
+ *****************************************************************************/
+
 /**
  * formats a date range string based on the start and end date
  * @param {Date} startDate
@@ -8,62 +20,66 @@
  *                   if different year: "mmmm dd, yyyy - mmmm dd, yyyy"
  */
 export function formatDateString(startDate, endDate) {
+  /* Date configuration for display */
   const dateOptions = {
-    month: "short",
+    year: "numeric",
+    month: "long",
     day: "numeric",
     hour: "numeric",
     minute: "numeric",
     hour12: true,
   };
 
+  /* Gets the string of the start date */
   const startDateString = startDate.toLocaleDateString("en-US", dateOptions);
 
+  /* Creates the variable that holds the final version of the string date */
   let dateRangeString;
 
+  /* 
+   * If the start and end date are the same, then display 
+   * "month dd, hh:mm AM/PM - hh:mm AM/PM" 
+   */
   if (startDate.toDateString() === endDate.toDateString()) {
-    // Same day then display "mm dd, hh:mm AM/PM - hh:mm AM/PM"
     dateRangeString = `${startDateString} - ${endDate.toLocaleTimeString(
       "en-US",
       { hour: "numeric", minute: "numeric", hour12: true }
     )}`;
   } else {
-    // Same month
-    if (startDate.getMonth() === endDate.getMonth()) {
-      // Display "mm dd-dd yyyy"
+    /* The start and end date are different */
+    if (startDate.getFullYear() === endDate.getFullYear()) {
+      /* The start and end date are in the same year */
+      if (startDate.getMonth() === endDate.getMonth()) {
+        /* The start and end date are in the same month */
+        dateRangeString = `${startDate.toLocaleDateString("en-US", {
+          month: "long",
+          day: "numeric",
+        })} - ${endDate.toLocaleDateString("en-US", {
+          day: "numeric",
+        })}, ${endDate.getFullYear()}`;
+      } else {
+        /* The start and end date are in the same year but different months */
+        dateRangeString = `${startDate.toLocaleDateString("en-US", {
+          month: "long",
+          day: "numeric",
+        })} - ${endDate.toLocaleDateString("en-US", {
+          month: "long",
+          day: "numeric",
+        })}, ${endDate.getFullYear()}`;
+      }
+    } else {
+      /* The start and end dates are in different years */
       dateRangeString = `${startDate.toLocaleDateString("en-US", {
-        month: "short",
+        month: "long",
         day: "numeric",
-      })}-${endDate.toLocaleDateString("en-US", {
+        year: "numeric",
+      })} - ${endDate.toLocaleDateString("en-US", {
+        month: "long",
         day: "numeric",
         year: "numeric",
       })}`;
-    } else {
-      // Same year
-      if (startDate.getFullYear() === endDate.getFullYear()) {
-        // Display "mm dd - mm dd, yyyy"
-        dateRangeString = `${startDate.toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric",
-        })} - ${endDate.toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric",
-          year: "numeric",
-        })}`;
-      } else {
-        // Different year then display "mm dd, yyyy - mm dd, yyyy"
-        dateRangeString = `${startDate.toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric",
-          year: "numeric",
-        })} - ${endDate.toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric",
-          year: "numeric",
-        })}`;
-      }
     }
   }
 
   return dateRangeString;
 }
-  
