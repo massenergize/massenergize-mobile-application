@@ -25,7 +25,7 @@ import {
   Select,
   Pressable,
 } from "@gluestack-ui/themed-native-base";
-import { getActionMetric } from "../../utils/common";
+import { getActionMetric, getSuggestedActions } from "../../utils/common";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MEButton from '../../components/button/MEButton';
 import { border } from 'native-base/lib/typescript/theme/styled-system';
@@ -69,22 +69,7 @@ const ActionsScreen = ({ navigation, actions, questionnaire }) => {
   };
 
   /* List of suggested actions based on questionnaire profile */
-  const suggestedActions = actions.filter(action => {
-    const actionTags = action.tags.map(tag => tag.name);
-
-    return (
-      (questionnaire?.categories.length === 0 || 
-       questionnaire?.categories.some(
-        category => actionTags.includes(category)
-       )) &&
-      (questionnaire?.type === '' || 
-       actionTags.includes(questionnaire.type)) &&
-      (questionnaire?.impact === '' || 
-       actionTags.includes(questionnaire.impact)) &&
-      (questionnaire?.cost === '' || 
-       actionTags.includes(questionnaire.cost))
-    );
-  });
+  const suggestedActions = getSuggestedActions(questionnaire, actions);
 
 
   /* Variable that holds the list of filtered actions */
