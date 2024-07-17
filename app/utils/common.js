@@ -5,15 +5,12 @@
  *      the app. These functions include validation, snackbar display, and
  *      other general-purpose functions.
  * 
- *      Written by: William Soylemez
- *      Last edited: June 11, 2023
+ *      Written by: William Soylemez and Frimpong
+ *      Last edited: July 17, 2024
  * 
  *****************************************************************************/
 
 import Snackbar from 'react-native-snackbar';
-import { apiCall } from '../api/functions';
-import store from '../config/redux/store';
-import { fetchAllUserInfo } from '../config/redux/actions';
 
 /**
  * Checks if the given zip code is valid.
@@ -28,14 +25,15 @@ export const isValidZipCode = zipCode => {
 /**
  * Groups communities into matched and near categories.
  * @param {Array} communities - The list of communities to be grouped.
- * @returns {Object} - Returns an object containing matches and near communities.
+ * @returns {Object} - Returns an object containing matches and near 
+ *                     communities.
  */
 export const groupCommunities = communities => {
-  communities = communities.filter(c => c.is_geographically_focused);
-  const matches = communities.filter(c => c.location.distance === 0);
-  const near = communities
-    .filter(c => c.location.distance !== 0)
-    .sort((a, b) => a.location.distance - b.location.distance);
+  communities = communities;//.filter(c => c.is_geographically_focused);
+  const matches = communities;//.filter(c => c.location.distance === 0);
+  const near = communities;
+    // .filter(c => c.location.distance !== 0)
+    // .sort((a, b) => a.location.distance - b.location.distance);
   return {matches, near};
 };
 
@@ -44,21 +42,25 @@ export const groupCommunities = communities => {
  * @param {Object} options - Options for the snackbar.
  * @param {string} options.message - The message to be displayed in the snackbar.
  * @param {Object} options.props - Additional properties for the snackbar.
- * @param {Function} options.onPress - Function to be called when the snackbar action is pressed.
+ * @param {Function} options.onPress - Function to be called when the snackbar 
+ *                                     action is pressed.
  */
 export const showSnackBar = ({message, props, onPress}) => {
   Snackbar.show({
     text: message || '',
-    // backgroundColor: 'green',
     fontWeight: 'bold',
-    duration: Snackbar.LENGTH_INDEFINITE, // Duration options: Snackbar.LENGTH_SHORT, Snackbar.LENGTH_LONG, Snackbar.LENGTH_INDEFINITE
+    /* 
+     * Duration options: Snackbar.LENGTH_SHORT, Snackbar.LENGTH_LONG, 
+     * Snackbar.LENGTH_INDEFINITE 
+     */
+    duration: Snackbar.LENGTH_INDEFINITE, 
     action: {
       text: 'Close',
       textColor: 'white',
       onPress: () => {
         onPress && onPress();
         Snackbar.dismiss();
-        // Handle the action here, e.g., undo an action.
+        /* Handle the action here, e.g., undo an action. */
       },
     },
     ...(props || {}),
@@ -115,7 +117,8 @@ export function getActionMetric(action, metric) {
  * Checks if a firebase user has a particular provider.
  * @param {Object} user - The firebase user object.
  * @param {String} provider - The provider ID to be checked.
- * @returns {Boolean} - Returns true if the user has the specified provider, otherwise false.
+ * @returns {Boolean} - Returns true if the user has the specified provider, 
+ *                      otherwise false.
  */
 export const hasProvider = (user, provider) => {
   return user?.providerData.some(p => p.providerId === provider);

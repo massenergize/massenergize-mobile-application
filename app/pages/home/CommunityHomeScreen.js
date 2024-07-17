@@ -7,7 +7,7 @@
  *      of the community.
  * 
  *      Written by: Moizes Almeida and Will Soylemez
- *      Last edited: July 16, 2024
+ *      Last edited: July 17, 2024
  * 
  *****************************************************************************/
 
@@ -223,11 +223,6 @@ const CommunityHomeScreen = ({
   /* Saves the community's ID into a variable */
   const community_id = communityInfo.id;
 
-  /* Fetch the information from the community */
-  // useEffect(() => {
-  //   fetchAllCommunityData({ community_id: communityInfo.id });
-  // }, [fetchAllCommunityData, communityInfo.id]);
-
   let recommendedActions = getSuggestedActions(questionnaire, actions);
   if (recommendedActions.length === 0 || !questionnaire) {
     recommendedActions = actions.filter((action) => (
@@ -302,18 +297,14 @@ const CommunityHomeScreen = ({
     );
   }
 
-  const onRefresh = () => {
-    navigation.navigate('Loading', { community_id: communityInfo.id });
-  }
-
   /* Displays the community home screen and its information */
   return (
     <View bg="white">
       <ScrollView
         nestedScrollEnabled={true}
         showsVerticalScrollIndicator={false}
-        onRefresh={onRefresh}
       >
+        {/* Background Carousel display */}
         <Box
           maxHeight={[200, 300]}
           width="100%"
@@ -325,6 +316,7 @@ const CommunityHomeScreen = ({
             width="100%"
             px="2"
           >
+            {/* Community's Name display */}
             <Heading
               color="white"
               fontWeight="bold"
@@ -334,6 +326,7 @@ const CommunityHomeScreen = ({
               {communityInfo.name}
             </Heading>
 
+            {/* Community's subtitle display */}
             <Text
               color="white"
               textAlign="center"
@@ -347,6 +340,7 @@ const CommunityHomeScreen = ({
           <BackgroundCarousel data={homeSettings.images} />
         </Box>
 
+        {/* Main display */}
         <VStack
           alignItems="center"
           space={3}
@@ -355,6 +349,7 @@ const CommunityHomeScreen = ({
           borderTopRadius={30}
           pt="5"
         >
+          {/* Display the community goals */}
           <GoalsCard
             navigation={navigation}
             goals={communityInfo.goal}
@@ -364,6 +359,7 @@ const CommunityHomeScreen = ({
           {/* User preferences card */}
           {!questionnaire && renderPreferences()}
 
+          {/* Recommended Actions */}
           <HStack alignItems="center" pb={2} pt={3}>
             <HeaderText text="Recommended Actions" />
             <Spacer />
@@ -371,11 +367,11 @@ const CommunityHomeScreen = ({
           </HStack>
 
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-            <HStack space={2} justifyContent="center" mx={15} marginBottom={15}>
+            <HStack space={2} justifyContent="center" mx={15}>
               {
                 /* 
-                 * Displays all low cost actions for v1 (recommended in 
-                 * the future) 
+                 * Displays all recommended actions based on the user's
+                 * preferences.
                  */
                 recommendedActions
                   .map((action, index) => {
@@ -394,7 +390,8 @@ const CommunityHomeScreen = ({
               }
             </HStack>
           </ScrollView>
-
+          
+          {/* Featured Events */}
           {homeSettings.show_featured_events &&
             homeSettings.featured_events.length !== 0 && (
               <View width="100%">
@@ -441,13 +438,6 @@ const CommunityHomeScreen = ({
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  activity: {
-    alignSelf: 'center',
-    marginTop: 300
-  },
-});
 
 /* 
  * Transforms the local state of the app into the properties of the 
