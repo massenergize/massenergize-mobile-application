@@ -56,7 +56,11 @@ const Login = ({
       putFirebaseUserInRedux(user);
       user?.getIdToken().then(token => {
         fetchMEUser(token, (_, error) => {
-          if (error) return;
+          if (error) {
+            console.error('ERROR_FETCHING_USER_PROFILE:', error);
+            showError('Error fetching user profile. Please try again.');
+            return;
+          };
           // console.log('LOGIN_TOKEN:', token);
           navigation.navigate('Community');
         });

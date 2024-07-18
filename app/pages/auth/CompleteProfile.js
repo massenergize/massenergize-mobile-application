@@ -62,7 +62,7 @@ const CompleteProfile = ({
 
     const errorAndExit = (error) => {
       console.error('ERROR_CREATING_PROFILE:', error);
-      Alert.alert('Error creating profile. Please try again');
+      showError('Error creating profile. Please try again');
       navigation.navigate('Login');
     };
 
@@ -83,6 +83,7 @@ const CompleteProfile = ({
               errorAndExit(error);
               return;
             };
+            showSuccess('Profile created!');
             navigation.navigate('Community');
           });
         });
@@ -92,17 +93,35 @@ const CompleteProfile = ({
 
   // Cancel button
   const cancel = () => {
-    deleteFirebaseUser((response, error) => {
-      if (error) {
-        console.error('ERROR_DELETING_USER:', error);
-        showError('Error deleting user. Please try again');
-        return;
-      }
-      signMeOut();
-      console.log('USER_DELETED');
-      navigation.navigate('Login');
-      showSuccess('User deleted');
-    })
+    const deleteUser = () => {
+      deleteFirebaseUser((response, error) => {
+        if (error) {
+          console.error('ERROR_DELETING_USER:', error);
+          showError('Error deleting user. Please try again');
+          return;
+        }
+        signMeOut();
+        console.log('USER_DELETED');
+        navigation.navigate('CommunityPages');
+        showSuccess('User deleted');
+      });
+    }
+
+    Alert.alert(
+      'Are you sure you want to cancel registration?',
+      'This will delete your account and all associated data.',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Yes',
+          onPress: deleteUser,
+          style: 'destructive',
+        },
+      ],
+    );
   }
 
   return (

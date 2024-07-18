@@ -1,9 +1,9 @@
-import {View, Text} from 'react-native';
-import React, {useEffect} from 'react';
+import { View, Text } from 'react-native';
+import React, { useEffect } from 'react';
 import MEDrawerNavigator from '../components/drawer/Drawer';
 import MEBottomSheet from '../components/modal/MEBottomSheet';
-import {bindActionCreators} from 'redux';
-import {connect} from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 import {
   fetchCommunities,
   fetchUserProfile,
@@ -13,16 +13,16 @@ import {
   fetchAllUserInfo,
   setQuestionnaireInfo
 } from '../config/redux/actions';
-import {NavigationContainer, useNavigation} from '@react-navigation/native';
-import {isUserAuthenticated} from '../config/firebase';
-import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import { isUserAuthenticated } from '../config/firebase';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 import CommunitySelect from './community-select/CommunitySelect';
-import {createStackNavigator} from '@react-navigation/stack';
-import {SafeAreaProvider} from 'react-native-safe-area-context';
+import { createStackNavigator } from '@react-navigation/stack';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import LoadingScreen from './misc/LoadingScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {COMMUNITY_CHOICE, QUESTIONNAIRE_DATA} from '../utils/values';
+import { COMMUNITY_CHOICE, QUESTIONNAIRE_DATA } from '../utils/values';
 import ActionDetails from './actions/ActionDetails';
 import EventDetails from './events/EventDetails';
 import OnboardingPage from './onboarding/Onboarding';
@@ -51,7 +51,7 @@ const MainStack = createStackNavigator();
 
 const screenOptions = {
   // headerShown: false,
-  headerTintColor: "black", 
+  headerTintColor: "black",
   headerBackTitleVisible: false,
 };
 
@@ -73,16 +73,16 @@ const RootWrapper = ({
     AsyncStorage.getItem(COMMUNITY_CHOICE)
       .then(choice => {
         if (!choice) return;
-        navigation.navigate('Loading', {community_id: choice});
+        navigation.navigate('Loading', { community_id: choice });
       })
       .catch(e => console.log('ERROR_FETCHING_SAVED_CHOICE', e.toString()));
   }, []);
 
   /* Get the list of communities from the backend and current community choice */
   useEffect(() => {
-    const {zipcode, miles} = zipcodeOptions || {};
+    const { zipcode, miles } = zipcodeOptions || {};
     // First time app launches, it will load a few communities at 10 miles... (zipcode is set as wayland zip, and 10 miles check reducers.js)
-    fetchCommunitiesFromBackend({zipcode, maxDistance: miles}, data => {
+    fetchCommunitiesFromBackend({ zipcode, maxDistance: miles }, data => {
       if (!data || activeCommunity?.id) return;
       // There is a scenario where the list of communities will not be ready by the time the useEffect above has retrieved a saved community choice
       // In that case, that process can go ahead and load the other community data.
@@ -110,12 +110,10 @@ const RootWrapper = ({
       console.log('USER IS FIREBASE_AUTHENTICATED: ', user?.email);
       if (yes) {
         setFirebaseAuth(user);
-        if (user.emailVerified) {
-          user?.getIdToken().then(token => {
-            fetchMEUser(token);
-          });
-          fetchAllUserInfo();
-        } else console.log('User is not verified yet!');
+        user?.getIdToken().then(token => {
+          fetchMEUser(token);
+        });
+        fetchAllUserInfo();
       } else console.log('User is not signed in yet!');
     });
   }, []);
@@ -133,42 +131,42 @@ const RootWrapper = ({
     // <NavigationContainer>
     <>
       <MainStack.Navigator screenOptions={screenOptions} initialRouteName="Onboarding">
-        <MainStack.Screen 
-          options={{headerShown: false}}
+        <MainStack.Screen
+          options={{ headerShown: false }}
           name="Onboarding"
           component={OnboardingPage}
         />
-        <MainStack.Screen 
+        <MainStack.Screen
           // options={{headerShown: false}}
           name="Questionnaire"
           component={Questionnaire}
         />
         <MainStack.Screen
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
           name="CommunitySelectionPage"
           component={CommunitySelect}
         />
         <MainStack.Screen
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
           name="CommunityPages"
           component={MEDrawerNavigator}
         />
         <MainStack.Screen
-          options={{headerTitle: ''}}
+          options={{ headerTitle: '' }}
           name="Impact"
           component={ImpactPage}
         />
         <MainStack.Screen
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
           name="Loading"
           component={LoadingScreen}
         />
         <MainStack.Screen
-          options={{headerTitle: ''}}
+          options={{ headerTitle: '' }}
           name="ActionDetails"
           component={ActionDetails}
         />
-        <MainStack.Screen 
+        <MainStack.Screen
           name='Actions'
           component={ActionsScreen}
         />
@@ -177,12 +175,12 @@ const RootWrapper = ({
           component={ServiceProviderDetails}
         />
         <MainStack.Screen
-          options={{headerTitle: ''}}
+          options={{ headerTitle: '' }}
           name="TestimonialDetails"
           component={TestimonialDetails}
         />
         <MainStack.Screen
-          options={{headerTitle: ''}}
+          options={{ headerTitle: '' }}
           name="EventDetails"
           component={EventDetails}
         />
@@ -191,59 +189,59 @@ const RootWrapper = ({
           component={EventsScreen}
         />
         <MainStack.Screen
-          options={{headerTitle: ''}}
+          options={{ headerTitle: '' }}
           name="SubteamDetails"
           component={TeamDetails}
         />
         <MainStack.Screen
-          options={{headerTitle: ''}}
+          options={{ headerTitle: '' }}
           name="TeamDetails"
           component={TeamDetails}
         />
-        <MainStack.Screen 
-          name="Login" 
+        <MainStack.Screen
+          name="Login"
           component={Login}
         />
-        <MainStack.Screen 
-          name="Register" 
+        <MainStack.Screen
+          name="Register"
           component={Register}
         />
-        <MainStack.Screen 
-          name="ForgotPassword" 
+        <MainStack.Screen
+          name="ForgotPassword"
           component={ForgotPassword}
         />
-        <MainStack.Screen 
-          name="EmailOnly" 
+        <MainStack.Screen
+          name="EmailOnly"
           component={EmailOnly}
         />
-        <MainStack.Screen 
-          name="Settings" 
+        <MainStack.Screen
+          name="Settings"
           component={SettingsPage}
         />
-        <MainStack.Screen 
+        <MainStack.Screen
           options={{
             headerTitle: ''
           }}
-          name="AddTestimonial" 
+          name="AddTestimonial"
           component={AddTestimonial}
         />
-        <MainStack.Screen 
+        <MainStack.Screen
           options={{
             headerTitle: ''
           }}
-          name="AddEvent" 
+          name="AddEvent"
           component={AddEvent}
         />
-        <MainStack.Screen 
+        <MainStack.Screen
           options={{
             headerTitle: ''
           }}
-          name="AddTeam" 
+          name="AddTeam"
           component={AddTeam}
         />
       </MainStack.Navigator>
       <MEBottomSheet
-        onClose={() => toggleModal({isVisible: false, component: <></>})}
+        onClose={() => toggleModal({ isVisible: false, component: <></> })}
         {...(modalOptions || {})}
       />
     </>
