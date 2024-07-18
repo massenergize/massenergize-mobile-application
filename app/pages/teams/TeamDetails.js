@@ -13,7 +13,6 @@
 import {
   Center,
   Heading,
-  Image,
   Text,
   HStack,
   Button,
@@ -30,7 +29,7 @@ import {
 import React, { useState } from 'react';
 import TeamCard from './TeamCard';
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { TeamActionsChart, ActionsList, ActionsChart } from '../../utils/Charts';
+import { TeamActionsChart, ActionsList } from '../../utils/Charts';
 import { useDetails } from '../../utils/hooks';
 import HTMLParser from '../../utils/HTMLParser';
 import { connect } from 'react-redux';
@@ -45,7 +44,12 @@ import { Formik } from 'formik';
 import { FontAwesomeIcon } from '../../components/icons';
 import { apiCall } from '../../api/functions';
 import MEImage from '../../components/image/MEImage';
-import { Dimensions, Platform, SafeAreaView, StyleSheet, KeyboardAvoidingView } from 'react-native';
+import { 
+  Dimensions, 
+  Platform, 
+  StyleSheet, 
+  KeyboardAvoidingView 
+} from 'react-native';
 
 /* 
  * This serves as a validation schema to prevent the user to send a 

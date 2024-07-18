@@ -36,6 +36,7 @@ import { SET_EVENT_LIST } from "../../config/redux/types";
 import { showError, showSuccess } from "../../utils/common";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { launchImageLibrary } from "react-native-image-picker";
+import { KeyboardAvoidingView } from "react-native";
 
 /* 
  * This serves as a validation schema to prevent the user to add an
@@ -212,464 +213,470 @@ const AddEvent = ({
         showsVerticalScrollIndicator={false}
         px={3}
       >
-        <VStack>
-          <Text
-            bold
-            fontSize="lg"
-            mt={5}
-            style={{
-              alignSelf: 'center',
-              color: '#64B058'
-            }}>
-            Create Event Form
-          </Text>
-          <Formik
-            initialValues={{
-              title: "",
-              start_date_and_time: "",
-              end_date_and_time: "",
-              format: "",
-              location: [],
-              image: null,
-              description: "",
-              external_link: null
-            }}
-            validationSchema={validationSchema}
-            onSubmit={handleSendEvent}
-          >
-            {({
-              handleChange,
-              handleBlur,
-              handleSubmit,
-              values,
-              errors,
-              touched
-            }) => (
-              <VStack>
-                {/* Event Name */}
-                <FormControl
-                  mt={5}
-                  isRequired
-                  isInvalid={errors.title && touched.title}
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
+        >
+          <VStack>
+            <Text
+              bold
+              fontSize="lg"
+              mt={5}
+              style={{
+                alignSelf: 'center',
+                color: '#64B058'
+              }}>
+              Create Event Form
+            </Text>
+            <Formik
+              initialValues={{
+                title: "",
+                start_date_and_time: "",
+                end_date_and_time: "",
+                format: "",
+                location: [],
+                image: null,
+                description: "",
+                external_link: null
+              }}
+              validationSchema={validationSchema}
+              onSubmit={handleSendEvent}
+            >
+              {({
+                handleChange,
+                handleBlur,
+                handleSubmit,
+                values,
+                errors,
+                touched
+              }) => (
+                <VStack>
+                  {/* Event Name */}
+                  <FormControl
+                    mt={5}
+                    isRequired
+                    isInvalid={errors.title && touched.title}
 
-                >
-                  <FormControl.Label style={{ fontSize: 14 }}>
-                    Event Name
-                  </FormControl.Label>
-                  <Input
-                    variant="rounded"
-                    size="lg"
-                    placeholder="Event Name"
-                    onChangeText={handleChange("title")}
-                    onBlur={handleBlur("title")}
-                    value={values.title}
-                    mt={2}
-                  />
-                  {
-                    errors.title && touched.title ? (
-                      <FormControl.ErrorMessage
-                        _text={{
-                          fontSize: "xs",
-                          color: "error.500",
-                          fontWeight: 500,
-                        }}
-                      >
-                        {errors.title}
-                      </FormControl.ErrorMessage>
-                    ) : null
-                  }
-                </FormControl>
-
-                {/* Start Date */}
-                <FormControl
-                  mt={5}
-                  isRequired
-                  isInvalid={
-                    errors.start_date_and_time &&
-                    touched.start_date_and_time
-                  }
-                  style={{
-                    flex: 1,
-                    alignItems: 'flex-start',
-                    justifyContent: 'flex-start',
-                    gap: 10
-                  }}
-                >
-                  <FormControl.Label>
-                    Start date and time
-                  </FormControl.Label>
-
-                  <DateTimePicker
-                    value={startDate || new Date()}
-                    mode="datetime"
-                    display="default"
-                    onChange={handleStartDateChange}
-                  />
-                  {
-                    startDate &&
-                    <Text ml={5} color="#64B058">
-                      Start Date: {startDate
-                        .toLocaleString()}
-                    </Text>
-                  }
-                </FormControl>
-
-                {/* End Date */}
-                <FormControl
-                  mt={5}
-                  isRequired
-                  isInvalid={
-                    errors.end_date_and_time &&
-                    touched.end_date_and_time
-                  }
-                  style={{
-                    flex: 1,
-                    alignItems: 'flex-start',
-                    justifyContent: 'flex-start',
-                    gap: 10,
-                  }}
-                >
-                  <FormControl.Label>
-                    End date and time
-                  </FormControl.Label>
-
-                  <DateTimePicker
-                    value={endDate || new Date()}
-                    mode="datetime"
-                    display="default"
-                    onChange={handleEndDateChange}
-                  />
-                  {
-                    endDate &&
-                    <Text ml={5} color="#64B058">
-                      End Date: {endDate
-                        .toLocaleString()}
-                    </Text>
-                  }
-                </FormControl>
-
-                {/* Event Format */}
-                <FormControl
-                  mt={5}
-                  isInvalid={
-                    errors.format &&
-                    touched.format
-                  }
-                >
-                  <FormControl.Label>
-                    Is this event?
-                  </FormControl.Label>
-                  <Radio.Group
-                    name="format"
-                    value={values.format}
-                    onChange={(value) => {
-                      setFormat(value);
-                      handleChange("format")(value);
-                    }}
-                    onBlur={handleBlur("format")}
-                    style={{
-                      flexDirection: 'row',
-                      gap: 10,
-                      marginTop: 5
-                    }}
                   >
-                    <Radio
-                      value="in-person"
-                      my={1}
-                    >
-                      In-Person
-                    </Radio>
-                    <Radio
-                      value="online"
-                      my={1}
-                    >
-                      Online
-                    </Radio>
-                    <Radio
-                      value="both"
-                      my={1}
-                    >
-                      Both
-                    </Radio>
-                  </Radio.Group>
-                  {
-                    errors.format && touched.format ? (
-                      <FormControl.ErrorMessage
-                        _text={{
-                          fontSize: "xs",
-                          color: "error.500",
-                          fontWeight: 500,
-                        }}
-                      >
-                        {errors.format}
-                      </FormControl.ErrorMessage>
-                    ) : null
-                  }
-                </FormControl>
-
-                {/* Event Link and/or Location */}
-                <FormControl
-                  mx={7}
-                  isInvalid={
-                    errors.location &&
-                    touched.location
-                  }
-                >
-                  {format === 'in-person' || format === 'both' ? (
-                    <View>
-                      <FormControl.Label mt={5}>
-                        Enter Location of Event
-                      </FormControl.Label>
-                      <Input
-                        variant="rounded"
-                        size="lg"
-                        placeholder="Building Name"
-                        value={location.building_name}
-                        style={{
-                          marginTop: 10,
-                        }}
-                        onChangeText={(value) => handleChangeLocation("building_name", value)}
-                      />
-                      <Input
-                        variant="rounded"
-                        size="lg"
-                        placeholder="Room"
-                        value={location.room}
-                        style={{
-                          marginTop: 10,
-                        }}
-                        onChangeText={(value) => handleChangeLocation("room", value)}
-                      />
-                      <Input
-                        variant="rounded"
-                        size="lg"
-                        placeholder="Street Address"
-                        value={location.address}
-                        style={{
-                          marginTop: 10,
-                        }}
-                        onChangeText={(value) => handleChangeLocation("address", value)}
-                      />
-                      <Input
-                        variant="rounded"
-                        size="lg"
-                        placeholder="City"
-                        value={location.city}
-                        style={{
-                          marginTop: 10,
-                        }}
-                        onChangeText={(value) => handleChangeLocation("city", value)}
-                      />
-                    </View>
-                  ) : null}
-                  {format === 'online' || format === 'both' ? (
-                    <View
-                      mt={5}
-                      gap={2}
-                    >
-                      <FormControl.Label>
-                        Link to Join Meeting
-                      </FormControl.Label>
-
-                      <View>
-                        <Text
-                        >
-                          Select the type of link
-                        </Text>
-
-                        <Select
-                          selectedValue={linkType}
-                          onValueChange={(value) => setLinkType(value)}
-                          mt={1}
-                        >
-                          <Select.Item
-                            label="Join"
-                            value="join"
-                          />
-                          <Select.Item
-                            label="Registration"
-                            value="registration"
-                          />
-                        </Select>
-                      </View>
-
-                      <Input
-                        variant="rounded"
-                        size="lg"
-                        placeholder="Paste link here"
-                        value={values.external_link}
-                        onChangeText={handleChange("external_link")}
-                        onBlur={handleBlur("external_link")}
-                        style={{
-                          marginTop: 10,
-                        }}
-                      />
-                    </View>
-                  ) : null}
-                </FormControl>
-
-                {/* Event Image */}
-                <FormControl
-                  mt={5}
-                  isInvalid={
-                    errors.image && touched.image
-                  }
-                  style={{
-                    flex: 1,
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}
-                >
-                  <FormControl.Label
-                    _text={{ textAlign: "center" }}
-                  >
-                    You can add an image to your event.
-                    It should be your own picture,
-                    or one you are sure is not
-                    copyrighted material.
-                  </FormControl.Label>
-                  <Button
-                    style={{
-                      width: "50%",
-                      marginTop: 10,
-                    }}
-                    onPress={handleSelectImage}
-                  >
-                    Select Image
-                  </Button>
-                  {
-                    imageUri && (
-                      <View
-                        style={{
-                          flex: 1,
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          gap: 10,
-                          marginBottom: 10
-                        }}
-                      >
-                        <Text
-                          mt={5}
-                          color="#64B058"
-                        >
-                          Selected image:
-                        </Text>
-                        <Image
-                          source={imageUri}
-                          style={{
-                            width: 200,
-                            height: 200,
+                    <FormControl.Label style={{ fontSize: 14 }}>
+                      Event Name
+                    </FormControl.Label>
+                    <Input
+                      variant="rounded"
+                      size="lg"
+                      placeholder="Event Name"
+                      onChangeText={handleChange("title")}
+                      onBlur={handleBlur("title")}
+                      value={values.title}
+                      mt={2}
+                    />
+                    {
+                      errors.title && touched.title ? (
+                        <FormControl.ErrorMessage
+                          _text={{
+                            fontSize: "xs",
+                            color: "error.500",
+                            fontWeight: 500,
                           }}
-                          alt="image"
+                        >
+                          {errors.title}
+                        </FormControl.ErrorMessage>
+                      ) : null
+                    }
+                  </FormControl>
+
+                  {/* Start Date */}
+                  <FormControl
+                    mt={5}
+                    isRequired
+                    isInvalid={
+                      errors.start_date_and_time &&
+                      touched.start_date_and_time
+                    }
+                    style={{
+                      flex: 1,
+                      alignItems: 'flex-start',
+                      justifyContent: 'flex-start',
+                      gap: 10
+                    }}
+                  >
+                    <FormControl.Label>
+                      Start date and time
+                    </FormControl.Label>
+
+                    <DateTimePicker
+                      value={startDate || new Date()}
+                      mode="datetime"
+                      display="default"
+                      onChange={handleStartDateChange}
+                    />
+                    {
+                      startDate &&
+                      <Text ml={5} color="#64B058">
+                        Start Date: {startDate
+                          .toLocaleString()}
+                      </Text>
+                    }
+                  </FormControl>
+
+                  {/* End Date */}
+                  <FormControl
+                    mt={5}
+                    isRequired
+                    isInvalid={
+                      errors.end_date_and_time &&
+                      touched.end_date_and_time
+                    }
+                    style={{
+                      flex: 1,
+                      alignItems: 'flex-start',
+                      justifyContent: 'flex-start',
+                      gap: 10,
+                    }}
+                  >
+                    <FormControl.Label>
+                      End date and time
+                    </FormControl.Label>
+
+                    <DateTimePicker
+                      value={endDate || new Date()}
+                      mode="datetime"
+                      display="default"
+                      onChange={handleEndDateChange}
+                    />
+                    {
+                      endDate &&
+                      <Text ml={5} color="#64B058">
+                        End Date: {endDate
+                          .toLocaleString()}
+                      </Text>
+                    }
+                  </FormControl>
+
+                  {/* Event Format */}
+                  <FormControl
+                    mt={5}
+                    isInvalid={
+                      errors.format &&
+                      touched.format
+                    }
+                  >
+                    <FormControl.Label>
+                      Is this event?
+                    </FormControl.Label>
+                    <Radio.Group
+                      name="format"
+                      value={values.format}
+                      onChange={(value) => {
+                        setFormat(value);
+                        handleChange("format")(value);
+                      }}
+                      onBlur={handleBlur("format")}
+                      style={{
+                        flexDirection: 'row',
+                        gap: 10,
+                        marginTop: 5
+                      }}
+                    >
+                      <Radio
+                        value="in-person"
+                        my={1}
+                      >
+                        In-Person
+                      </Radio>
+                      <Radio
+                        value="online"
+                        my={1}
+                      >
+                        Online
+                      </Radio>
+                      <Radio
+                        value="both"
+                        my={1}
+                      >
+                        Both
+                      </Radio>
+                    </Radio.Group>
+                    {
+                      errors.format && touched.format ? (
+                        <FormControl.ErrorMessage
+                          _text={{
+                            fontSize: "xs",
+                            color: "error.500",
+                            fontWeight: 500,
+                          }}
+                        >
+                          {errors.format}
+                        </FormControl.ErrorMessage>
+                      ) : null
+                    }
+                  </FormControl>
+
+                  {/* Event Link and/or Location */}
+                  <FormControl
+                    mx={7}
+                    isInvalid={
+                      errors.location &&
+                      touched.location
+                    }
+                  >
+                    {format === 'in-person' || format === 'both' ? (
+                      <View>
+                        <FormControl.Label mt={5}>
+                          Enter Location of Event
+                        </FormControl.Label>
+                        <Input
+                          variant="rounded"
+                          size="lg"
+                          placeholder="Building Name"
+                          value={location.building_name}
+                          style={{
+                            marginTop: 10,
+                          }}
+                          onChangeText={(value) => handleChangeLocation("building_name", value)}
+                        />
+                        <Input
+                          variant="rounded"
+                          size="lg"
+                          placeholder="Room"
+                          value={location.room}
+                          style={{
+                            marginTop: 10,
+                          }}
+                          onChangeText={(value) => handleChangeLocation("room", value)}
+                        />
+                        <Input
+                          variant="rounded"
+                          size="lg"
+                          placeholder="Street Address"
+                          value={location.address}
+                          style={{
+                            marginTop: 10,
+                          }}
+                          onChangeText={(value) => handleChangeLocation("address", value)}
+                        />
+                        <Input
+                          variant="rounded"
+                          size="lg"
+                          placeholder="City"
+                          value={location.city}
+                          style={{
+                            marginTop: 10,
+                          }}
+                          onChangeText={(value) => handleChangeLocation("city", value)}
                         />
                       </View>
-                    )
-                  }
-                </FormControl>
-
-                {/* Event Description */}
-                <FormControl
-                  mt={3}
-                  isRequired
-                  isInvalid={
-                    errors.description &&
-                    touched.description
-                  }
-                  style={{
-                    marginBottom: 10,
-                    gap: 10,
-                    marginTop: 30,
-                  }}
-                >
-                  <FormControl.Label>
-                    Event Description
-                  </FormControl.Label>
-                  <Input
-                    size="lg"
-                    borderRadius={25}
-                    placeholder="Description"
-                    textAlignVertical="top"
-                    multiline={true}
-                    height={40}
-                    onChangeText={handleChange("description")}
-                    onBlur={handleBlur("description")}
-                    value={values.description}
-                  />
-                  {
-                    errors.description && touched.description ? (
-                      <FormControl.ErrorMessage
-                        _text={{
-                          fontSize: "xs",
-                          color: "error.500",
-                          fontWeight: 500,
-                        }}
+                    ) : null}
+                    {format === 'online' || format === 'both' ? (
+                      <View
+                        mt={5}
+                        gap={2}
                       >
-                        {errors.description}
-                      </FormControl.ErrorMessage>
-                    ) : null
-                  }
-                </FormControl>
+                        <FormControl.Label>
+                          Link to Join Meeting
+                        </FormControl.Label>
 
-                {/* Submit Event */}
-                <Button
-                  mt={3}
-                  mb={10}
-                  bg="primary.400"
-                  isLoading={isSubmitting}
-                  loadingText="Sending..."
-                  disabled={isSubmitting}
-                  onPress={handleSubmit}
-                >
-                  SUBMIT EVENT
-                </Button>
-              </VStack>
-            )}
-          </Formik>
-        </VStack>
+                        <View>
+                          <Text
+                          >
+                            Select the type of link
+                          </Text>
 
-        {/* 
-                  * Modal for congratulating the user after the event 
-                  * is added successfully to the community.
-                  */}
-        <Modal
-          isOpen={isSent}
-          onClose={() => setIsSent(false)}
-        >
-          <Modal.Content
-            maxWidth={400}
-          >
-            <Modal.Body>
-              <Center
-                mb="5"
-              >
-                <FontAwesomeIcon
-                  name="check"
-                  size={90}
-                  color="green"
-                />
-                <Text
-                  fontSize="lg"
-                  fontWeight="bold"
-                  py="5"
-                >
-                  Event successfully added!
-                </Text>
-                <Text
-                  textAlign="center"
-                >
-                  People now can check your newly added event!
-                </Text>
-              </Center>
-              <Button
-                colorScheme={"gray"}
-                onPress={() => setIsSent(false)}
-              >
-                Back
-              </Button>
-            </Modal.Body>
-          </Modal.Content>
-        </Modal>
+                          <Select
+                            selectedValue={linkType}
+                            onValueChange={(value) => setLinkType(value)}
+                            mt={1}
+                          >
+                            <Select.Item
+                              label="Join"
+                              value="join"
+                            />
+                            <Select.Item
+                              label="Registration"
+                              value="registration"
+                            />
+                          </Select>
+                        </View>
+
+                        <Input
+                          variant="rounded"
+                          size="lg"
+                          placeholder="Paste link here"
+                          value={values.external_link}
+                          onChangeText={handleChange("external_link")}
+                          onBlur={handleBlur("external_link")}
+                          style={{
+                            marginTop: 10,
+                          }}
+                        />
+                      </View>
+                    ) : null}
+                  </FormControl>
+
+                  {/* Event Image */}
+                  <FormControl
+                    mt={5}
+                    isInvalid={
+                      errors.image && touched.image
+                    }
+                    style={{
+                      flex: 1,
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}
+                  >
+                    <FormControl.Label
+                      _text={{ textAlign: "center" }}
+                    >
+                      You can add an image to your event.
+                      It should be your own picture,
+                      or one you are sure is not
+                      copyrighted material.
+                    </FormControl.Label>
+                    <Button
+                      style={{
+                        width: "50%",
+                        marginTop: 10,
+                      }}
+                      onPress={handleSelectImage}
+                    >
+                      Select Image
+                    </Button>
+                    {
+                      imageUri && (
+                        <View
+                          style={{
+                            flex: 1,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: 10,
+                            marginBottom: 10
+                          }}
+                        >
+                          <Text
+                            mt={5}
+                            color="#64B058"
+                          >
+                            Selected image:
+                          </Text>
+                          <Image
+                            source={imageUri}
+                            style={{
+                              width: 200,
+                              height: 200,
+                            }}
+                            alt="image"
+                          />
+                        </View>
+                      )
+                    }
+                  </FormControl>
+
+                  {/* Event Description */}
+                  <FormControl
+                    mt={3}
+                    isRequired
+                    isInvalid={
+                      errors.description &&
+                      touched.description
+                    }
+                    style={{
+                      marginBottom: 10,
+                      gap: 10,
+                      marginTop: 30,
+                    }}
+                  >
+                    <FormControl.Label>
+                      Event Description
+                    </FormControl.Label>
+                    <Input
+                      size="lg"
+                      borderRadius={25}
+                      placeholder="Description"
+                      textAlignVertical="top"
+                      multiline={true}
+                      height={40}
+                      onChangeText={handleChange("description")}
+                      onBlur={handleBlur("description")}
+                      value={values.description}
+                    />
+                    {
+                      errors.description && touched.description ? (
+                        <FormControl.ErrorMessage
+                          _text={{
+                            fontSize: "xs",
+                            color: "error.500",
+                            fontWeight: 500,
+                          }}
+                        >
+                          {errors.description}
+                        </FormControl.ErrorMessage>
+                      ) : null
+                    }
+                  </FormControl>
+
+                  {/* Submit Event */}
+                  <Button
+                    mt={3}
+                    mb={10}
+                    bg="primary.400"
+                    isLoading={isSubmitting}
+                    loadingText="Sending..."
+                    disabled={isSubmitting}
+                    onPress={handleSubmit}
+                  >
+                    SUBMIT EVENT
+                  </Button>
+                </VStack>
+              )}
+            </Formik>
+          </VStack>
+        </KeyboardAvoidingView>
       </ScrollView>
+
+      {/* 
+        * Modal for congratulating the user after the event 
+        * is added successfully to the community.
+        */}
+      <Modal
+        isOpen={isSent}
+        onClose={() => setIsSent(false)}
+      >
+        <Modal.Content
+          maxWidth={400}
+        >
+          <Modal.Body>
+            <Center
+              mb="5"
+            >
+              <FontAwesomeIcon
+                name="check"
+                size={90}
+                color="green"
+              />
+              <Text
+                fontSize="lg"
+                fontWeight="bold"
+                py="5"
+              >
+                Event successfully added!
+              </Text>
+              <Text
+                textAlign="center"
+              >
+                People now can check your newly added event!
+              </Text>
+            </Center>
+            <Button
+              colorScheme={"gray"}
+              onPress={() => setIsSent(false)}
+            >
+              Back
+            </Button>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal>
     </View>
   );
 }
