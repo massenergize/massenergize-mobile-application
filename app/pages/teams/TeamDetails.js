@@ -26,7 +26,6 @@ import {
   Spacer,
   FormControl,
   Modal,
-  KeyboardAvoidingView,
 } from '@gluestack-ui/themed-native-base';
 import React, { useState } from 'react';
 import TeamCard from './TeamCard';
@@ -46,7 +45,7 @@ import { Formik } from 'formik';
 import { FontAwesomeIcon } from '../../components/icons';
 import { apiCall } from '../../api/functions';
 import MEImage from '../../components/image/MEImage';
-import { Dimensions, Platform, StyleSheet } from 'react-native';
+import { Dimensions, Platform, SafeAreaView, StyleSheet, KeyboardAvoidingView } from 'react-native';
 
 /* 
  * This serves as a validation schema to prevent the user to send a 
@@ -353,19 +352,16 @@ function TeamDetails({
   /* Generates the Contact tab */
   const generateContactTab = () => {
     return (
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-      >
-        <Box style={{marginBottom: 30}}>
+      <ScrollView>
+        <Box mb={10}>
           <VStack space="2">
             <Text fontWeight="bold" fontSize="lg">
               Contact admin of this team
             </Text>
             <Formik
               initialValues={{
-                subject: "",
-                message: ""
+                subject: '',
+                message: ''
               }}
               validationSchema={validationSchema}
               onSubmit={handleSendMessage}
@@ -377,100 +373,97 @@ function TeamDetails({
                 values,
                 errors,
                 touched,
+                isSubmitting
               }) => (
                 <VStack>
                   <FormControl
-                      mt={3}
-                      isRequired
-                      isInvalid={errors.subject && touched.subject}
-                    >
-                      <Input
-                        variant="rounded"
-                        size="lg"
-                        placeholder="Subject"
-                        onChangeText={handleChange("subject")}
-                        onBlur={handleBlur("subject")}
-                        value={values.subject}
-                      />
-                      {
-                        errors.subject && touched.subject ? (
-                          <FormControl.ErrorMessage
-                            _text={{
-                              fontSize: "xs",
-                              color: "error.500",
-                              fontWeight: 500,
-                            }}
-                          >
-                            {errors.subject}
-                          </FormControl.ErrorMessage>
-                        ) : null
-                      }
-                    </FormControl>
-                    <FormControl
-                      mt={3}
-                      isRequired
-                      isInvalid={errors.message && touched.message}
-                    >
-                      <Input
-                        size="lg"
-                        borderRadius={25}
-                        placeholder="Message"
-                        textAlignVertical="top"
-                        multiline={true}
-                        height={40}
-                        onChangeText={handleChange("message")}
-                        onBlur={handleBlur("message")}
-                        value={values.message}
-                      />
-                      {
-                        errors.message && touched.message ? (
-                          <FormControl.ErrorMessage
-                            _text={{
-                              fontSize: "xs",
-                              color: "error.500",
-                              fontWeight: 500,
-                            }}
-                          >
-                            {errors.message}
-                          </FormControl.ErrorMessage>
-                        ) : null
-                      }
-                    </FormControl>
-                    <Button
-                      mt={3}
-                      bg="primary.400"
-                      isLoading={isSubmitting}
-                      loadingText="Sending..."
-                      disabled={isSubmitting}
-                      onPress={handleSubmit}
-                    >
-                      SEND MESSAGE
-                    </Button>
+                    mt={3}
+                    isRequired
+                    isInvalid={errors.subject && touched.subject}
+                  >
+                    <Input
+                      variant="rounded"
+                      size="lg"
+                      placeholder="Subject"
+                      onChangeText={handleChange('subject')}
+                      onBlur={handleBlur('subject')}
+                      value={values.subject}
+                    />
+                    {errors.subject && touched.subject ? (
+                      <FormControl.ErrorMessage
+                        _text={{
+                          fontSize: 'xs',
+                          color: 'error.500',
+                          fontWeight: 500,
+                        }}
+                      >
+                        {errors.subject}
+                      </FormControl.ErrorMessage>
+                    ) : null}
+                  </FormControl>
+                  <FormControl
+                    mt={3}
+                    isRequired
+                    isInvalid={errors.message && touched.message}
+                  >
+                    <Input
+                      size="lg"
+                      borderRadius={25}
+                      placeholder="Message"
+                      textAlignVertical="top"
+                      multiline={true}
+                      height={120}
+                      onChangeText={handleChange('message')}
+                      onBlur={handleBlur('message')}
+                      value={values.message}
+                    />
+                    {errors.message && touched.message ? (
+                      <FormControl.ErrorMessage
+                        _text={{
+                          fontSize: 'xs',
+                          color: 'error.500',
+                          fontWeight: 500,
+                        }}
+                      >
+                        {errors.message}
+                      </FormControl.ErrorMessage>
+                    ) : null}
+                  </FormControl>
+                  <Button
+                    mt={3}
+                    bg="primary.400"
+                    isLoading={isSubmitting}
+                    loadingText="Sending..."
+                    disabled={isSubmitting}
+                    onPress={handleSubmit}
+                  >
+                    SEND MESSAGE
+                  </Button>
                 </VStack>
-              )} 
+              )}
             </Formik>
 
             <Modal isOpen={isSent} onClose={() => setIsSent(false)}>
               <Modal.Content maxWidth={400}>
                 <Modal.Body>
                   <Center mb="5">
-                      <FontAwesomeIcon name="paper-plane" size={90} color="green" />
-                      <Text fontSize="lg" fontWeight="bold" py="5">
-                        Message Sent!
-                      </Text>
-                      <Text textAlign="center">
-                        The admin of {team.name} will get in touch with you soon!
-                      </Text>
+                    <FontAwesomeIcon name="paper-plane" size={90} color="green" />
+                    <Text fontSize="lg" fontWeight="bold" py="5">
+                      Message Sent!
+                    </Text>
+                    <Text textAlign="center">
+                      The admin of {team.name} will get in touch with you soon!
+                    </Text>
                   </Center>
                   <Button colorScheme={"gray"} onPress={() => setIsSent(false)}>
-                      Back
+                    Back
                   </Button>
                 </Modal.Body>
               </Modal.Content>
             </Modal>
           </VStack>
         </Box>
-      </KeyboardAvoidingView>
+      </ScrollView>
     );
   };
 
@@ -540,59 +533,64 @@ function TeamDetails({
   return (
     <View bg="white" height="100%">
       <ScrollView>
-        <View>
-          {team.logo ? (
-            <MEImage
-              source={{ uri: team.logo.url }}
-              altComponent={<></>}
-              alt="image"
-              height={200}
-              mt={5}
-              resizeMode="contain"
-            />
-          ) : null}
-          <VStack space="3">
-            <Heading 
-              alignSelf="center"
-              textAlign="center" 
-              mt={5} 
-              px={5}
-            >
-              {team.name}
-            </Heading>
-
-            <Button
-              my={2}
-              mx={4}
-              onPress={() => joinTeam()}
-              style={{ backgroundColor: inTeam() ? 'red' : '#64B058' }}
-              isDisabled={isJoinLoading}
-            >
-              {inTeam() ? "Leave Team" : "Join Team"}
-            </Button>
-
-            <Center mx="5">
-              <ScrollView
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "position" : null}
+          keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
+        >
+          <View>
+            {team.logo ? (
+              <MEImage
+                source={{ uri: team.logo.url }}
+                altComponent={<></>}
+                alt="image"
+                height={200}
+                mt={5}
+                resizeMode="contain"
+              />
+            ) : null}
+            <VStack space="3">
+              <Heading 
+                alignSelf="center"
+                textAlign="center" 
+                mt={5} 
+                px={5}
               >
-                <HStack space="2">
-                  <TabButton label="About" name="about" />
-                  <TabButton label="Actions" name="actions" />
-                  <TabButtonMembers/>
-                  {
-                    subteams.length === 0 ? null :
-                    <TabButton label="Sub-teams" name="subTeams" />
-                  }
-                  <TabButton label="Contact" name="contact" />
-                </HStack>
-              </ScrollView>
-            </Center>
-            <Tab>
-              {renderTabContent()}
-            </Tab>
-          </VStack>
-        </View>
+                {team.name}
+              </Heading>
+
+              <Button
+                my={2}
+                mx={4}
+                onPress={() => joinTeam()}
+                style={{ backgroundColor: inTeam() ? 'red' : '#64B058' }}
+                isDisabled={isJoinLoading}
+              >
+                {inTeam() ? "Leave Team" : "Join Team"}
+              </Button>
+
+              <Center mx="5">
+                <ScrollView
+                  horizontal={true}
+                  showsHorizontalScrollIndicator={false}
+                >
+                  <HStack space="2">
+                    <TabButton label="About" name="about" />
+                    <TabButton label="Actions" name="actions" />
+                    <TabButtonMembers/>
+                    {
+                      subteams.length === 0 ? null :
+                      <TabButton label="Sub-teams" name="subTeams" />
+                    }
+                    <TabButton label="Contact" name="contact" />
+                  </HStack>
+                </ScrollView>
+              </Center>
+              <Tab>
+                {renderTabContent()}
+              </Tab>
+            </VStack>
+          </View>
+        </KeyboardAvoidingView>
       </ScrollView>
     </View>
   );
