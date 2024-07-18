@@ -77,8 +77,7 @@ export const fetchUserProfile = (idToken, cb) => dispatch => {
     .then(response => {
       console.log('ME USER LOADED IN!');
       if (!response.success) {
-        showError("Error fetching user profile!");
-        console.error('ERROR_FETCHING_USER_PROFILE', response.error);
+        console.warn('ERROR_FETCHING_USER_PROFILE', response.error);
         cb && cb(null, response.error);
         return;
       }
@@ -89,7 +88,7 @@ export const fetchUserProfile = (idToken, cb) => dispatch => {
       const error = err?.toString();
       cb && cb(null, error);
       console.error('ERROR_FETCHING_USER_PROFILE', error);
-      showError("Error fetching user profile!");
+      // showError("Error fetching user profile!");
     });
 };
 export const fetchCommunities = (data, cb) => dispatch => {
