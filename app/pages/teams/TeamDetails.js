@@ -5,7 +5,7 @@
  *      information as a component called TeamDetails.
  * 
  *      Written by: Moizes Almeida and William Soylemez
- *      Last edited: July 11, 2024
+ *      Last edited: July 18, 2024
  * 
  *****************************************************************************/
 
@@ -303,7 +303,30 @@ function TeamDetails({
     return <VStack space="2">
       {
         members.map((member, i) => {
-          return <Text fontSize="md" key={i}>{member.preferred_name}</Text>
+          return (
+            <View 
+              flex="1" 
+              alignItems="center" 
+              width="100%" 
+              flexDirection="row" 
+              gap={3}
+              mx={5}
+            >
+              <Ionicons 
+                name="person-outline" 
+                size={20} 
+                color="green" 
+              />
+
+              <Text 
+                fontWeight="300"
+                fontSize="md" 
+                key={i}
+              >
+                {member.preferred_name}
+              </Text>
+            </View>
+          )
         })
       }
     </VStack>;
