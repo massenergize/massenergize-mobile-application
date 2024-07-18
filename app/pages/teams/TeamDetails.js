@@ -5,7 +5,7 @@
  *      information as a component called TeamDetails.
  * 
  *      Written by: Moizes Almeida and William Soylemez
- *      Last edited: July 11, 2024
+ *      Last edited: July 18, 2024
  * 
  *****************************************************************************/
 
@@ -303,7 +303,30 @@ function TeamDetails({
     return <VStack space="2">
       {
         members.map((member, i) => {
-          return <Text fontSize="md" key={i}>{member.preferred_name}</Text>
+          return (
+            <View 
+              flex="1" 
+              alignItems="center" 
+              width="100%" 
+              flexDirection="row" 
+              gap={3}
+              mx={5}
+            >
+              <Ionicons 
+                name="person-outline" 
+                size={20} 
+                color="green" 
+              />
+
+              <Text 
+                fontWeight="300"
+                fontSize="md" 
+                key={i}
+              >
+                {member.preferred_name}
+              </Text>
+            </View>
+          )
         })
       }
     </VStack>;
@@ -502,69 +525,74 @@ function TeamDetails({
     );
   }
 
-  // console.log("team info: ", team);
+  /* When the app is loading, display an activity indicator */
+  if (isTeamLoading || isMembersLoading) {
+    return (
+      <View height="100%" bg="white">
+        <Center flex="1">
+          <Spinner />
+        </Center>
+      </View>
+    );
+  }
 
   /* Displays the DetailsScreen of the Team of the community */
   return (
     <View bg="white" height="100%">
       <ScrollView>
-        {isTeamLoading || isMembersLoading ? (
-          <Spinner />
-        ) : (
-          <View>
-            {team.logo ? (
-              <MEImage
-                source={{ uri: team.logo.url }}
-                altComponent={<></>}
-                alt="image"
-                height={200}
-                mt={5}
-                resizeMode="contain"
-              />
-            ) : null}
-            <VStack space="3">
-              <Heading 
-                alignSelf="center"
-                textAlign="center" 
-                mt={5} 
-                px={5}
-              >
-                {team.name}
-              </Heading>
+        <View>
+          {team.logo ? (
+            <MEImage
+              source={{ uri: team.logo.url }}
+              altComponent={<></>}
+              alt="image"
+              height={200}
+              mt={5}
+              resizeMode="contain"
+            />
+          ) : null}
+          <VStack space="3">
+            <Heading 
+              alignSelf="center"
+              textAlign="center" 
+              mt={5} 
+              px={5}
+            >
+              {team.name}
+            </Heading>
 
-              <Button
-                my={2}
-                mx={4}
-                onPress={() => joinTeam()}
-                style={{ backgroundColor: inTeam() ? 'red' : '#64B058' }}
-                isDisabled={isJoinLoading}
-              >
-                {inTeam() ? "Leave Team" : "Join Team"}
-              </Button>
+            <Button
+              my={2}
+              mx={4}
+              onPress={() => joinTeam()}
+              style={{ backgroundColor: inTeam() ? 'red' : '#64B058' }}
+              isDisabled={isJoinLoading}
+            >
+              {inTeam() ? "Leave Team" : "Join Team"}
+            </Button>
 
-              <Center mx="5">
-                <ScrollView
-                  horizontal={true}
-                  showsHorizontalScrollIndicator={false}
-                >
-                  <HStack space="2">
-                    <TabButton label="About" name="about" />
-                    <TabButton label="Actions" name="actions" />
-                    <TabButtonMembers/>
-                    {
-                      subteams.length === 0 ? null :
-                      <TabButton label="Sub-teams" name="subTeams" />
-                    }
-                    <TabButton label="Contact" name="contact" />
-                  </HStack>
-                </ScrollView>
-              </Center>
-              <Tab>
-                {renderTabContent()}
-              </Tab>
-            </VStack>
-          </View>
-        )}
+            <Center mx="5">
+              <ScrollView
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+              >
+                <HStack space="2">
+                  <TabButton label="About" name="about" />
+                  <TabButton label="Actions" name="actions" />
+                  <TabButtonMembers/>
+                  {
+                    subteams.length === 0 ? null :
+                    <TabButton label="Sub-teams" name="subTeams" />
+                  }
+                  <TabButton label="Contact" name="contact" />
+                </HStack>
+              </ScrollView>
+            </Center>
+            <Tab>
+              {renderTabContent()}
+            </Tab>
+          </VStack>
+        </View>
       </ScrollView>
     </View>
   );

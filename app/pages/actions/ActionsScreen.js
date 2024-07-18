@@ -6,7 +6,7 @@
  *      impact, and cost.
  * 
  *      Written by: William Soylemez and Moizes Almeida
- *      Last edited: July 12, 2024
+ *      Last edited: July 18, 2024
  * 
  *****************************************************************************/
 
@@ -267,7 +267,7 @@ const ActionsScreen = ({ navigation, actions, questionnaire }) => {
         <ScrollView
           horizontal={true}
           persistentScrollbar={true}
-          showsHorizontalScrollIndicator={true}
+          showsHorizontalScrollIndicator={false}
         >
           <HStack
             space={2}
