@@ -5,33 +5,40 @@
  *      single testimonial.
  * 
  *      Written by: William Soylemez and Moizes Almeida
- *      Last edited: July 12, 2024
+ *      Last edited: July 18, 2024
  * 
  *****************************************************************************/
 
 /* Imports and set up */
 import React from "react";
 import Moment from 'moment';
-import { 
-  VStack, 
-  Text, 
-  Spinner, 
-  Center 
+import {
+  VStack,
+  Text,
+  Spinner,
+  Center,
+  Badge
 } from "@gluestack-ui/themed-native-base";
-import { ScrollView, View, useWindowDimensions } from "react-native";
+import { Alert, Pressable, ScrollView, View, useWindowDimensions } from "react-native";
 import ActionCard from "../actions/ActionCard.js";
 import ServiceProviderCard from "../service-providers/ServiceProviderCard.js";
 import HTMLParser from "../../utils/HTMLParser.js";
 import { useDetails } from "../../utils/hooks.js";
-import { getActionMetric } from "../../utils/common.js";
+import { getActionMetric, showError, showSuccess } from "../../utils/common.js";
 import { connect } from "react-redux";
 import MEImage from "../../components/image/MEImage.js";
+import { IonicIcon } from "../../components/icons/index.js";
+import { COLOR_SCHEME } from "../../stylesheet/index.js";
+import { apiCall } from "../../api/functions.js";
+import { removeTestimonialAction } from "../../config/redux/actions.js";
+import { bindActionCreators } from "redux";
 
-function TestimonialDetails({ 
-  route, 
-  navigation, 
-  vendorsSettings, 
-  actions 
+function TestimonialDetails({
+  route,
+  navigation,
+  vendorsSettings,
+  actions,
+  removeTestimonial
 }) {
   /* Gets the dimensions of the user's phone */
   const { width } = useWindowDimensions();
@@ -44,15 +51,56 @@ function TestimonialDetails({
    * testimonial from the API.
    */
   const [testimonial, isTestimonialLoading] = useDetails(
-    "testimonials.info", 
+    "testimonials.info",
     { testimonial_id: testimonial_id }
   );
 
   /* Retrieved the information about the associated action of the testiminal */
-  const testimonialAction = actions.find(
-    action => testimonial?.action && 
-    action.id === testimonial.action.id
+  const testimonialAction = actions?.find(
+    action => testimonial?.action &&
+      action.id === testimonial.action.id
   );
+
+  /* Opens the AddTestimonial page in edit mode */
+  const editTestimonial = () => {
+    navigation.navigate("AddTestimonial", {
+      testimonial: testimonial,
+      editMode: true
+    });
+  };
+
+  /* Deletes the testimonial */
+  const deleteTestimonial = () => {
+    const doDeletion = () => {
+      apiCall("testimonials.delete", { testimonial_id: testimonial.id })
+        .then((response) => {
+          console.log(response);
+          removeTestimonial(testimonial.id);
+          showSuccess("Testimonial deleted successfully.");
+          navigation.goBack();
+        })
+        .catch((error) => {
+          console.error(error);
+          showError("Error deleting testimonial. Please try again.");
+        });
+    }
+
+    Alert.alert(
+      "Delete Testimonial",
+      "Are you sure you want to delete this testimonial?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel"
+        },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: doDeletion
+        }
+      ]
+    );
+  };
 
   /* Displays the testimonial information in the page */
   return (
@@ -84,7 +132,7 @@ function TestimonialDetails({
                 <Text fontSize="md" color="#BAB9C0" mb={3}>
                   {/* If there's no author, display it as Anonymous */}
                   By {testimonial.preferred_name || 'Anonymous'} | {""}
-                     {Moment(testimonial.created_at).format('ll')}
+                  {Moment(testimonial.created_at).format('ll')}
                 </Text>
 
                 {/* Body */}
@@ -97,10 +145,10 @@ function TestimonialDetails({
                   testimonialAction
                     ? (
                       <View>
-                        <Text 
-                          bold 
-                          fontSize="lg" 
-                          mb={3} 
+                        <Text
+                          bold
+                          fontSize="lg"
+                          mb={3}
                           mt={5}
                         >
                           Associated Action
@@ -124,14 +172,14 @@ function TestimonialDetails({
 
                 {/* Associated vendor */}
                 {
-                  (vendorsSettings.is_published && 
+                  (vendorsSettings.is_published &&
                     testimonial.vendor != null)
                     ? (
                       <View>
-                        <Text 
-                          bold 
+                        <Text
+                          bold
                           fontSize="lg"
-                          mb={2} 
+                          mb={2}
                           mt={7}
                         >
                           Related Vendor
@@ -143,8 +191,8 @@ function TestimonialDetails({
                           name={testimonial.vendor.name}
                           description="Description of the service provider."
                           imageURI={
-                            (testimonial.vendor.logo) 
-                              ? testimonial.vendor.logo.url 
+                            (testimonial.vendor.logo)
+                              ? testimonial.vendor.logo.url
                               : null
                           }
                           navigation={navigation}
@@ -153,6 +201,76 @@ function TestimonialDetails({
                       </View>
                     ) : <></>
                 }
+
+                {/* For pending testimonials */}
+                {testimonial.is_approved === false && (
+                  <View
+                    width="100%"
+                    style={{
+                      marginTop: 40,
+                    }}
+                  >
+                    <Text
+                      colorScheme="red"
+                      style={{
+                        backgroundColor: '#DC4E34',
+                        color: 'white',
+                        padding: 5,
+                        textAlign: 'center',
+                        marginHorizontal: 40,
+                      }}
+                    >
+                      Pending Approval
+                    </Text>
+
+                    {/* Edit button */}
+                    <Pressable
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'center',
+                        marginTop: 10,
+                      }}
+                      onPress={editTestimonial}
+                    >
+                      <IonicIcon
+                        name="pencil"
+                        size={20}
+                        color={COLOR_SCHEME.GREEN}
+                      />
+                      <Text
+                        color={COLOR_SCHEME.GREEN}
+                        ml={2}
+                      >
+                        Edit Testimonial
+                      </Text>
+                    </Pressable>
+
+                    {/* Delete button - edit: turns out you can't delete currently? oh well */}
+                    {/* <Pressable
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'center',
+                        marginTop: 10,
+                      }}
+                      onPress={deleteTestimonial}
+                    >
+                      <IonicIcon
+                        name="trash"
+                        size={20}
+                        color="#DC4E34"
+                      />
+                      <Text
+                        color="#DC4E34"
+                        ml={2}
+                      >
+                        Delete Testimonial
+                      </Text>
+                    </Pressable> */}
+
+                  </View>
+                )}
+
+
               </VStack>
             </ScrollView>
           )
@@ -176,4 +294,10 @@ const mapStateToProps = state => {
   }
 };
 
-export default connect(mapStateToProps)(TestimonialDetails);
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators({
+    removeTestimonial: removeTestimonialAction
+}, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(TestimonialDetails);

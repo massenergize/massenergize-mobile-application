@@ -23,14 +23,14 @@ function TestimonialCard({
   return (
     <Pressable
       onPress={() => {
-        if (data.is_approved) {
+        if (data.is_approved || true) {
           navigation.navigate(
             "TestimonialDetails",
             { data: data, testimonial_id: data.id }
           );
         }
       }}
-      disabled={!data.is_approved}
+      // disabled={!data.is_approved}
     >
       <Box
         mx={3}

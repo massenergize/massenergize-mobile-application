@@ -57,14 +57,22 @@ const AddTestimonial = ({
   user, 
   activeCommunity, 
   testimonials, 
-  setTestimonials 
+  setTestimonials,
+  route
 }) => {
+  /* If given a testimonial, it will be in edit mode */
+  const { testimonial, editMode } = route.params;
+  const testimonialAction = actions.find(
+    action => testimonial?.action &&
+      action.id === testimonial.action.id
+  );
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSent, setIsSent] = useState(false);
 
   /* Uses local state to save the uri of the selected image */
-  const [imageUri, setImageUri] = useState(null);
+  const [imageUri, setImageUri] = useState(testimonial?.file?.url ?? null);
+
 
   /* 
    * Function that handles the selection of an image for the newly 
@@ -108,10 +116,11 @@ const AddTestimonial = ({
       title: values.title,
       body: values.description,
       community_id: activeCommunity.id,
-      rank: 0
+      rank: 0,
+      ...(editMode && { testimonial_id: testimonial.id }),
     };
 
-    apiCall('testimonials.add', data)
+    apiCall(editMode ? 'testimonials.update' : 'testimonials.add', data)
     .then((response) => {
       setIsSubmitting(false);
       setIsSent(true);
@@ -121,12 +130,16 @@ const AddTestimonial = ({
         console.error('ERROR_ADDING_TESTIMONIAL:', response);
         return;
       }
-      showSuccess('Testimonial added successfully.');
+      showSuccess(`Testimonial ${editMode ? 'edited' : 'added' } successfully.`);
       console.log('TESTIMONIAL_ADDED');
 
       /* Add the new testimonial to the redux store */
-      setTestimonials([response.data, ...testimonials]);
-      navigation.goBack();
+      if (editMode) {
+        setTestimonials(testimonials.map(t => t.id === testimonial.id ? response.data : t));
+      } else {
+        setTestimonials([response.data, ...testimonials]);
+      }
+      navigation.navigate('Testimonials');
     })
     .catch((error) => {
       console.error('ERROR_ADDING_TESTIMONIAL:', error);
@@ -149,11 +162,12 @@ const AddTestimonial = ({
         >
           <Formik
             initialValues={{ 
-              action: '', 
-              name: user.preferred_name, 
-              title: '', 
+              action: testimonialAction ?? '',
+              name: testimonial.preferred_name ?? user.preferred_name, 
+              title: testimonial?.title ?? '',
               image: null,
-              description: ''}} 
+              description: testimonial?.body ?? '',
+            }} 
             validationSchema={validationSchema}
             onSubmit={onSubmit}
           >
@@ -306,11 +320,11 @@ const AddTestimonial = ({
         </KeyboardAvoidingView>
       </ScrollView>
 
-      <Modal
+      {/* <Modal
         isOpen={isSent}
         onClose={() => setIsSent(false)}
       >
-        <Modal.Content maxWidth="400px">
+        <Modal.Content maxWidth={400}>
           <Modal.Body>
             <Center mb="5">
               <Icon
@@ -338,7 +352,7 @@ const AddTestimonial = ({
             </Button>
           </Modal.Body>
         </Modal.Content>
-      </Modal>
+      </Modal> */}
     </View>
   );
 }

@@ -68,6 +68,21 @@ export const setActionWithValue = (type, payload) => {
   return {type, payload};
 };
 
+/* Actions that don't require API calls */
+export const removeTestimonialAction = (testimonial_id) => (dispatch, getState) => {
+  const state = getState(); // Access the current state
+  const updatedTestimonials = state.testimonials.filter(
+    testimonial => testimonial.id !== testimonial_id
+  );
+  dispatch(
+    setActionWithValue(
+      SET_TESTIMONIALS_LIST,
+      updatedTestimonials
+    )
+  );
+};
+
+
 /* Actions with API calls */
 
 /* Fetches the user profile from the backend and sets it in the redux store */
