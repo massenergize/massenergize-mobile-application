@@ -7,14 +7,24 @@
  *      their account. Most functionality comes from modals in other files.
  * 
  *      Written by: William Soylemez and Moizes Almeida
- *      Last edited: June 26, 2024
+ *      Last edited: July 18, 2024
  * 
  *****************************************************************************/
 
 /* Imports and set up */
 import React, { useState } from "react";
-import { TouchableOpacity, View } from "react-native";
-import { Flex, Icon, Text, VStack } from "@gluestack-ui/themed-native-base";
+import { 
+  TouchableOpacity, 
+  View, 
+  KeyboardAvoidingView 
+} from "react-native";
+import { 
+  Flex, 
+  Icon,
+  ScrollView, 
+  Text, 
+  VStack 
+} from "@gluestack-ui/themed-native-base";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import EditProfileModal from "./settingsModals/EditProfileModal";
 import ChangeEmailModal from "./settingsModals/ChangeEmailModal";
@@ -84,55 +94,77 @@ function SettingsPage({ navigation, fireAuth }) {
   /* Displays the settings page */
   return (
     <View style={{ height: '100%', backgroundColor: 'white' }}>
+      <ScrollView>
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
+        >
+          {/* Buttons to open modals */}
+          <VStack 
+            space="5" 
+            pt="10" 
+            padding="5"
+          >
+            {( SettingOptions.map((option, index) =>
+              (
+                hasProvider(fireAuth, option.requiredAuth) 
+                || !option.requiredAuth
+              ) && (
+                  <TouchableOpacity
+                    key={index}
+                    onPress={() => handleOpenModal(option.name)}
+                  >
+                    <Flex flexDirection="row" alignItems="center">
+                      <Icon
+                        as={FontAwesome}
+                        name={option.icon}
+                        size="md"
+                        color="primary.600"
+                        textAlign="center"
+                      />
 
-      {/* Buttons to open modals */}
-      <VStack space="5" pt="10" padding="5">
-        {( SettingOptions.map((option, index) =>
-          (
-            hasProvider(fireAuth, option.requiredAuth) || !option.requiredAuth
-          ) && (
-              <TouchableOpacity
-                key={index}
-                onPress={() => handleOpenModal(option.name)}
-              >
-                <Flex flexDirection="row" alignItems="center">
-                  <Icon
-                    as={FontAwesome}
-                    name={option.icon}
-                    size="md"
-                    color="primary.600"
-                    textAlign="center"
-                  />
-                  <Text fontSize="md" flexGrow="1" style={{ marginLeft: 10}}>
-                    {" "}
-                    {option.label}{" "}
-                  </Text>
-                  <Icon
-                    as={FontAwesome}
-                    name="arrow-right"
-                    size="md"
-                    color="primary.600"
-                  />
-                </Flex>
-              </TouchableOpacity>
-            )
-        ))}
+                      <Text 
+                        fontSize="md" 
+                        flexGrow="1" 
+                        style={{ marginLeft: 10}}
+                      >
+                        {" "}
+                        {option.label}{" "}
+                      </Text>
 
-        {/* Actual modal list (hidden initially) */}
-        <EditProfileModal isOpen={isEMPOpen} setIsOpen={setIsEMPOpen} />
-        <ChangeEmailModal isOpen={isCMEOpen} setIsOpen={setIsCMEOpen} />
-        <ChangePasswordModal isOpen={isCMPOpen} setIsOpen={setIsCMPOpen} />
-        <ChangeNotificationModal isOpen={isNPOpen} setIsOpen={setIsNPOpen} />
-        <DeleteAccountModal
-          isOpen={isDAOpen}
-          setIsOpen={setIsDAOpen}
-          navigation={navigation}
-        />
-      </VStack>
+                      <Icon
+                        as={FontAwesome}
+                        name="arrow-right"
+                        size="md"
+                        color="primary.600"
+                      />
+                    </Flex>
+                  </TouchableOpacity>
+                )
+            ))}
+
+            {/* Actual modal list (hidden initially) */}
+            <EditProfileModal isOpen={isEMPOpen} setIsOpen={setIsEMPOpen} />
+            <ChangeEmailModal isOpen={isCMEOpen} setIsOpen={setIsCMEOpen} />
+            <ChangePasswordModal isOpen={isCMPOpen} setIsOpen={setIsCMPOpen} />
+            <ChangeNotificationModal isOpen={isNPOpen} setIsOpen={setIsNPOpen} />
+            <DeleteAccountModal
+              isOpen={isDAOpen}
+              setIsOpen={setIsDAOpen}
+              navigation={navigation}
+            />
+          </VStack>
+        </KeyboardAvoidingView>
+      </ScrollView>
     </View>
   );
 }
 
+/* 
+ * Transforms the local state of the app into the properties of the 
+ * SettingsPage function, in which it is got from the API.
+ */
 const mapStateToProps = (state) => {
   return {
     fireAuth: state.fireAuth,

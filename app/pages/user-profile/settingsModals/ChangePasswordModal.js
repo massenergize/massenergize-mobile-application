@@ -1,24 +1,38 @@
 /******************************************************************************
  *                            ChangePasswordModal
  * 
- *      Displays a modal that allows the user to change their password
+ *      Displays a modal that allows the user to change their password.
  * 
  *      Written by: William Soylemez and Moizes Almeida
- *      Last edited: July 3, 2024
+ *      Last edited: July 18, 2024
  * 
  *****************************************************************************/
 
+/* Imports and set up */
 import React, { useState } from "react";
-
 import * as Yup from "yup";
 import { Formik } from "formik";
-import { Modal, FormControl, Input, Text, Button } from "@gluestack-ui/themed-native-base";
+import { 
+  Modal, 
+  FormControl, 
+  Input, 
+  Text, 
+  Button, 
+  ScrollView,
+  View,
+} from "@gluestack-ui/themed-native-base";
 import { showError, showSuccess } from "../../../utils/common";
 import { connect } from "react-redux";
-
-import auth from '@react-native-firebase/auth';
 import { reauthnticateWithEmail } from "../../../config/firebase";
+import {
+  Platform,
+  KeyboardAvoidingView
+} from 'react-native';
 
+/* 
+ * This serves as a validation schema to prevent the user to change their
+ * password unless all the required fields are filled. 
+ */
 const validationSchema = Yup.object().shape({
   oldPassword: Yup.string().required("Old password is required"),
   newPassword: Yup.string().required("New password is required"),
@@ -28,6 +42,10 @@ const validationSchema = Yup.object().shape({
 });
 
 const ChangePasswordModal = ({ isOpen, setIsOpen, fireAuth }) => {
+  /* 
+   * Uses local state to determine whether the user has clicked on the 
+   * 'Submit' button and is submitting his new email address. 
+   */
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   /* Function to handle form submission */
@@ -58,112 +76,145 @@ const ChangePasswordModal = ({ isOpen, setIsOpen, fireAuth }) => {
       .finally(() => setIsSubmitting(false));
   };
 
+  /* Displays the Change Password Modal */
   return (
-    <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
-      <Formik
-        initialValues={{
-          oldPassword: "",
-          newPassword: "",
-          confirmPassword: "",
-        }}
-        onSubmit={handleSubmit}
-        validationSchema={validationSchema}
+    <Modal 
+      isOpen={isOpen} 
+      onClose={() => setIsOpen(false)}
+    >
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
+        style={{ flex: 1 }}
       >
-        {({
-          handleChange,
-          handleBlur,
-          handleSubmit,
-          values,
-          errors,
-          touched,
-        }) => (
-          <Modal.Content maxWidth={400}>
-            <Modal.CloseButton />
-
-            {/* Header */}
-            <Modal.Header>Change Password</Modal.Header>
-            <Modal.Body>
-              <FormControl>
-
-                {/* Old Password */}
-                <FormControl.Label>Old Password</FormControl.Label>
-                <Input
-                  variant="rounded"
-                  size="lg"
-                  onChangeText={handleChange("oldPassword")}
-                  onBlur={handleBlur("oldPassword")}
-                  value={values.oldPassword}
-                  placeholder="Old Password"
-                  type="password"
-                  isInvalid={touched.oldPassword && errors.oldPassword}
-                />
-                {touched.oldPassword && errors.oldPassword && (
-                  <Text color="red.500">{errors.oldPassword}</Text>
-                )}
-              </FormControl>
-
-              {/* New Password */}
-              <FormControl mt={3}>
-                <FormControl.Label>New Password</FormControl.Label>
-                <Input
-                  variant="rounded"
-                  size="lg"
-                  onChangeText={handleChange("newPassword")}
-                  onBlur={handleBlur("newPassword")}
-                  value={values.newPassword}
-                  placeholder="New Password"
-                  type="password"
-                  isInvalid={touched.newPassword && errors.newPassword}
-                />
-                {touched.newPassword && errors.newPassword && (
-                  <Text color="red.500">{errors.newPassword}</Text>
-                )}
-              </FormControl>
-
-              <FormControl mt={3}>
-                <FormControl.Label>Confirm Password</FormControl.Label>
-                <Input
-                  variant="rounded"
-                  size="lg"
-                  onChangeText={handleChange("confirmPassword")}
-                  onBlur={handleBlur("confirmPassword")}
-                  value={values.confirmPassword}
-                  placeholder="Confirm Password"
-                  type="password"
-                  isInvalid={touched.confirmPassword && errors.confirmPassword}
-                />
-                {touched.confirmPassword && errors.confirmPassword && (
-                  <Text color="red.500">{errors.confirmPassword}</Text>
-                )}
-              </FormControl>
-            </Modal.Body>
-
-            {/* Footer */}
-            <Modal.Footer>
-              <Button.Group>
-                <Button
-                  variant="ghost"
-                  _text={{ color: "muted.400" }}
-                  onPress={() => setIsOpen(false)}
+        <ScrollView
+          contentContainerStyle={{
+            flexGrow: 1,
+            justifyContent: 'center'
+          }}
+        >
+          <View style={{ width: 300, alignSelf: 'center' }}>
+            <Formik
+              initialValues={{
+                oldPassword: "",
+                newPassword: "",
+                confirmPassword: "",
+              }}
+              onSubmit={handleSubmit}
+              validationSchema={validationSchema}
+            >
+              {({
+                handleChange,
+                handleBlur,
+                handleSubmit,
+                values,
+                errors,
+                touched,
+              }) => (
+                <Modal.Content
+                  style={{ width: 300 }}
+                  alignSelf="center"
                 >
-                  Cancel
-                </Button>
-                <Button
-                  isLoading={isSubmitting}
-                  isLoadingText="Updating..."
-                  onPress={handleSubmit}
-                >
-                  Update
-                </Button>
-              </Button.Group>
-            </Modal.Footer>
-          </Modal.Content>
-        )}
-      </Formik>
+                  {/* Close Button */}
+                  <Modal.CloseButton />
+
+                  {/* Header */}
+                  <Modal.Header>Change Password</Modal.Header>
+
+                  {/* Modal Body */}
+                  <Modal.Body>
+                    <FormControl>
+
+                      {/* Old Password */}
+                      <FormControl.Label>Old Password</FormControl.Label>
+                      <Input
+                        variant="rounded"
+                        size="lg"
+                        onChangeText={handleChange("oldPassword")}
+                        onBlur={handleBlur("oldPassword")}
+                        value={values.oldPassword}
+                        placeholder="Old Password"
+                        type="password"
+                        isInvalid={touched.oldPassword && errors.oldPassword}
+                      />
+                      {touched.oldPassword && errors.oldPassword && (
+                        <Text color="red.500">{errors.oldPassword}</Text>
+                      )}
+                    </FormControl>
+
+                    {/* New Password */}
+                    <FormControl mt={3}>
+                      <FormControl.Label>New Password</FormControl.Label>
+                      <Input
+                        variant="rounded"
+                        size="lg"
+                        onChangeText={handleChange("newPassword")}
+                        onBlur={handleBlur("newPassword")}
+                        value={values.newPassword}
+                        placeholder="New Password"
+                        type="password"
+                        isInvalid={touched.newPassword && errors.newPassword}
+                      />
+                      {touched.newPassword && errors.newPassword && (
+                        <Text color="red.500">{errors.newPassword}</Text>
+                      )}
+                    </FormControl>
+                    
+                    {/* Confirm Password */}
+                    <FormControl mt={3}>
+                      <FormControl.Label>Confirm Password</FormControl.Label>
+                      <Input
+                        variant="rounded"
+                        size="lg"
+                        onChangeText={handleChange("confirmPassword")}
+                        onBlur={handleBlur("confirmPassword")}
+                        value={values.confirmPassword}
+                        placeholder="Confirm Password"
+                        type="password"
+                        isInvalid={touched.confirmPassword && errors.confirmPassword}
+                      />
+                      {touched.confirmPassword && errors.confirmPassword && (
+                        <Text color="red.500">{errors.confirmPassword}</Text>
+                      )}
+                    </FormControl>
+                  </Modal.Body>
+
+                  {/* Footer */}
+                  <Modal.Footer>
+                    <Button.Group>
+                      {/* Close Button */}
+                      <Button
+                        variant="ghost"
+                        _text={{ color: "muted.400" }}
+                        onPress={() => setIsOpen(false)}
+                      >
+                        Cancel
+                      </Button>
+
+                      {/* Submit Button */}
+                      <Button
+                        isLoading={isSubmitting}
+                        isLoadingText="Updating..."
+                        onPress={handleSubmit}
+                      >
+                        Update
+                      </Button>
+                    </Button.Group>
+                  </Modal.Footer>
+                </Modal.Content>
+              )}
+            </Formik>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </Modal>
   );
 };
 
+/* 
+ * Transforms the local state of the app into the properties of the 
+ * ChangePasswordModal function, in which it is got from the API.
+ */
 const mapStateToProps = (state) => {
   return {
     fireAuth: state.fireAuth

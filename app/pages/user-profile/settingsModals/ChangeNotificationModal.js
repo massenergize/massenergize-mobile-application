@@ -5,25 +5,47 @@
  *      notification frequency. It is used in the settings page.
  * 
  *      Written by: William Soylemez and Moizes Almeida
- *      Last edited: July 3, 2024
+ *      Last edited: July 18, 2024
  * 
  *****************************************************************************/
 
+/* Imports and set up */
 import React, { useState } from "react";
-import { Modal, Radio, Text, Button } from "@gluestack-ui/themed-native-base";
+import { 
+  Modal, 
+  Radio, 
+  Text, 
+  Button 
+} from "@gluestack-ui/themed-native-base";
 import { showError, showSuccess } from "../../../utils/common";
 import { connect } from "react-redux";
 import { updateUserAction } from "../../../config/redux/actions";
 
 const ChangeNotificationModal = ({ isOpen, setIsOpen, user }) => {
+  /* 
+   * Uses local state to determine whether the user has clicked on the 
+   * 'Submit' button and is submitting his new notification preferences. 
+   */
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const initialState = Object.keys(user?.preferences?.user_portal_settings?.communication_prefs?.update_frequency ?? {})[0];
-  const [notificationFrequency, setNotificationFrequency] = useState(initialState || "per_day");
+
+  /* Starts with the user's previous notification preferences. */
+  const initialState = Object.keys(
+    user?.preferences?.user_portal_settings?.communication_prefs?.update_frequency 
+      ?? {}
+  )[0];
+  
+  /* 
+   * If the user doesnt have a notification preferences, then use local 
+   * state to set their notification preferences to be 'Per Day'. 
+   */
+  const [notificationFrequency, setNotificationFrequency] = useState(
+    initialState || "per_day"
+  );
 
   /* Function to handle saving the new notification frequency */
   const handleSave = () => {
 
-    // For some reason we have to give it all the old preferences as well
+    /* For some reason we have to give it all the old preferences as well */
     let preferences = user?.preferences;
     delete preferences
       .user_portal_settings
@@ -54,14 +76,17 @@ const ChangeNotificationModal = ({ isOpen, setIsOpen, user }) => {
     setIsOpen(false);
   };
 
-
+  /* Displays the Notification Modal */
   return (
     <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
       <Modal.Content maxWidth={400}>
+        {/* Close Button */}
         <Modal.CloseButton />
 
         {/* Header */}
         <Modal.Header>Communication Preferences</Modal.Header>
+
+        {/* Modal Body */}
         <Modal.Body>
           <Text mb="3" fontWeight="300" fontSize="md">
             How often would you like to be notified about new events?
@@ -95,9 +120,12 @@ const ChangeNotificationModal = ({ isOpen, setIsOpen, user }) => {
         {/* Footer */}
         <Modal.Footer>
           <Button.Group>
+            {/* Cancel Button  */}
             <Button variant="ghost" onPress={() => setIsOpen(false)}>
               Cancel
             </Button>
+
+            {/* Submit Button */}
             <Button
               isLoading={isSubmitting}
               isLoadingText="Saving..."
@@ -112,6 +140,10 @@ const ChangeNotificationModal = ({ isOpen, setIsOpen, user }) => {
   );
 };
 
+/* 
+ * Transforms the local state of the app into the properties of the 
+ * ChangeNotificationModal function, in which it is got from the API.
+ */
 const mapStateToProps = (state) => {
   return {
     user: state.user
