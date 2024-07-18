@@ -5,7 +5,7 @@
  *      an event to the selected community.
  * 
  *      Written by: Moizes Almeida and Will Soylemez
- *      Last edited: July 12, 2024
+ *      Last edited: July 18, 2024
  * 
  *****************************************************************************/
 
@@ -106,14 +106,14 @@ const AddEvent = ({
    * and starts assuming that the event will take place in some 
    * location within the state of Massachusetts.
    */
-  let location = {
+  const [location, setLocation] = useState({
     "address": null,
     "city": null,
     "country": "US",
     "state": "MA",
-    "building_name": "",
+    "building": null,
     "room": "",
-  }
+  });
 
   /* 
    * Function that handles the selection of an image for the newly 
@@ -156,6 +156,11 @@ const AddEvent = ({
     }
   };
 
+  /* Function that handles the user changing location data */
+  const handleChangeLocation = (field, value) => {
+    setLocation({ ...location, [field]: value });
+  };
+
   /* 
    * Function that handles the action of the user of clicking in the
    * 'Add Event' button.
@@ -179,13 +184,13 @@ const AddEvent = ({
 
     apiCall("events.add", data).then((response) => {
       setIsSubmitting(false);
-      
+
       if (!response.success) {
         showError('An error occurred while adding event. Please try again.');
         console.error('ERROR_ADDING_EVENT: ', response);
         return;
       }
-      
+
       console.log('EVENT_ADDED');
       setIsSent(true);
       /* Add the new event to the redux store */
@@ -423,6 +428,7 @@ const AddEvent = ({
                         style={{
                           marginTop: 10,
                         }}
+                        onChangeText={(value) => handleChangeLocation("building_name", value)}
                       />
                       <Input
                         variant="rounded"
@@ -432,6 +438,7 @@ const AddEvent = ({
                         style={{
                           marginTop: 10,
                         }}
+                        onChangeText={(value) => handleChangeLocation("room", value)}
                       />
                       <Input
                         variant="rounded"
@@ -441,6 +448,7 @@ const AddEvent = ({
                         style={{
                           marginTop: 10,
                         }}
+                        onChangeText={(value) => handleChangeLocation("address", value)}
                       />
                       <Input
                         variant="rounded"
@@ -450,15 +458,7 @@ const AddEvent = ({
                         style={{
                           marginTop: 10,
                         }}
-                      />
-                      <Input
-                        variant="rounded"
-                        size="lg"
-                        placeholder="State"
-                        value={location.state}
-                        style={{
-                          marginTop: 10,
-                        }}
+                        onChangeText={(value) => handleChangeLocation("city", value)}
                       />
                     </View>
                   ) : null}
@@ -482,13 +482,13 @@ const AddEvent = ({
                           onValueChange={(value) => setLinkType(value)}
                           mt={1}
                         >
-                          <Select.Item 
-                            label="Join" 
+                          <Select.Item
+                            label="Join"
                             value="join"
                           />
-                          <Select.Item 
-                            label="Registration" 
-                            value="registration" 
+                          <Select.Item
+                            label="Registration"
+                            value="registration"
                           />
                         </Select>
                       </View>
