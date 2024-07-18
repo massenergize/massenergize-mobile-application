@@ -4,8 +4,8 @@
  *      This page is responsible for rendering the community events's 
  *      information as a component called EventDetails.
  * 
- *      Written by: Moizes Almeida
- *      Last edited: July 15, 2024
+ *      Written by: Moizes Almeida and Will Soylemez
+ *      Last edited: July 18, 2024
  * 
  *****************************************************************************/
 
@@ -256,10 +256,8 @@ const EventDetails = ({ route }) => {
           social: Share.Social.FACEBOOK,
         });
       } else if (platform === 'linkedin') {
-        await Share.shareSingle({
-          ...shareOptions,
-          social: Share.Social.LINKEDIN,
-        });
+        const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareOptions.url)}`;
+        Linking.openURL(linkedInUrl);
       } else if (platform === 'email') {
         await Share.open({
           ...shareOptions,

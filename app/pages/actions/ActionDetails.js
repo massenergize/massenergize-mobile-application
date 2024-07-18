@@ -5,7 +5,7 @@
  *      a single action
  * 
  *      Written by: William Soylemez and Moizes Almeida
- *      Last edited: July 15, 2024
+ *      Last edited: July 18, 2024
  * 
  *****************************************************************************/
 
@@ -41,7 +41,7 @@ import {
   updateUserAction,
 } from '../../config/redux/actions';
 import MEImage from "../../components/image/MEImage";
-import { TouchableOpacity } from "react-native";
+import { Linking, TouchableOpacity } from "react-native";
 import { Icon as SocialIcons } from 'react-native-elements';
 import Share from 'react-native-share';
 
@@ -398,10 +398,8 @@ const ActionDetails = ({
           social: Share.Social.FACEBOOK,
         });
       } else if (platform === 'linkedin') {
-        await Share.shareSingle({
-          ...shareOptions,
-          social: Share.Social.LINKEDIN,
-        });
+        const linkedInUrl = `https://www.linkedin.com/share/share-offsite/?url=${encodeURIComponent(shareOptions.url)}`;
+        Linking.openURL(linkedInUrl);
       } else if (platform === 'email') {
         await Share.open({
           ...shareOptions,
