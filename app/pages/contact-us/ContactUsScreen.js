@@ -4,7 +4,7 @@
  *      This page is responsible for rendering the Contact Us page
  *      of the community.
  * 
- *      Written by: Moizes Almeida
+ *      Written by: Moizes Almeida and Will Soylemez
  *      Last edited: July 15, 2024
  * 
  *****************************************************************************/

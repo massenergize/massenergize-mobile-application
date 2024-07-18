@@ -6,7 +6,7 @@
  *      completed actions, teams, households, and communities.
  * 
  *      Written by: William Soylemez and Moizes Almeida
- *      Last edited: July 16, 2024
+ *      Last edited: July 18, 2024
  * 
  *****************************************************************************/
 
@@ -40,9 +40,10 @@ import CommunityCard from "../community-select/CommunityCard";
 import { getActionMetric } from "../../utils/common";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { connect } from "react-redux";
-import { fetchAllUserInfo } from "../../config/redux/actions";
+import { fetchAllUserInfo, toggleUniversalModalAction } from "../../config/redux/actions";
 import { bindActionCreators } from "redux";
 import MEImage from "../../components/image/MEImage";
+import AuthOptions from "../auth/AuthOptions";
 
 const sumOfCarbonScores = (data) => {
   if (!data) return 0;
@@ -376,7 +377,7 @@ function DashboardPage({
   todoList,
   user,
   fetchAllUserInfo,
-
+  toggleModal,
 }) {
   /* If user is not logged in, display a message */
   if (!user) {
@@ -387,8 +388,24 @@ function DashboardPage({
         height: '100%',
         justifyContent: 'center'
       }}>
-        <Center>
-          <Text>Sign in to view profile</Text>
+        <Center space="5">
+          <Text 
+            fontSize="xs"
+            px={10}
+            color="gray.400"
+          >
+            Sign in to view Profile
+          </Text>
+
+          <Button
+            onPress={() => toggleModal({
+              isVisible: true,
+              Component: AuthOptions,
+              title: 'How would you line to sign in or Join?',
+            })}
+          >
+            Log In or Sign Up
+          </Button>
         </Center>
       </View>
     );
@@ -493,7 +510,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => {
   return bindActionCreators(
     {
-      fetchAllUserInfo: fetchAllUserInfo
+      fetchAllUserInfo: fetchAllUserInfo,
+      toggleModal: toggleUniversalModalAction,
     },
     dispatch,
   );

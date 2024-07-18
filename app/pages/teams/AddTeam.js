@@ -5,7 +5,7 @@
  *      a team or subteam to the selected community.
  * 
  *      Written by: Moizes Almeida and Will Soylemez
- *      Last edited: June 28, 2024
+ *      Last edited: July 18, 2024
  * 
  *****************************************************************************/
 
@@ -30,13 +30,17 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { apiCall } from '../../api/functions';
 import { showError } from '../../utils/common';
-import { fetchAllUserInfo, setActionWithValue } from '../../config/redux/actions';
+import { 
+  fetchAllUserInfo, 
+  setActionWithValue 
+} from '../../config/redux/actions';
 import { SET_TEAMS_STATS } from '../../config/redux/types';
 import { connect } from 'react-redux';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { bindActionCreators } from 'redux';
 import { FontAwesomeIcon } from '../../components/icons';
 import MEDropdown from '../../components/dropdown/MEDropdown';
+import { KeyboardAvoidingView } from 'react-native';
 
 /* 
  * This serves as a validation schema to prevent the user to add a
@@ -167,9 +171,6 @@ const AddTeam = ({
 
         setIsSent(true);
         console.log('TEAM_ADDED: ', response.data);
-
-        /* Add the new event to the redux store */
-        // setTeams([response.data, ...teams]); Don't do this because it has to be approved first I think?
       })
       .catch((error) => {
         console.error('ERROR_ADDING_TEAM: ', error);
@@ -187,269 +188,275 @@ const AddTeam = ({
         showsVerticalScrollIndicator={false}
         px={3}
       >
-        <VStack>
-          <Text
-            bold
-            fontSize="lg"
-            mt={5}
-            style={{
-              alignSelf: 'center',
-              color: '#64B058'
-            }}
-          >
-            Create Team
-          </Text>
-          <Formik
-            initialValues={{
-              name: "",
-              tagline: "",
-              description: "",
-              admins: [],
-              image: null,
-              parent: null
-            }}
-            validationSchema={validationSchema}
-            onSubmit={handleSendTeam}
-          >
-            {({
-              handleChange,
-              handleBlur,
-              setFieldValue,
-              handleSubmit,
-              values,
-              errors,
-              touched,
-            }) => (
-              <VStack>
-                {/* Name */}
-                <FormControl
-                  mt={5}
-                  isRequired
-                  isInvalid={errors.name && touched.name}
-                >
-                  <FormControl.Label>
-                    Name
-                  </FormControl.Label>
-                  <Input
-                    variant="rounded"
-                    size="lg"
-                    placeholder="What your team will be known by..."
-                    onChangeText={handleChange("name")}
-                    onBlur={handleBlur("name")}
-                    value={values.name}
-                    style={{
-                      marginTop: 10,
-                    }}
-                  />
-                  {
-                    errors.name && touched.name ? (
-                      <FormControl.ErrorMessage
-                        _text={{
-                          fontSize: "xs",
-                          color: "error.500",
-                          fontWeight: 500
-                        }}
-                      >
-                        {errors.name}
-                      </FormControl.ErrorMessage>
-                    ) : null
-                  }
-                </FormControl>
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
+        >
+          <VStack>
+            <Text
+              bold
+              fontSize="lg"
+              mt={5}
+              style={{
+                alignSelf: 'center',
+                color: '#64B058'
+              }}
+            >
+              Create Team
+            </Text>
 
-                {/* Tagline */}
-                <FormControl
-                  mt={5}
-                  isRequired
-                  isInvalid={
-                    errors.tagline && touched.tagline
-                  }
-                >
-                  <FormControl.Label>
-                    Tagline
-                  </FormControl.Label>
-                  <Input
-                    mt={2}
-                    size="lg"
-                    borderRadius={25}
-                    placeholder="A catchy slogan for your team..."
-                    textAlignVertical="top"
-                    multiline={true}
-                    height={10}
-                    onChangeText={handleChange("tagline")}
-                    onBlur={handleBlur("tagline")}
-                    value={values.tagline}
-                  />
-                  {
-                    errors.tagline && touched.tagline ? (
-                      <FormControl.ErrorMessage
-                        _text={{
-                          fontSize: "xs",
-                          color: "error.500",
-                          fontWeight: 500,
-                        }}
-                      >
-                        {errors.tagline}
-                      </FormControl.ErrorMessage>
-                    ) : null
-                  }
-                </FormControl>
-
-                {/* Admins */}
-                <FormControl
-                  mt={5}
-                  isInvalid={errors.admins && touched.admins}
-                >
-                  <FormControl.Label>
-                    Add team admins here with their emails
-                  </FormControl.Label>
-                  <Input
-                    size="lg"
-                    borderRadius={25}
-                    placeholder="Enter an admin email and click <Add>..."
-                    onChangeText={handleChange("admins")}
-                    onBlur={handleBlur("admins")}
-                    value={values.admins}
-                    style={{
-                      marginTop: 10,
-                      width: '80%',
-                    }}
-                  />
-                  <Button
-                    style={{
-                      width: '30%',
-                      marginTop: 15,
-                    }}
-                    onPress={() => handleAddAdmin(values.admins)}
+            <Formik
+              initialValues={{
+                name: "",
+                tagline: "",
+                description: "",
+                admins: [],
+                image: null,
+                parent: null
+              }}
+              validationSchema={validationSchema}
+              onSubmit={handleSendTeam}
+            >
+              {({
+                handleChange,
+                handleBlur,
+                setFieldValue,
+                handleSubmit,
+                values,
+                errors,
+                touched,
+              }) => (
+                <VStack>
+                  {/* Name */}
+                  <FormControl
+                    mt={5}
+                    isRequired
+                    isInvalid={errors.name && touched.name}
                   >
-                    Add
-                  </Button>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      flexWrap: 'wrap',
-                      marginTop: 20,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: 10,
-                    }}
-                  >
+                    <FormControl.Label>
+                      Name
+                    </FormControl.Label>
+                    <Input
+                      variant="rounded"
+                      size="lg"
+                      placeholder="What your team will be known by..."
+                      onChangeText={handleChange("name")}
+                      onBlur={handleBlur("name")}
+                      value={values.name}
+                      style={{
+                        marginTop: 10,
+                      }}
+                    />
                     {
-                      adminsEmails.map(email => (
+                      errors.name && touched.name ? (
+                        <FormControl.ErrorMessage
+                          _text={{
+                            fontSize: "xs",
+                            color: "error.500",
+                            fontWeight: 500
+                          }}
+                        >
+                          {errors.name}
+                        </FormControl.ErrorMessage>
+                      ) : null
+                    }
+                  </FormControl>
+
+                  {/* Tagline */}
+                  <FormControl
+                    mt={5}
+                    isRequired
+                    isInvalid={
+                      errors.tagline && touched.tagline
+                    }
+                  >
+                    <FormControl.Label>
+                      Tagline
+                    </FormControl.Label>
+                    <Input
+                      mt={2}
+                      size="lg"
+                      borderRadius={25}
+                      placeholder="A catchy slogan for your team..."
+                      textAlignVertical="top"
+                      multiline={true}
+                      height={10}
+                      onChangeText={handleChange("tagline")}
+                      onBlur={handleBlur("tagline")}
+                      value={values.tagline}
+                    />
+                    {
+                      errors.tagline && touched.tagline ? (
+                        <FormControl.ErrorMessage
+                          _text={{
+                            fontSize: "xs",
+                            color: "error.500",
+                            fontWeight: 500,
+                          }}
+                        >
+                          {errors.tagline}
+                        </FormControl.ErrorMessage>
+                      ) : null
+                    }
+                  </FormControl>
+
+                  {/* Admins */}
+                  <FormControl
+                    mt={5}
+                    isInvalid={errors.admins && touched.admins}
+                  >
+                    <FormControl.Label>
+                      Add team admins here with their emails
+                    </FormControl.Label>
+                    <Input
+                      size="lg"
+                      borderRadius={25}
+                      placeholder="Enter an admin email and click <Add>..."
+                      onChangeText={handleChange("admins")}
+                      onBlur={handleBlur("admins")}
+                      value={values.admins}
+                      style={{
+                        marginTop: 10,
+                        width: '80%',
+                      }}
+                    />
+                    <Button
+                      style={{
+                        width: '30%',
+                        marginTop: 15,
+                      }}
+                      onPress={() => handleAddAdmin(values.admins)}
+                    >
+                      Add
+                    </Button>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        flexWrap: 'wrap',
+                        marginTop: 20,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: 10,
+                      }}
+                    >
+                      {
+                        adminsEmails.map(email => (
+                          <View
+                            key={email}
+                            style={{
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              borderRadius: 25,
+                              backgroundColor: 'white',
+                            }}
+                            shadow={3}
+                          >
+                            <Text
+                              pl={3}
+                            >
+                              {email}
+                            </Text>
+                            <IconButton
+                              icon={<Icon as={FontAwesomeIcon} name="close" />}
+                              onPress={() => handleRemoveAdmin(email)}
+                            />
+                          </View>
+                        ))
+                      }
+                    </View>
+                  </FormControl>
+
+                  {/* Description */}
+                  <FormControl
+                    mt={5}
+                    isRequired
+                    isInvalid={
+                      errors.description &&
+                      touched.description
+                    }
+                  >
+                    <FormControl.Label>
+                      Description
+                    </FormControl.Label>
+                    <Input
+                      mt={3}
+                      size="lg"
+                      borderRadius={25}
+                      placeholder="Describe your team. Who are you and what brings you together?..."
+                      textAlignVertical="top"
+                      multiline={true}
+                      height={40}
+                      onChangeText={handleChange("description")}
+                      onBlur={handleBlur("description")}
+                      value={values.description}
+                    />
+                    {
+                      errors.description && touched.description ? (
+                        <FormControl.ErrorMessage
+                          _text={{
+                            fontSize: "xs",
+                            color: "error.500",
+                            fontWeight: 500,
+                          }}
+                        >
+                          {errors.description}
+                        </FormControl.ErrorMessage>
+                      ) : null
+                    }
+                  </FormControl>
+
+                  {/* Image */}
+                  <FormControl
+                    mt={5}
+                    isInvalid={
+                      errors.image && touched.image
+                    }
+                    style={{
+                      flex: 1,
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}
+                  >
+                    <FormControl.Label>
+                      Select a logo for your team
+                    </FormControl.Label>
+                    <Button
+                      style={{
+                        width: "50%",
+                        marginTop: 10
+                      }}
+                      onPress={handleSelectImage}
+                    >
+                      Select Image
+                    </Button>
+                    {
+                      imageUri && (
                         <View
-                          key={email}
                           style={{
-                            flexDirection: 'row',
+                            flex: 1,
                             alignItems: 'center',
                             justifyContent: 'center',
-                            borderRadius: 25,
-                            backgroundColor: 'white',
+                            gap: 10,
+                            marginBottom: 10
                           }}
-                          shadow={3}
                         >
-                          <Text
-                            pl={3}
-                          >
-                            {email}
+                          <Text mt={5} color="#64B058">
+                            Selected image:
                           </Text>
-                          <IconButton
-                            icon={<Icon as={FontAwesomeIcon} name="close" />}
-                            onPress={() => handleRemoveAdmin(email)}
+                          <Image
+                            source={imageUri}
+                            style={{
+                              width: 200,
+                              height: 200,
+                            }}
+                            alt="teams logo"
                           />
                         </View>
-                      ))
+                      )
                     }
-                  </View>
-                </FormControl>
-
-                {/* Description */}
-                <FormControl
-                  mt={5}
-                  isRequired
-                  isInvalid={
-                    errors.description &&
-                    touched.description
-                  }
-                >
-                  <FormControl.Label>
-                    Description
-                  </FormControl.Label>
-                  <Input
-                    mt={3}
-                    size="lg"
-                    borderRadius={25}
-                    placeholder="Describe your team. Who are you and what brings you together?..."
-                    textAlignVertical="top"
-                    multiline={true}
-                    height={40}
-                    onChangeText={handleChange("description")}
-                    onBlur={handleBlur("description")}
-                    value={values.description}
-                  />
-                  {
-                    errors.description && touched.description ? (
-                      <FormControl.ErrorMessage
-                        _text={{
-                          fontSize: "xs",
-                          color: "error.500",
-                          fontWeight: 500,
-                        }}
-                      >
-                        {errors.description}
-                      </FormControl.ErrorMessage>
-                    ) : null
-                  }
-                </FormControl>
-
-                {/* Image */}
-                <FormControl
-                  mt={5}
-                  isInvalid={
-                    errors.image && touched.image
-                  }
-                  style={{
-                    flex: 1,
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}
-                >
-                  <FormControl.Label>
-                    Select a logo for your team
-                  </FormControl.Label>
-                  <Button
-                    style={{
-                      width: "50%",
-                      marginTop: 10
-                    }}
-                    onPress={handleSelectImage}
-                  >
-                    Select Image
-                  </Button>
-                  {
-                    imageUri && (
-                      <View
-                        style={{
-                          flex: 1,
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          gap: 10,
-                          marginBottom: 10
-                        }}
-                      >
-                        <Text mt={5} color="#64B058">
-                          Selected image:
-                        </Text>
-                        <Image
-                          source={imageUri}
-                          style={{
-                            width: 200,
-                            height: 200,
-                          }}
-                          alt="teams logo"
-                        />
-                      </View>
-                    )
-                  }
-                </FormControl>
+                  </FormControl>
 
                 {/* Parent */}
                 {
@@ -495,61 +502,62 @@ const AddTeam = ({
                     </FormControl>
                   ) : null}
 
-                {/* Submit Team */}
-                <Button
-                  mt={5}
-                  mb={10}
-                  bg="primary.400"
-                  isLoading={isSubmitting}
-                  loadingText="Sending..."
-                  disabled={isSubmitting}
-                  onPress={handleSubmit}
-                >
-                  ADD TEAM
-                </Button>
-              </VStack>
-            )}
-          </Formik>
-        </VStack>
-
-        {/* 
-          * Modal for congratulating the user after the team or 
-          * subteam is added successfully to the community.
-          */}
-        <Modal
-          isOpen={isSent}
-          onClose={() => setIsSent(false)}
-        >
-          <Modal.Content maxWidth={400}>
-            <Modal.Body>
-              <Center mb="5">
-                <Icon
-                  as={FontAwesomeIcon}
-                  name="check-circle"
-                  size="lg"
-                  color="primary.600"
-                />
-                <Text
-                  fontSize="lg"
-                  fontWeight="bold"
-                  py="5"
-                >
-                  Team successfully added!
-                </Text>
-                <Text textAlign="center">
-                  People now can join your team!
-                </Text>
-              </Center>
-              <Button
-                colorScheme={"gray"}
-                onPress={() => setIsSent(false)}
-              >
-                Back
-              </Button>
-            </Modal.Body>
-          </Modal.Content>
-        </Modal>
+                  {/* Submit Team */}
+                  <Button
+                    mt={5}
+                    mb={10}
+                    bg="primary.400"
+                    isLoading={isSubmitting}
+                    loadingText="Sending..."
+                    disabled={isSubmitting}
+                    onPress={handleSubmit}
+                  >
+                    ADD TEAM
+                  </Button>
+                </VStack>
+              )}
+            </Formik>
+          </VStack>
+        </KeyboardAvoidingView>
       </ScrollView>
+
+      {/* 
+        * Modal for congratulating the user after the team or 
+        * subteam is added successfully to the community.
+        */}
+      <Modal
+        isOpen={isSent}
+        onClose={() => setIsSent(false)}
+      >
+        <Modal.Content maxWidth={400}>
+          <Modal.Body>
+            <Center mb="5">
+              <Icon
+                as={FontAwesomeIcon}
+                name="check-circle"
+                size="lg"
+                color="primary.600"
+              />
+              <Text
+                fontSize="lg"
+                fontWeight="bold"
+                py="5"
+              >
+                Team successfully added!
+              </Text>
+              <Text textAlign="center">
+                People now can join your team!
+              </Text>
+            </Center>
+            <Button
+              colorScheme={"gray"}
+              onPress={() => setIsSent(false)}
+            >
+              Back
+            </Button>
+          </Modal.Body>
+        </Modal.Content>
+      </Modal>
     </View>
   );
 }
