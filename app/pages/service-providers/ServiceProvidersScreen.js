@@ -25,6 +25,7 @@ import { connect } from "react-redux";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ServiceProviderCard from "./ServiceProviderCard";
 import { StyleSheet } from "react-native";
+import MEDropdown from "../../components/dropdown/MEDropdown";
 
 function ServiceProvidersPage({ navigation, vendors, questionnaire }) {
   /*
@@ -77,20 +78,21 @@ function ServiceProvidersPage({ navigation, vendors, questionnaire }) {
           space={2}
           style={styles.filterVStack}
         >
-          <Select
-            selectedValue={category}
-            onValueChange={(value) => setCategory(value)}
+          <MEDropdown
+            value={category}
+            onChange={setCategory}
             style={styles.filterSelect}
-          >
-            <Select.Item label="All" value="All" />
-            <Select.Item label="Transportation" value="Transportation" />
-            <Select.Item label="Home Energy" value="Home Energy" />
-            <Select.Item label="Waste & Recycling" value="Waste & Recycling" />
-            <Select.Item label="Food" value="Food" />
-            <Select.Item label="Activism & Education" value="Activism & Education" />
-            <Select.Item label="Solar" value="Solar" />
-            <Select.Item label="Land, Soil, & Water" value="Land, Soil, & Water" />
-          </Select>
+            options={[
+              {label: "All", value: "All"},
+              {label: "Transportation", value: "Transportation"},
+              {label: "Home Energy", value: "Home Energy"},
+              {label: "Waste & Recycling", value: "Waste & Recycling"},
+              {label: "Food", value: "Food"},
+              {label: "Activism & Education", value: "Activism & Education"},
+              {label: "Solar", value: "Solar"},
+              {label: "Land, Soil, & Water", value: "Land, Soil, & Water"},
+            ]}
+          />
         </VStack>
       </View>
     );

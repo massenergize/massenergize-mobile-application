@@ -36,6 +36,7 @@ import { connect } from 'react-redux';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { bindActionCreators } from 'redux';
 import { FontAwesomeIcon } from '../../components/icons';
+import MEDropdown from '../../components/dropdown/MEDropdown';
 
 /* 
  * This serves as a validation schema to prevent the user to add a
@@ -157,13 +158,13 @@ const AddTeam = ({
     apiCall("teams.add", data)
       .then((response) => {
         setIsSubmitting(false);
-        
+
         if (!response.success) {
           showError('An error occurred while adding team. Please try again.');
           console.log('ERROR_ADDING_TEAM: ', response);
           return;
         }
-        
+
         setIsSent(true);
         console.log('TEAM_ADDED: ', response.data);
 
@@ -471,7 +472,7 @@ const AddTeam = ({
                         actions will also
                         automatically contribute
                       </Text>
-                      <Select
+                      <MEDropdown
                         mt={2}
                         borderRadius={10}
                         mb={3}
@@ -479,24 +480,18 @@ const AddTeam = ({
                         minWidth={200}
                         accessibilityLabel="Choose Category"
                         placeholder="Choose which team is the parent team"
-                        onValueChange={
+                        onChange={
                           (itemValue) =>
                             setFieldValue('parent',
                               itemValue)
                         }
-                      >
-                        <ScrollView>
-                          {
-                            teamsList.map((teamName,
-                              index) => (
-                              <Select.Item
-                                key={index}
-                                label={teamName}
-                                value={teamName}
-                              />
-                            ))}
-                        </ScrollView>
-                      </Select>
+                        options={
+                          teamsList.map((teamName, index) => ({
+                              label: teamName,
+                              value: teamName,
+                            }))
+                        }
+                      />
                     </FormControl>
                   ) : null}
 

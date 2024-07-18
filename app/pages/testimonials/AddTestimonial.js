@@ -33,6 +33,7 @@ import { SET_TESTIMONIALS_LIST } from '../../config/redux/types';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { useState } from 'react';
 import { FontAwesomeIcon } from '../../components/icons';
+import MEDropdown from '../../components/dropdown/MEDropdown';
 
 /* 
  * This serves as a validation schema to prevent the user to add a
@@ -176,21 +177,16 @@ const AddTestimonial = ({
 
               {/* Action select */}
               <Text mb={2}>Associated Action</Text>
-              <Select
+              <MEDropdown
                 borderRadius={10}
                 mb={3}
                 selectedValue={values.category}
                 minWidth={200}
-                accessibilityLabel="Choose Action"
-                placeholder="Choose Action..."
-                onValueChange={(itemValue) => setFieldValue('action', itemValue)}
-              >
-                <ScrollView>
-                {actions.map((action, index) => (
-                  <Select.Item key={index} label={action.title} value={action.id} />
+                onChange={(itemValue) => setFieldValue('action', itemValue)}
+                options={actions.map((action, index) => (
+                  {label: action.title, value: action.id}
                 ))}
-                </ScrollView>
-              </Select>
+              />
 
               {/* Name */}
               <Text mb={2}>Name</Text>

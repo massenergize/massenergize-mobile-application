@@ -241,8 +241,11 @@ const RootWrapper = ({
         />
       </MainStack.Navigator>
       <MEBottomSheet
-        onClose={() => toggleModal({ isVisible: false, component: <></> })}
         {...(modalOptions || {})}
+        onClose={() => {
+          toggleModal({ isVisible: false, component: <></> });
+          modalOptions?.onClose && modalOptions.onClose();
+        }}
       />
     </>
     // </NavigationContainer>

@@ -36,6 +36,7 @@ import { SET_EVENT_LIST } from "../../config/redux/types";
 import { showError, showSuccess } from "../../utils/common";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { launchImageLibrary } from "react-native-image-picker";
+import MEDropdown from "../../components/dropdown/MEDropdown";
 
 /* 
  * This serves as a validation schema to prevent the user to add an
@@ -477,20 +478,21 @@ const AddEvent = ({
                           Select the type of link
                         </Text>
 
-                        <Select
+                        <MEDropdown
                           selectedValue={linkType}
                           onValueChange={(value) => setLinkType(value)}
                           mt={1}
-                        >
-                          <Select.Item
-                            label="Join"
-                            value="join"
-                          />
-                          <Select.Item
-                            label="Registration"
-                            value="registration"
-                          />
-                        </Select>
+                          options={[
+                            {
+                              label: "Join",
+                              value: "join",
+                            },
+                            {
+                              label: "Registration",
+                              value: "registration",
+                            }
+                          ]}
+                        />
                       </View>
 
                       <Input

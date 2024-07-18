@@ -28,6 +28,7 @@ import AuthOptions from "../auth/AuthOptions";
 import { StyleSheet } from "react-native";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { TestimonialCard } from "./TestimonialCard";
+import MEDropdown from "../../components/dropdown/MEDropdown";
 
 function TestimonialsPage({ 
   navigation, 
@@ -105,27 +106,18 @@ function TestimonialsPage({
           space={2}
           style={styles.filterVStack}
         >
-          <Select
-            selectedValue={filter}
-            onValueChange={(value) => setFilter(value)}
+          <MEDropdown
+            value={filter}
+            onChange={setFilter}
             style={styles.filterSelect}
-          >
-            <ScrollView>
-              {/* 
-                * Loops through all the community available actions to 
-                * take and display them for the user to use as filters 
-                * for the testimonials 
-                */}
-              <Select.Item label="All" value="All" />
-              {actions.map((action, index) => (
-                <Select.Item 
-                  key={index} 
-                  label={action.title} 
-                  value={action.id} 
-                />
-              ))}
-            </ScrollView>
-          </Select>
+            options={[
+              {label: "All", value: "All"},
+              ...actions.map((action, index) => ({
+                  label: action.title,
+                  value: action.id
+              }))
+            ]}
+          />
         </VStack>
       </View>
     );

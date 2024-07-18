@@ -30,6 +30,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import MEButton from '../../components/button/MEButton';
 import { border } from 'native-base/lib/typescript/theme/styled-system';
 import { BorderlessButton } from 'react-native-gesture-handler';
+import MEDropdown from '../../components/dropdown/MEDropdown';
 
 const ActionsScreen = ({ navigation, actions, questionnaire }) => {
   /*
@@ -198,59 +199,63 @@ const ActionsScreen = ({ navigation, actions, questionnaire }) => {
         style={styles.filterVStack}
       >
         <Text>I am a...</Text>
-        <Select
-          selectedValue={userType}
-          onValueChange={(value) => setUserType(value)}
+        <MEDropdown
+          value={userType}
+          onChange={(value) => setUserType(value)}
           style={styles.filterSelect}
-        >
-          <Select.Item label="All" value="All" />
-          <Select.Item label="Student" value="Student" />
-          <Select.Item label="Homeowner" value="Homeowner" />
-          <Select.Item label="Renter" value="Renter" />
-          <Select.Item label="Condo" value="Condo" />
-          <Select.Item label="Business" value="Business" />
-        </Select>
+          options={[
+            {label: "All", value: "All"},
+            {label: "Student", value: "Student"},
+            {label: "Homeowner", value: "Homeowner"},
+            {label: "Renter", value: "Renter"},
+            {label: "Condo", value: "Condo"},
+            {label: "Business", value: "Business"},
+          ]}
+        />
 
         <Text>Category</Text>
-        <Select
-          selectedValue={category}
-          onValueChange={(value) => setCategory(value)}
+        <MEDropdown
+          value={category}
+          onChange={(value) => setCategory(value)}
           style={styles.filterSelect}
-        >
-          <Select.Item label="All" value="All" />
-          <Select.Item label="Transportation" value="Transportation" />
-          <Select.Item label="Home Energy" value="Home Energy" />
-          <Select.Item label="Waste & Recycling" value="Waste & Recycling" />
-          <Select.Item label="Food" value="Food" />
-          <Select.Item label="Activism & Education" value="Activism & Education" />
-          <Select.Item label="Solar" value="Solar" />
-          <Select.Item label="Land, Soil, & Water" value="Land, Soil, & Water" />
-        </Select>
+          options={[
+            {label: "All", value: "All"},
+            {label: "Transportation", value: "Transportation"},
+            {label: "Home Energy", value: "Home Energy"},
+            {label: "Waste & Recycling", value: "Waste & Recycling"},
+            {label: "Food", value: "Food"},
+            {label: "Activism & Education", value: "Activism & Education"},
+            {label: "Solar", value: "Solar"},
+            {label: "Land, Soil, & Water", value: "Land, Soil, & Water"},
+          ]}
+        />
 
         <Text>Impact</Text>
-        <Select
-          selectedValue={impact}
-          onValueChange={(value) => setImpact(value)}
+        <MEDropdown
+          value={impact}
+          onChange={(value) => setImpact(value)}
           style={styles.filterSelect}
-        >
-          <Select.Item label="All" value="All" />
-          <Select.Item label="High" value="High" />
-          <Select.Item label="Medium" value="Medium" />
-          <Select.Item label="Low" value="Low" />
-        </Select>
+          options={[
+            {label: "All", value: "All"},
+            {label: "High", value: "High"},
+            {label: "Medium", value: "Medium"},
+            {label: "Low", value: "Low"},
+          ]}
+        />
 
         <Text>Cost</Text>
-        <Select
-          selectedValue={cost}
-          onValueChange={(value) => setCost(value)}
+        <MEDropdown
+          value={cost}
+          onChange={(value) => setCost(value)}
           style={styles.filterSelect}
-        >
-          <Select.Item label="All" value="All" />
-          <Select.Item label="0" value="0" />
-          <Select.Item label="$" value="$" />
-          <Select.Item label="$$" value="$$" />
-          <Select.Item label="$$$" value="$$$" />
-        </Select>
+          options={[
+            {label: "All", value: "All"},
+            {label: "0", value: "0"},
+            {label: "$", value: "$"},
+            {label: "$$", value: "$$"},
+            {label: "$$$", value: "$$$"},
+          ]}
+        />
       </VStack>
     </View>
     );
