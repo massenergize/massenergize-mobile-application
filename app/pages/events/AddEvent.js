@@ -44,12 +44,27 @@ import MEDropdown from "../../components/dropdown/MEDropdown";
  * event to the selected community if all the required fields 
  * are not filled. 
  */
-const validationSchema = Yup.object({
-  title: Yup.string().required("Name of event is required").min(5, "Name of event must be at least 5 characters"),
-  // start_date_and_time: Yup.string().required("Start date and time is required"),
-  // end_date_and_time: Yup.string().required("End date and time is required"),
-  description: Yup.string().required("Description is required")
+const validationSchema = Yup.object().shape({
+  title: Yup.string()
+    .required("Name of event is required")
+    .min(5, "Name of event must be at least 5 characters"),
+  description: Yup.string()
+    .required("Description is required"),
+  format: Yup.string()
+    .required("Event format is required"),
+  external_link_type: Yup.string().when('format', {
+    is: (value) => value === 'online' || value === 'both',
+    then: () => Yup.string().required('Link type is required'),
+    otherwise: () => Yup.string().notRequired(),
+  }),
+  external_link: Yup.string().when('format', {
+    is: (value) => value === 'online' || value === 'both',
+    then: () => Yup.string().required('External link is required').url('Must be a valid URL'),
+    otherwise: () => Yup.string().notRequired(),
+  }),
 });
+
+
 
 const AddEvent = ({
   navigation,
@@ -90,12 +105,6 @@ const AddEvent = ({
   ));
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
-
-  /* 
-   * Uses local state to save the information about which is the format 
-   * that the event will take place: in-person, online, or both.
-   */
-  const [format, setFormat] = useState(null);
 
   /* Uses local state to save the uri of the selected image. */
   const [imageUri, setImageUri] = useState(null);
@@ -138,7 +147,7 @@ const AddEvent = ({
         ]
       );
     });
-  }, [navigation, isFormDirty]);
+  });
 
   /* 
    * Saves the information about the location the event will take 
@@ -214,16 +223,23 @@ const AddEvent = ({
 
     /* Data that will be sent to the API. */
     const data = {
-      // Basic info
+      // General info
       community_id: community_id,
       name: values.title,
       start_date_and_time: startDate?.toISOString(),
       end_date_and_time: endDate?.toISOString(),
-      location: location,
-      image: imageUri,
+      // image: imageUri,
+      event_type: values.format,
       description: values.description,
-      // link_type: values.link_type,
-      // external_link: values.external_link,
+
+      // Location info
+      ...((values.format === 'in-person' || values.format === 'both') ? location : null),
+
+      // Online info
+      ...(values.format === 'online' || values.format === 'both' ? {
+        external_link_type: values.external_link_type,
+        external_link: values.external_link,
+      } : null)
     };
 
     apiCall("events.add", data).then((response) => {
@@ -282,7 +298,7 @@ const AddEvent = ({
                 location: [],
                 image: null,
                 description: "",
-                link_type: "",
+                external_link_type: "",
                 external_link: null
               }}
               validationSchema={validationSchema}
@@ -417,7 +433,6 @@ const AddEvent = ({
                       name="format"
                       value={values.format}
                       onChange={(value) => {
-                        setFormat(value);
                         handleChange("format")(value);
                         setIsFormDirty(true);
                       }}
@@ -470,7 +485,7 @@ const AddEvent = ({
                       touched.location
                     }
                   >
-                    {format === 'in-person' || format === 'both' ? (
+                    {values.format === 'in-person' || values.format === 'both' ? (
                       <View>
                         <FormControl.Label mt={5}>
                           Enter Location of Event
@@ -537,7 +552,7 @@ const AddEvent = ({
                         />
                       </View>
                     ) : null}
-                    {format === 'online' || format === 'both' ? (
+                    {values.format === 'online' || values.format === 'both' ? (
                       <View
                         mt={5}
                         gap={2}
@@ -545,8 +560,13 @@ const AddEvent = ({
                         <FormControl.Label>
                           Link Information
                         </FormControl.Label>
+                        <FormControl
+                          isInvalid={
+                            errors.external_link &&
+                            touched.external_link
+                          }
+                        >
 
-                        <View>
                           <Input
                             variant="rounded"
                             size="lg"
@@ -561,14 +581,35 @@ const AddEvent = ({
                               marginTop: 10,
                             }}
                           />
+                          {
+                            errors.external_link && touched.external_link ? (
+                              <FormControl.ErrorMessage
+                                _text={{
+                                  fontSize: "xs",
+                                  color: "error.500",
+                                  fontWeight: 500,
+                                }}
+                              >
+                                {errors.external_link}
+                              </FormControl.ErrorMessage>
+                            ) : null
+                          }
+                        </FormControl>
+
+                        <FormControl
+                          isInvalid={
+                            errors.external_link_type &&
+                            touched.external_link_type
+                          }
+                        >
                           <Radio.Group
-                            name="link_type"
-                            value={values.link_type}
+                            name="external_link_type"
+                            value={values.external_link_type}
                             onChange={(value) => {
-                              handleChange("link_type")(value);
+                              handleChange("external_link_type")(value);
                               setIsFormDirty(true);
                             }}
-                            onBlur={handleBlur("link_type")}
+                            onBlur={handleBlur("external_link_type")}
                             style={{
                               flexDirection: 'col',
                               gap: 10,
@@ -576,25 +617,38 @@ const AddEvent = ({
                             }}
                           >
                             <Radio
-                              value="join"
+                              value="Join"
                               my={1}
                             >
                               This is a link to join the event
                             </Radio>
                             <Radio
-                              value="registration"
+                              value="Registration"
                               my={1}
                             >
                               This is a link to register for the event
                             </Radio>
                           </Radio.Group>
-                        </View>
+                          {
+                            errors.external_link_type && touched.external_link_type ? (
+                              <FormControl.ErrorMessage
+                                _text={{
+                                  fontSize: "xs",
+                                  color: "error.500",
+                                  fontWeight: 500,
+                                }}
+                              >
+                                {errors.external_link_type}
+                              </FormControl.ErrorMessage>
+                            ) : null
+                          }
+                        </FormControl>
                       </View>
                     ) : null}
                   </FormControl>
 
                   {/* Event Image */}
-                  <FormControl
+                  {/* <FormControl
                     mt={5}
                     isInvalid={
                       errors.image && touched.image
@@ -650,7 +704,7 @@ const AddEvent = ({
                         </View>
                       )
                     }
-                  </FormControl>
+                  </FormControl> */}
 
                   {/* Event Description */}
                   <FormControl

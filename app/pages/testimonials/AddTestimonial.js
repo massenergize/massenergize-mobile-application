@@ -113,7 +113,7 @@ const AddTestimonial = ({
     });
 
     return unsubscribe;
-  }, [navigation, isFormDirty]);
+  });
 
   /* 
    * Function that handles the selection of an image for the newly 
@@ -297,7 +297,7 @@ const AddTestimonial = ({
                   }
 
                   {/* Image */}
-                  <Text mb={2}>
+                  {/* <Text mb={2}>
                     You can add an image to your testimonial.
                     It should be your own picture, or one you are sure is not
                     copyrighted material.
@@ -336,7 +336,7 @@ const AddTestimonial = ({
                         />
                       </View>
                     )
-                  }
+                  } */}
 
                   {/* Description */}
                   <Text mt={5} mb={2}>Testimonial Description</Text>
