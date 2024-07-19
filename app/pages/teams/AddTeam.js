@@ -30,9 +30,9 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { apiCall } from '../../api/functions';
 import { showError } from '../../utils/common';
-import { 
-  fetchAllUserInfo, 
-  setActionWithValue 
+import {
+  fetchAllUserInfo,
+  setActionWithValue
 } from '../../config/redux/actions';
 import { SET_TEAMS_STATS } from '../../config/redux/types';
 import { connect } from 'react-redux';
@@ -117,7 +117,7 @@ const AddTeam = ({
           {
             text: 'Cancel',
             style: 'cancel',
-            onPress: () => {}
+            onPress: () => { }
           },
           {
             text: 'Yes',
@@ -229,15 +229,15 @@ const AddTeam = ({
 
   /* Displays the form to create a new team */
   return (
-    <View bg="white">
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        px={3}
+    <View bg="white" height="100%">
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
       >
-        <KeyboardAvoidingView
-          style={{ flex: 1 }}
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          px={3}
         >
           <VStack>
             <Text
@@ -516,50 +516,50 @@ const AddTeam = ({
                     }
                   </FormControl>
 
-                {/* Parent */}
-                {
-                  teamsList.length !== 0 ? (
-                    <FormControl
-                      mt={5}
-                      isInvalid={
-                        errors.parent && touched.parent
-                      }
-                      style={{
-                        gap: 10
-                      }}
-                    >
-                      <FormControl.Label>
-                        Parent Team
-                      </FormControl.Label>
-                      <Text>
-                        You can pick a parent team to
-                        which all of your members'
-                        actions will also
-                        automatically contribute
-                      </Text>
-                      <MEDropdown
-                        mt={2}
-                        borderRadius={10}
-                        mb={3}
-                        selectedValue={values.parent}
-                        minWidth={200}
-                        accessibilityLabel="Choose Category"
-                        placeholder="Choose which team is the parent team"
-                        onChange={
-                          (itemValue) => { 
-                            setFieldValue('parent',itemValue);
-                            setIsFormDirty(true);
-                          }
+                  {/* Parent */}
+                  {
+                    teamsList.length !== 0 ? (
+                      <FormControl
+                        mt={5}
+                        isInvalid={
+                          errors.parent && touched.parent
                         }
-                        options={
-                          teamsList.map((teamName, index) => ({
+                        style={{
+                          gap: 10
+                        }}
+                      >
+                        <FormControl.Label>
+                          Parent Team
+                        </FormControl.Label>
+                        <Text>
+                          You can pick a parent team to
+                          which all of your members'
+                          actions will also
+                          automatically contribute
+                        </Text>
+                        <MEDropdown
+                          mt={2}
+                          borderRadius={10}
+                          mb={3}
+                          selectedValue={values.parent}
+                          minWidth={200}
+                          accessibilityLabel="Choose Category"
+                          placeholder="Choose which team is the parent team"
+                          onChange={
+                            (itemValue) => {
+                              setFieldValue('parent', itemValue);
+                              setIsFormDirty(true);
+                            }
+                          }
+                          options={
+                            teamsList.map((teamName, index) => ({
                               label: teamName,
                               value: teamName,
                             }))
-                        }
-                      />
-                    </FormControl>
-                  ) : null}
+                          }
+                        />
+                      </FormControl>
+                    ) : null}
 
                   {/* Submit Team */}
                   <Button
@@ -577,8 +577,8 @@ const AddTeam = ({
               )}
             </Formik>
           </VStack>
-        </KeyboardAvoidingView>
-      </ScrollView>
+        </ScrollView>
+      </KeyboardAvoidingView>
 
       {/* 
         * Modal for congratulating the user after the team or 

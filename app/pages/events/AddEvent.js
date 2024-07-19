@@ -45,7 +45,7 @@ import MEDropdown from "../../components/dropdown/MEDropdown";
  * are not filled. 
  */
 const validationSchema = Yup.object({
-  title: Yup.string().required("Name of event is required"),
+  title: Yup.string().required("Name of event is required").min(5, "Name of event must be at least 5 characters"),
   // start_date_and_time: Yup.string().required("Start date and time is required"),
   // end_date_and_time: Yup.string().required("End date and time is required"),
   description: Yup.string().required("Description is required")
@@ -105,7 +105,7 @@ const AddEvent = ({
    * was changed in the form.
    */
   const [isFormDirty, setIsFormDirty] = useState(false);
-  
+
   /* 
    * If the user by accident or on purpose leaves the form page and
    * they modified any input or text field in the page, they will be
@@ -128,7 +128,7 @@ const AddEvent = ({
           {
             text: 'Cancel',
             style: 'cancel',
-            onPress: () => {}
+            onPress: () => { }
           },
           {
             text: 'Yes',
@@ -214,16 +214,16 @@ const AddEvent = ({
 
     /* Data that will be sent to the API. */
     const data = {
+      // Basic info
       community_id: community_id,
       name: values.title,
       start_date_and_time: startDate?.toISOString(),
       end_date_and_time: endDate?.toISOString(),
-      // format: format,
       location: location,
-      // image: imageUri,
+      image: imageUri,
       description: values.description,
-      link_type: values.link_type,
-      external_link: values.external_link,
+      // link_type: values.link_type,
+      // external_link: values.external_link,
     };
 
     apiCall("events.add", data).then((response) => {
@@ -252,15 +252,15 @@ const AddEvent = ({
 
   /* Displays the screen to add an event to the selected community */
   return (
-    <View bg="white">
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        px={3}
+    <View bg="white" height="100%">
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
       >
-        <KeyboardAvoidingView
-          style={{ flex: 1 }}
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          px={3}
         >
           <VStack>
             <Text
@@ -714,8 +714,8 @@ const AddEvent = ({
               )}
             </Formik>
           </VStack>
-        </KeyboardAvoidingView>
-      </ScrollView>
+        </ScrollView>
+      </KeyboardAvoidingView>
 
       {/* 
         * Modal for congratulating the user after the event 
@@ -759,7 +759,7 @@ const AddEvent = ({
           </Modal.Body>
         </Modal.Content>
       </Modal>
-    </View>
+    </View >
   );
 }
 

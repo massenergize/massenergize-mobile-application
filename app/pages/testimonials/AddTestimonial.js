@@ -9,17 +9,17 @@
  *****************************************************************************/
 
 import { StyleSheet, KeyboardAvoidingView, Alert } from 'react-native';
-import { 
+import {
   View,
-  Input, 
-  Button, 
-  Select, 
-  ScrollView, 
-  Text, 
-  Image, 
-  Modal, 
-  Center, 
-  Icon 
+  Input,
+  Button,
+  Select,
+  ScrollView,
+  Text,
+  Image,
+  Modal,
+  Center,
+  Icon
 } from '@gluestack-ui/themed-native-base';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -51,12 +51,12 @@ const validationSchema = Yup.object({
 });
 
 
-const AddTestimonial = ({ 
-  navigation, 
-  actions, 
-  user, 
-  activeCommunity, 
-  testimonials, 
+const AddTestimonial = ({
+  navigation,
+  actions,
+  user,
+  activeCommunity,
+  testimonials,
   setTestimonials,
   route
 }) => {
@@ -66,19 +66,19 @@ const AddTestimonial = ({
     action => testimonial?.action &&
       action.id === testimonial.action.id
   );
-  
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSent, setIsSent] = useState(false);
 
   /* Uses local state to save the uri of the selected image */
   const [imageUri, setImageUri] = useState(testimonial?.file?.url ?? null);
-  
+
   /* 
    * Uses local state to determine whether some text or input field 
    * was changed in the form.
    */
   const [isFormDirty, setIsFormDirty] = useState(false);
-  
+
   /* 
    * If the user by accident or on purpose leaves the form page and
    * they modified any input or text field in the page, they will be
@@ -101,7 +101,7 @@ const AddTestimonial = ({
           {
             text: 'Cancel',
             style: 'cancel',
-            onPress: () => {}
+            onPress: () => { }
           },
           {
             text: 'Yes',
@@ -163,99 +163,99 @@ const AddTestimonial = ({
     };
 
     apiCall(editMode ? 'testimonials.update' : 'testimonials.add', data)
-    .then((response) => {
-      setIsSubmitting(false);
-      setIsSent(true);
-      setIsFormDirty(false);
+      .then((response) => {
+        setIsSubmitting(false);
+        setIsSent(true);
+        setIsFormDirty(false);
 
-      if (!response.success) {
+        if (!response.success) {
+          showError('An error occurred while adding testimonial. Please try again.');
+          console.error('ERROR_ADDING_TESTIMONIAL:', response);
+          return;
+        }
+        showSuccess(`Testimonial ${editMode ? 'edited' : 'added'} successfully.`);
+        console.log('TESTIMONIAL_ADDED');
+
+        /* Add the new testimonial to the redux store */
+        if (editMode) {
+          setTestimonials(testimonials.map(t => t.id === testimonial.id ? response.data : t));
+        } else {
+          setTestimonials([response.data, ...testimonials]);
+        }
+        navigation.navigate('Testimonials');
+      })
+      .catch((error) => {
+        console.error('ERROR_ADDING_TESTIMONIAL:', error);
         showError('An error occurred while adding testimonial. Please try again.');
-        console.error('ERROR_ADDING_TESTIMONIAL:', response);
         return;
-      }
-      showSuccess(`Testimonial ${editMode ? 'edited' : 'added' } successfully.`);
-      console.log('TESTIMONIAL_ADDED');
-
-      /* Add the new testimonial to the redux store */
-      if (editMode) {
-        setTestimonials(testimonials.map(t => t.id === testimonial.id ? response.data : t));
-      } else {
-        setTestimonials([response.data, ...testimonials]);
-      }
-      navigation.navigate('Testimonials');
-    })
-    .catch((error) => {
-      console.error('ERROR_ADDING_TESTIMONIAL:', error);
-      showError('An error occurred while adding testimonial. Please try again.');
-      return;
-    });
+      });
   }
 
   /* Displays the form to create a new testimonial */
   return (
     <View bg="white" height="100%">
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        px={3}
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
       >
-        <KeyboardAvoidingView
-          style={{ flex: 1 }}
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          px={3}
         >
           <Formik
-            initialValues={{ 
+            initialValues={{
               action: testimonialAction ?? '',
-              name: testimonial?.preferred_name ?? user.preferred_name, 
+              name: testimonial?.preferred_name ?? user.preferred_name,
               title: testimonial?.title ?? '',
               image: null,
               description: testimonial?.body ?? '',
-            }} 
+            }}
             validationSchema={validationSchema}
             onSubmit={onSubmit}
           >
-            {({ 
-              handleChange, 
-              handleBlur, 
-              handleSubmit, 
-              setFieldValue, 
-              values, 
-              errors, 
-              touched, 
-              isSubmitting 
+            {({
+              handleChange,
+              handleBlur,
+              handleSubmit,
+              setFieldValue,
+              values,
+              errors,
+              touched,
+              isSubmitting
             }) => (
               <View style={styles.container}>
                 <ScrollView
                   showsVerticalScrollIndicator={false}
                 >
-                  <Text 
-                    bold 
-                    fontSize="lg" 
+                  <Text
+                    bold
+                    fontSize="lg"
                     mb={5}
                     style={{
-                      alignSelf: 'center', 
+                      alignSelf: 'center',
                       color: '#64B058'
-                  }}>
+                    }}>
                     Create Testimonial Form
                   </Text>
 
-              {/* Action select */}
-              <Text mb={2}>Associated Action</Text>
-              <MEDropdown
-                borderRadius={10}
-                mb={3}
-                selectedValue={values.category}
-                minWidth={200}
-                onChange={
-                  (itemValue) => {
-                    setFieldValue('action', itemValue);
-                    setIsFormDirty(true);
-                  }
-                }
-                options={actions.map((action, index) => (
-                  {label: action.title, value: action.id}
-                ))}
-              />
+                  {/* Action select */}
+                  <Text mb={2}>Associated Action</Text>
+                  <MEDropdown
+                    borderRadius={10}
+                    mb={3}
+                    selectedValue={values.category}
+                    minWidth={200}
+                    onChange={
+                      (itemValue) => {
+                        setFieldValue('action', itemValue);
+                        setIsFormDirty(true);
+                      }
+                    }
+                    options={actions.map((action, index) => (
+                      { label: action.title, value: action.id }
+                    ))}
+                  />
 
                   {/* Name */}
                   <Text mb={2}>Name</Text>
@@ -271,13 +271,13 @@ const AddTestimonial = ({
                     onBlur={handleBlur('name')}
                     value={values.name}
                   />
-                  {touched.name && 
-                  errors.name && 
-                  <Text style={styles.error}>
-                    {errors.name}
-                  </Text>
+                  {touched.name &&
+                    errors.name &&
+                    <Text style={styles.error}>
+                      {errors.name}
+                    </Text>
                   }
-                  
+
                   {/* Title */}
                   <Text mb={2}>Testimonial Title</Text>
                   <Input
@@ -292,14 +292,14 @@ const AddTestimonial = ({
                     value={values.title}
                     placeholder="Add a Title"
                   />
-                  {touched.title && errors.title && 
-                  <Text style={styles.error}>{errors.title}</Text>
+                  {touched.title && errors.title &&
+                    <Text style={styles.error}>{errors.title}</Text>
                   }
-                  
+
                   {/* Image */}
                   <Text mb={2}>
-                    You can add an image to your testimonial. 
-                    It should be your own picture, or one you are sure is not 
+                    You can add an image to your testimonial.
+                    It should be your own picture, or one you are sure is not
                     copyrighted material.
                   </Text>
                   <Button
@@ -354,8 +354,8 @@ const AddTestimonial = ({
                     value={values.description}
                     placeholder="Your story..."
                   />
-                  {touched.description && errors.description && 
-                  <Text style={styles.error}>{errors.description}</Text>
+                  {touched.description && errors.description &&
+                    <Text style={styles.error}>{errors.description}</Text>
                   }
 
                   {/* Submit button */}
@@ -374,8 +374,8 @@ const AddTestimonial = ({
               </View>
             )}
           </Formik>
-        </KeyboardAvoidingView>
-      </ScrollView>
+        </ScrollView>
+      </KeyboardAvoidingView>
 
       {/* <Modal
         isOpen={isSent}
@@ -410,7 +410,7 @@ const AddTestimonial = ({
           </Modal.Body>
         </Modal.Content>
       </Modal> */}
-    </View>
+    </View >
   );
 }
 
