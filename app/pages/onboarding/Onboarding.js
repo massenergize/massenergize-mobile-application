@@ -5,7 +5,7 @@
  *      for when the user accesses the app for the first time.
  * 
  *      Written by: Moizes Almeida
- *      Last edited: June 28, 2024
+ *      Last edited: July 19, 2024
  * 
  *****************************************************************************/
 
@@ -22,6 +22,8 @@ import {
 } from '@gluestack-ui/themed-native-base';
 import HTMLParser from "../../utils/HTMLParser";
 import { ImageBackground } from "@gluestack-ui/themed";
+import { DONE_ONBOARDING } from "../../utils/values";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 /* Creates each step of the onboarding pages the user is going to see */
 const STEPS = [
@@ -61,7 +63,7 @@ export default function OnboardingPage({ navigation }) {
       setCurrentStep(currentStep + 1);
       setCurrentImage(currentImage + 1);
     } else {
-      navigation.navigate("CommunitySelectionPage");
+      finishOnboarding();
     }
   };
 
@@ -84,6 +86,12 @@ export default function OnboardingPage({ navigation }) {
     4: require("../../assets/intro-step-4.png"),
   };
 
+  /* Function to navigate to the next page after the onboarding is done */
+  const finishOnboarding = () => {
+    AsyncStorage.setItem(DONE_ONBOARDING, "true");
+    navigation.navigate("CommunitySelectionPage");
+  };
+
   /* Displays the onboarding pages */
   return (
     <Box width="100%" flex="1">
@@ -100,7 +108,7 @@ export default function OnboardingPage({ navigation }) {
             color: "white",
             fontSize: "lg",
           }}
-          onPress={() => navigation.navigate("CommunitySelectionPage")}
+          onPress={finishOnboarding}
         >
           Skip
         </Button>

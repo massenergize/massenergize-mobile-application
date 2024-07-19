@@ -1,3 +1,17 @@
+/******************************************************************************
+ *                            RootWrapper
+ * 
+ *      This page contains the main navigation stack as well as global
+ *      functions and navigation flow. It is the first page that is rendered
+ *      when the app is opened. This page causes the app to navigate to the
+ *      appropriate page based on the user's current state. This page also
+ *      causes the user data to be refreshed when auth state changes.
+ * 
+ *      Written by: William Soylemez
+ *      Last edited: July 19, 2024
+ * 
+ *****************************************************************************/
+
 import { View, Text } from 'react-native';
 import React, { useEffect } from 'react';
 import MEDrawerNavigator from '../components/drawer/Drawer';
@@ -22,7 +36,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import LoadingScreen from './misc/LoadingScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { COMMUNITY_CHOICE, QUESTIONNAIRE_DATA } from '../utils/values';
+import { COMMUNITY_CHOICE, DONE_ONBOARDING, QUESTIONNAIRE_DATA } from '../utils/values';
 import ActionDetails from './actions/ActionDetails';
 import EventDetails from './events/EventDetails';
 import OnboardingPage from './onboarding/Onboarding';
@@ -69,9 +83,18 @@ const RootWrapper = ({
   setQuestionnaireInfo
 }) => {
   const navigation = useNavigation();
+
+  /* Effect for navigating to loading screen if saved community, or back to
+   * onboarding if needed
+   */
   useEffect(() => {
-    AsyncStorage.getItem(COMMUNITY_CHOICE)
-      .then(choice => {
+    Promise.all([
+      AsyncStorage.getItem(COMMUNITY_CHOICE),
+      AsyncStorage.getItem(DONE_ONBOARDING),
+    ])
+      .then(response => {
+        const [choice, onboarding] = response;
+        if (!onboarding) return navigation.navigate('Onboarding');
         if (!choice) return;
         navigation.navigate('Loading', { community_id: choice });
       })
@@ -90,8 +113,9 @@ const RootWrapper = ({
       // and set to redux quitely
       // Catch: all of this is if activeCommunity value in redux store is empty ofcourse
       AsyncStorage.getItem(COMMUNITY_CHOICE)
-        .then(choice => {
-          const found = data?.find(com => com.id?.toString() === choice);
+        .then((communityChoice) => {
+          // If there is no saved community choice, we go to community selection page
+          const found = data?.find(com => com.id?.toString() === communityChoice);
           if (!found) return navigation.navigate('CommunitySelectionPage'); // This means the saved choice of community is not in the community list retrieved. In such case we go babck to community selection page
           setActiveCommunity(found);
         })
