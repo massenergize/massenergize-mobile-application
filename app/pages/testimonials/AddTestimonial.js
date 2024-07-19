@@ -61,7 +61,7 @@ const AddTestimonial = ({
   route
 }) => {
   /* If given a testimonial, it will be in edit mode */
-  const { testimonial, editMode } = route.params;
+  const { testimonial, editMode } = route?.params ?? {};
   const testimonialAction = actions.find(
     action => testimonial?.action &&
       action.id === testimonial.action.id
@@ -163,7 +163,7 @@ const AddTestimonial = ({
           <Formik
             initialValues={{ 
               action: testimonialAction ?? '',
-              name: testimonial.preferred_name ?? user.preferred_name, 
+              name: testimonial?.preferred_name ?? user.preferred_name, 
               title: testimonial?.title ?? '',
               image: null,
               description: testimonial?.body ?? '',
