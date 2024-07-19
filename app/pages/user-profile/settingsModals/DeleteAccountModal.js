@@ -4,7 +4,7 @@
  *      This component is a modal that allows the user to delete their account.
  * 
  *      Written by: William Soylemez and Moizes Almeida
- *      Last edited: July 18, 2024
+ *      Last edited: July 19, 2024
  * 
  *****************************************************************************/
 
@@ -108,7 +108,12 @@ const DeleteAccountModal = ({
 
   /* Displays the Delete Account Modal */
   return (
-    <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
+    <Modal 
+      isOpen={isOpen} 
+      onClose={() => setIsOpen(false)}
+      transparent={true}
+      animationType="slide"
+    >
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}

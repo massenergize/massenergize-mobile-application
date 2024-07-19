@@ -4,7 +4,7 @@
  *      Displays a modal that allows the user to change their password.
  * 
  *      Written by: William Soylemez and Moizes Almeida
- *      Last edited: July 18, 2024
+ *      Last edited: July 19, 2024
  * 
  *****************************************************************************/
 
@@ -81,6 +81,8 @@ const ChangePasswordModal = ({ isOpen, setIsOpen, fireAuth }) => {
     <Modal 
       isOpen={isOpen} 
       onClose={() => setIsOpen(false)}
+      transparent={true}
+      animationType="slide"
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? 'padding' : 'height'}

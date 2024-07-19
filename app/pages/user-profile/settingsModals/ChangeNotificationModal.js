@@ -5,7 +5,7 @@
  *      notification frequency. It is used in the settings page.
  * 
  *      Written by: William Soylemez and Moizes Almeida
- *      Last edited: July 18, 2024
+ *      Last edited: July 19, 2024
  * 
  *****************************************************************************/
 
@@ -78,7 +78,12 @@ const ChangeNotificationModal = ({ isOpen, setIsOpen, user }) => {
 
   /* Displays the Notification Modal */
   return (
-    <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
+    <Modal 
+      isOpen={isOpen} 
+      onClose={() => setIsOpen(false)}
+      transparent={true}
+      animationType="slide"
+    >
       <Modal.Content maxWidth={400}>
         {/* Close Button */}
         <Modal.CloseButton />
