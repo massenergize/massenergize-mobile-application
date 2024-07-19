@@ -37,10 +37,8 @@ const AuthOptions = ({closeModal, fetchMEUser, putFirebaseUserInRedux}) => {
         ?.getIdToken()
         .then(token => {
           fetchMEUser(token, (user, error) => {
-            console.log("Ya boi", user, error);
             closeModal();
             if (!user) return navigation.navigate('Register');
-            console.log("Ya boi 2");
             if (error) {
               console.error('ERROR_FETCHING_USER_PROFILE', error);
               showError("Error fetching user profile. Please try again.");
@@ -64,7 +62,7 @@ const AuthOptions = ({closeModal, fetchMEUser, putFirebaseUserInRedux}) => {
       key: 'google',
       name: 'Gmail',
       icon: 'google',
-      theme: {text: {color: 'red'}, icon: {color: 'red'}},
+      // theme: {text: {color: '#a50e0e'}, icon: {color: '#a50e0e'}},
       onPress: doGoogleAuth,
     },
     // {
