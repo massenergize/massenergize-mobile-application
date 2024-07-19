@@ -7,7 +7,7 @@
  *      impact of the community through the CommunityHomeScreen.
  * 
  *      Written by: Moizes Almeida
- *      Last edited: July 17, 2024
+ *      Last edited: July 19, 2024
  * 
  *****************************************************************************/
 
@@ -90,6 +90,7 @@ export default function ImpactPage({ route, navigation }) {
                     <VStack 
                         alignItems="center" 
                         space={3} 
+                        p={3}
                         bg="white"
                     >
                         {/* 

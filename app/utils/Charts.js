@@ -6,7 +6,7 @@
  *      of the actions completed by each community.
  * 
  *      Written by: Moizes Almeida and Will Soylemez
- *      Last edited: July 17, 2024
+ *      Last edited: July 19, 2024
  * 
  *****************************************************************************/
 
@@ -451,7 +451,7 @@ function ActionsList({ listData = [] }) {
   const navigation = useNavigation();
   const [sortMode, setSortMode] = useState(["count"], -1);
 
-  const sortItems = (count) => {
+  const sortItems = (column) => {
     const newDirection = sortMode[0] === column ? sortMode[1] * -1 : 1;
     let newList = [...validListData];
 
@@ -487,9 +487,7 @@ function ActionsList({ listData = [] }) {
 
   return (
     <View 
-      width="100%" 
-      ml={3} 
-      p={3}
+      width="100%"
     >
       {
         validListData.length !== 0 ? (
