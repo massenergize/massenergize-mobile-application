@@ -41,7 +41,7 @@ import {
   updateUserAction,
 } from '../../config/redux/actions';
 import MEImage from "../../components/image/MEImage";
-import { Linking, TouchableOpacity } from "react-native";
+import { Alert, Linking, TouchableOpacity } from "react-native";
 import { Icon as SocialIcons } from 'react-native-elements';
 import Share from 'react-native-share';
 
@@ -86,7 +86,7 @@ const ActionDetails = ({
   const actionCompleted = () => completedList?.some(
     (completed) => completed.action.id === action_id
   );
-  
+
   /* 
    * Function that handles when the user clicks in the 'Add to To-Do' button. 
    * If the user had clicked there previously, then it will remove the action 
@@ -139,32 +139,52 @@ const ActionDetails = ({
    * action as completed. 
    */
   const handleCompletedPress = async () => {
-    if (fireAuth) {
-      if (actionCompleted()) {
-        const rel_id = completedList.find(
-          (completed) => completed.action.id === action_id
-        ).id;
+    const doCompletion = () => {
+      if (fireAuth) {
+        if (actionCompleted()) {
+          const rel_id = completedList.find(
+            (completed) => completed.action.id === action_id
+          ).id;
 
-        updateUserAction("users.actions.remove", { id: rel_id }, (res, error) => {
-          if (error) {
-            return console.log(
-              "Failed to remove item from completed list: ",
-              error
-            );
-          }
-        });
+          updateUserAction("users.actions.remove", { id: rel_id }, (res, error) => {
+            if (error) {
+              return console.log(
+                "Failed to remove item from completed list: ",
+                error
+              );
+            }
+          });
+        } else {
+          updateUserAction("users.actions.completed.add", { action_id, hid: 1 }, (res, error) => {
+            setIsDoneOpen(true);
+          });
+        }
       } else {
-        updateUserAction("users.actions.completed.add", { action_id, hid: 1 }, (res, error) => {
-          setIsDoneOpen(true);
+        toggleModal({
+          isVisible: true,
+          Component: AuthOptions,
+          title: 'How would you like to sign in or Join?'
         });
       }
-    } else {
-      toggleModal({
-        isVisible: true,
-        Component: AuthOptions,
-        title: 'How would you like to sign in or Join?'
-      });
-    }
+    };
+
+    Alert.alert(
+      actionCompleted() ? "Mark as Not Completed" : "Mark as Completed",
+      actionCompleted()
+        ? "Are you sure you want to mark this action as not completed?"
+        : "Are you sure you want to mark this action as completed?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => {},
+          style: "cancel"
+        },
+        {
+          text: "Yes",
+          onPress: doCompletion
+        }
+      ]
+    );
   };
 
   /* 
@@ -175,7 +195,7 @@ const ActionDetails = ({
     testimonialsSettings.is_published
       ? testimonials.filter(testimonial => testimonial.action?.id === action_id)
       : [];
-  
+
   /* 
    * Function that, depending on which section the user is on in the 
    * Accordion layout, it will generate different contents for each section 
@@ -184,25 +204,25 @@ const ActionDetails = ({
   const generateSectionContent = (section) => {
     switch (section) {
       case "Description":
-        return <HTMLParser 
+        return <HTMLParser
           htmlString={action?.about || ''}
           baseStyle={textStyle}
         />
       case "Steps":
         return <HTMLParser
-          htmlString={action?.steps_to_take || ''} 
+          htmlString={action?.steps_to_take || ''}
           baseStyle={textStyle}
         />
       case "Deep Dive":
-        return action?.deep_dive 
+        return action?.deep_dive
           ? <HTMLParser
-              htmlString={action.deep_dive}
-              baseStyle={textStyle}
-            />
+            htmlString={action.deep_dive}
+            baseStyle={textStyle}
+          />
           : null;
       case "Testimonials":
-        return actionTestimonials.length === 0 
-          ? null 
+        return actionTestimonials.length === 0
+          ? null
           : actionTestimonials.map(
             (testimonial, index) => (
               <TestimonialCard
@@ -241,25 +261,25 @@ const ActionDetails = ({
    * action based on whether the condition was met.
    */
   const SECTIONS = [
-    { 
-      title: "Description" 
+    {
+      title: "Description"
     },
-    { 
-      title: "Steps" 
+    {
+      title: "Steps"
     },
-    { 
-      title: "Deep Dive", 
+    {
+      title: "Deep Dive",
       condition: action?.deep_dive !== "",
     },
-    { 
-      title: "Testimonials", 
+    {
+      title: "Testimonials",
       condition: testimonialsSettings.is_published &&
-                 actionTestimonials.length > 0,
+        actionTestimonials.length > 0,
     },
     {
       title: "Service Providers",
       condition: vendorsSettings.is_published &&
-                 action?.vendors.length > 0,
+        action?.vendors.length > 0,
     }
   ].filter(section => section.condition !== false);
 
@@ -274,7 +294,7 @@ const ActionDetails = ({
           bg={isActive ? "gray.200" : "white"}
           borderTopRadius={5}
         >
-          <Text 
+          <Text
             bold
             color={isActive ? "black" : "green"}
             mr={2}
@@ -345,7 +365,7 @@ const ActionDetails = ({
       </TouchableOpacity>
     );
   };
-  
+
   /* 
    * Function that handles displaying the Social Icon buttons for the user
    * to share about the action with others.
@@ -419,7 +439,7 @@ const ActionDetails = ({
       bg="white"
     >
       {/* If the content is still loading, display a Spinner */}
-      { isActionLoading ? (
+      {isActionLoading ? (
         <Center
           width="100%"
           height="100%"
@@ -462,7 +482,7 @@ const ActionDetails = ({
             >
               <VStack>
                 {/* Action Title */}
-                <Text 
+                <Text
                   bold
                   fontSize="2xl"
                   my={5}
@@ -499,7 +519,7 @@ const ActionDetails = ({
                   justifyContent="space-between"
                   width="100%"
                   mb={5}
-                > 
+                >
                   {/* Add to To-Do List button */}
                   <Button
                     size="md"
@@ -513,7 +533,7 @@ const ActionDetails = ({
                   >
                     {actionInToDo() ? "Action in To-Do list!" : "Add to To-Do"}
                   </Button>
-                  
+
                   {/* Mark as Completed button */}
                   <Button
                     size="md"
@@ -528,7 +548,7 @@ const ActionDetails = ({
                     {actionCompleted() ? "Action Completed!" : "Mark as Done"}
                   </Button>
                 </HStack>
-                
+
                 {/* Accordion that displays the action information */}
                 <Accordion
                   sections={SECTIONS}
@@ -552,7 +572,7 @@ const ActionDetails = ({
                     Share this Action!
                   </Text>
 
-                  { shareActionButtons() }
+                  {shareActionButtons()}
                 </>
               </VStack>
             </Box>
