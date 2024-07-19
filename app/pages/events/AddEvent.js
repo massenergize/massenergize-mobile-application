@@ -5,7 +5,7 @@
  *      an event to the selected community.
  * 
  *      Written by: Moizes Almeida and Will Soylemez
- *      Last edited: July 18, 2024
+ *      Last edited: July 19, 2024
  * 
  *****************************************************************************/
 
@@ -100,8 +100,6 @@ const AddEvent = ({
   /* Uses local state to save the uri of the selected image. */
   const [imageUri, setImageUri] = useState(null);
 
-  const [linkType, setLinkType] = useState("");
-
   /* 
    * Saves the information about the location the event will take 
    * place. This is an optional field completed by the user, 
@@ -180,7 +178,7 @@ const AddEvent = ({
       location: location,
       // image: imageUri,
       description: values.description,
-      link_type: linkType,
+      link_type: values.link_type,
       external_link: values.external_link,
     };
 
@@ -239,6 +237,7 @@ const AddEvent = ({
                 location: [],
                 image: null,
                 description: "",
+                link_type: "",
                 external_link: null
               }}
               validationSchema={validationSchema}
@@ -364,7 +363,7 @@ const AddEvent = ({
                     }
                   >
                     <FormControl.Label>
-                      Is this event?
+                      How is this event being hosted?
                     </FormControl.Label>
                     <Radio.Group
                       name="format"
@@ -475,43 +474,48 @@ const AddEvent = ({
                         gap={2}
                       >
                         <FormControl.Label>
-                          Link to Join Meeting
+                          Link Information
                         </FormControl.Label>
 
                         <View>
-                          <Text
+                          <Input
+                            variant="rounded"
+                            size="lg"
+                            placeholder="Paste link here"
+                            value={values.external_link}
+                            onChangeText={handleChange("external_link")}
+                            onBlur={handleBlur("external_link")}
+                            style={{
+                              marginTop: 10,
+                            }}
+                          />
+                          <Radio.Group
+                            name="link_type"
+                            value={values.link_type}
+                            onChange={(value) => {
+                              handleChange("link_type")(value);
+                            }}
+                            onBlur={handleBlur("link_type")}
+                            style={{
+                              flexDirection: 'col',
+                              gap: 10,
+                              marginTop: 5
+                            }}
                           >
-                            Select the type of link
-                          </Text>
-
-                        <MEDropdown
-                          selectedValue={linkType}
-                          onValueChange={(value) => setLinkType(value)}
-                          mt={1}
-                          options={[
-                            {
-                              label: "Join",
-                              value: "join",
-                            },
-                            {
-                              label: "Registration",
-                              value: "registration",
-                            }
-                          ]}
-                        />
-                      </View>
-
-                        <Input
-                          variant="rounded"
-                          size="lg"
-                          placeholder="Paste link here"
-                          value={values.external_link}
-                          onChangeText={handleChange("external_link")}
-                          onBlur={handleBlur("external_link")}
-                          style={{
-                            marginTop: 10,
-                          }}
-                        />
+                            <Radio
+                              value="join"
+                              my={1}
+                            >
+                              This is a link to join the event
+                            </Radio>
+                            <Radio
+                              value="registration"
+                              my={1}
+                            >
+                              This is a link to register for the event
+                            </Radio>
+                          </Radio.Group>
+                        </View>
                       </View>
                     ) : null}
                   </FormControl>

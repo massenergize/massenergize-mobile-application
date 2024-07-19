@@ -95,7 +95,7 @@ const RootWrapper = ({
       .then(response => {
         const [choice, onboarding] = response;
         if (!onboarding) return navigation.navigate('Onboarding');
-        if (!choice) return;
+        if (!choice) return navigation.navigate('CommunitySelectionPage');
         navigation.navigate('Loading', { community_id: choice });
       })
       .catch(e => console.log('ERROR_FETCHING_SAVED_CHOICE', e.toString()));
