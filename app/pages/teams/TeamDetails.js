@@ -630,7 +630,7 @@ const mapStateToProps = state => ({
 
 /* 
  * Transforms the dispatch function from the API in order to get the information
- * of the current community and sends it to the Upcoming proprieties.
+ * of the current community and sends it to the TeamDetails proprieties.
  */
 const mapDispatchToProps = dispatch => {
   return bindActionCreators({ toggleUniversalModalAction }, dispatch);
