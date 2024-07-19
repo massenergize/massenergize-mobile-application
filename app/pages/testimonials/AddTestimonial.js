@@ -4,11 +4,11 @@
  *      This page allows users to add a testimonial for a particular action.
  * 
  *      Written by: William Soylemez and Moizes Almeida
- *      Last edited: July 18, 2024
+ *      Last edited: July 19, 2024
  * 
  *****************************************************************************/
 
-import { StyleSheet, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, KeyboardAvoidingView, Alert } from 'react-native';
 import { 
   View,
   Input, 
@@ -29,7 +29,7 @@ import { showError, showSuccess } from '../../utils/common';
 import { setActionWithValue } from '../../config/redux/actions';
 import { SET_TESTIMONIALS_LIST } from '../../config/redux/types';
 import { launchImageLibrary } from 'react-native-image-picker';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '../../components/icons';
 import MEDropdown from '../../components/dropdown/MEDropdown';
 
@@ -72,7 +72,48 @@ const AddTestimonial = ({
 
   /* Uses local state to save the uri of the selected image */
   const [imageUri, setImageUri] = useState(testimonial?.file?.url ?? null);
+  
+  /* 
+   * Uses local state to determine whether some text or input field 
+   * was changed in the form.
+   */
+  const [isFormDirty, setIsFormDirty] = useState(false);
+  
+  /* 
+   * If the user by accident or on purpose leaves the form page and
+   * they modified any input or text field in the page, they will be
+   * warned that the information they entered will be lost if they 
+   * leave, so they can stay in the page if it was a mistake or they
+   * can leave the page and lose the information they entered previously. 
+   */
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('beforeRemove', (e) => {
+      if (!isFormDirty) {
+        return;
+      }
 
+      e.preventDefault();
+
+      Alert.alert(
+        'Discard Changes?',
+        'You have unsaved changes. Are you sure you want to leave this page?',
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+            onPress: () => {}
+          },
+          {
+            text: 'Yes',
+            style: 'destructive',
+            onPress: () => navigation.dispatch(e.data.action),
+          },
+        ]
+      );
+    });
+
+    return unsubscribe;
+  }, [navigation, isFormDirty]);
 
   /* 
    * Function that handles the selection of an image for the newly 
@@ -95,6 +136,7 @@ const AddTestimonial = ({
       } else {
         const source = { uri: response.assets[0].uri };
         setImageUri(source);
+        setIsFormDirty(true);
       }
     });
   };
@@ -124,6 +166,7 @@ const AddTestimonial = ({
     .then((response) => {
       setIsSubmitting(false);
       setIsSent(true);
+      setIsFormDirty(false);
 
       if (!response.success) {
         showError('An error occurred while adding testimonial. Please try again.');
@@ -203,7 +246,12 @@ const AddTestimonial = ({
                 mb={3}
                 selectedValue={values.category}
                 minWidth={200}
-                onChange={(itemValue) => setFieldValue('action', itemValue)}
+                onChange={
+                  (itemValue) => {
+                    setFieldValue('action', itemValue);
+                    setIsFormDirty(true);
+                  }
+                }
                 options={actions.map((action, index) => (
                   {label: action.title, value: action.id}
                 ))}
@@ -216,7 +264,10 @@ const AddTestimonial = ({
                     variant="rounded"
                     size="lg"
                     mb={3}
-                    onChangeText={handleChange('name')}
+                    onChangeText={(value) => {
+                      handleChange("name")(value);
+                      setIsFormDirty(true);
+                    }}
                     onBlur={handleBlur('name')}
                     value={values.name}
                   />
@@ -233,7 +284,10 @@ const AddTestimonial = ({
                     variant="rounded"
                     size="lg"
                     mb={3}
-                    onChangeText={handleChange('title')}
+                    onChangeText={(value) => {
+                      handleChange("title")(value);
+                      setIsFormDirty(true);
+                    }}
                     onBlur={handleBlur('title')}
                     value={values.title}
                     placeholder="Add a Title"
@@ -292,7 +346,10 @@ const AddTestimonial = ({
                     mb={3}
                     multiline={true}
                     height={40}
-                    onChangeText={handleChange('description')}
+                    onChangeText={(value) => {
+                      handleChange("description")(value);
+                      setIsFormDirty(true);
+                    }}
                     onBlur={handleBlur('description')}
                     value={values.description}
                     placeholder="Your story..."

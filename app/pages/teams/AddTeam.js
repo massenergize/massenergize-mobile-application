@@ -5,7 +5,7 @@
  *      a team or subteam to the selected community.
  * 
  *      Written by: Moizes Almeida and Will Soylemez
- *      Last edited: July 18, 2024
+ *      Last edited: July 19, 2024
  * 
  *****************************************************************************/
 
@@ -40,7 +40,7 @@ import { launchImageLibrary } from 'react-native-image-picker';
 import { bindActionCreators } from 'redux';
 import { FontAwesomeIcon } from '../../components/icons';
 import MEDropdown from '../../components/dropdown/MEDropdown';
-import { KeyboardAvoidingView } from 'react-native';
+import { Alert, KeyboardAvoidingView } from 'react-native';
 
 /* 
  * This serves as a validation schema to prevent the user to add a
@@ -82,12 +82,54 @@ const AddTeam = ({
   /* Saves the name of each team in the community */
   const [teamsList, setTeamsList] = useState([]);
 
+  /* 
+   * Uses local state to determine whether some text or input field 
+   * was changed in the form.
+   */
+  const [isFormDirty, setIsFormDirty] = useState(false);
+
   /* Fetch the information from each team/sub-team */
   useEffect(() => {
     if (teams) {
       getTeams();
     }
   }, [teams]);
+
+  /* 
+   * If the user by accident or on purpose leaves the form page and
+   * they modified any input or text field in the page, they will be
+   * warned that the information they entered will be lost if they 
+   * leave, so they can stay in the page if it was a mistake or they
+   * can leave the page and lose the information they entered previously. 
+   */
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('beforeRemove', (e) => {
+      if (!isFormDirty) {
+        return;
+      }
+
+      e.preventDefault();
+
+      Alert.alert(
+        'Discard Changes?',
+        'You have unsaved changes. Are you sure you want to leave this page?',
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+            onPress: () => {}
+          },
+          {
+            text: 'Yes',
+            style: 'destructive',
+            onPress: () => navigation.dispatch(e.data.action),
+          },
+        ]
+      );
+    });
+
+    return unsubscribe;
+  }, [navigation, isFormDirty]);
 
   /* Gets a list of the name of each team in the community */
   const getTeams = () => {
@@ -119,6 +161,7 @@ const AddTeam = ({
       } else {
         const source = { uri: response.assets[0].uri };
         setImageUri(source);
+        setIsFormDirty(true);
       }
     });
   };
@@ -130,6 +173,7 @@ const AddTeam = ({
   const handleAddAdmin = (email) => {
     if (!adminsEmails.includes(email)) {
       setAdminsEmails([...adminsEmails, email]);
+      setIsFormDirty(true);
     }
   };
 
@@ -139,6 +183,7 @@ const AddTeam = ({
    */
   const handleRemoveAdmin = (email) => {
     setAdminsEmails(adminsEmails.filter(e => e !== email));
+    setIsFormDirty(true);
   };
 
   /* 
@@ -171,6 +216,7 @@ const AddTeam = ({
 
         setIsSent(true);
         console.log('TEAM_ADDED: ', response.data);
+        setIsFormDirty(false);
       })
       .catch((error) => {
         console.error('ERROR_ADDING_TEAM: ', error);
@@ -241,7 +287,10 @@ const AddTeam = ({
                       variant="rounded"
                       size="lg"
                       placeholder="What your team will be known by..."
-                      onChangeText={handleChange("name")}
+                      onChangeText={(value) => {
+                        handleChange("name")(value);
+                        setIsFormDirty(true);
+                      }}
                       onBlur={handleBlur("name")}
                       value={values.name}
                       style={{
@@ -282,7 +331,10 @@ const AddTeam = ({
                       textAlignVertical="top"
                       multiline={true}
                       height={10}
-                      onChangeText={handleChange("tagline")}
+                      onChangeText={(value) => {
+                        handleChange("tagline")(value);
+                        setIsFormDirty(true);
+                      }}
                       onBlur={handleBlur("tagline")}
                       value={values.tagline}
                     />
@@ -313,7 +365,10 @@ const AddTeam = ({
                       size="lg"
                       borderRadius={25}
                       placeholder="Enter an admin email and click <Add>..."
-                      onChangeText={handleChange("admins")}
+                      onChangeText={(value) => {
+                        handleChange("admins")(value);
+                        setIsFormDirty(true);
+                      }}
                       onBlur={handleBlur("admins")}
                       value={values.admins}
                       style={{
@@ -388,7 +443,10 @@ const AddTeam = ({
                       textAlignVertical="top"
                       multiline={true}
                       height={40}
-                      onChangeText={handleChange("description")}
+                      onChangeText={(value) => {
+                        handleChange("description")(value);
+                        setIsFormDirty(true);
+                      }}
                       onBlur={handleBlur("description")}
                       value={values.description}
                     />
@@ -488,9 +546,10 @@ const AddTeam = ({
                         accessibilityLabel="Choose Category"
                         placeholder="Choose which team is the parent team"
                         onChange={
-                          (itemValue) =>
-                            setFieldValue('parent',
-                              itemValue)
+                          (itemValue) => { 
+                            setFieldValue('parent',itemValue);
+                            setIsFormDirty(true);
+                          }
                         }
                         options={
                           teamsList.map((teamName, index) => ({

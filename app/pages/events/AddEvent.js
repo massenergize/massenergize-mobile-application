@@ -11,7 +11,7 @@
 
 /* Imports and set up */
 import { connect } from "react-redux";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -36,7 +36,7 @@ import { SET_EVENT_LIST } from "../../config/redux/types";
 import { showError, showSuccess } from "../../utils/common";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { launchImageLibrary } from "react-native-image-picker";
-import { KeyboardAvoidingView } from "react-native";
+import { Alert, KeyboardAvoidingView } from "react-native";
 import MEDropdown from "../../components/dropdown/MEDropdown";
 
 /* 
@@ -101,6 +101,46 @@ const AddEvent = ({
   const [imageUri, setImageUri] = useState(null);
 
   /* 
+   * Uses local state to determine whether some text or input field 
+   * was changed in the form.
+   */
+  const [isFormDirty, setIsFormDirty] = useState(false);
+  
+  /* 
+   * If the user by accident or on purpose leaves the form page and
+   * they modified any input or text field in the page, they will be
+   * warned that the information they entered will be lost if they 
+   * leave, so they can stay in the page if it was a mistake or they
+   * can leave the page and lose the information they entered previously. 
+   */
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('beforeRemove', (e) => {
+      if (!isFormDirty) {
+        return;
+      }
+
+      e.preventDefault();
+
+      Alert.alert(
+        'Discard Changes?',
+        'You have unsaved changes. Are you sure you want to leave this page?',
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+            onPress: () => {}
+          },
+          {
+            text: 'Yes',
+            style: 'destructive',
+            onPress: () => navigation.dispatch(e.data.action),
+          },
+        ]
+      );
+    });
+  }, [navigation, isFormDirty]);
+
+  /* 
    * Saves the information about the location the event will take 
    * place. This is an optional field completed by the user, 
    * and starts assuming that the event will take place in some 
@@ -136,6 +176,7 @@ const AddEvent = ({
       } else {
         const source = { uri: response.assets[0].uri };
         setImageUri(source);
+        setIsFormDirty(true);
       }
     });
   };
@@ -145,6 +186,7 @@ const AddEvent = ({
     setShowStartDatePicker(false);
     if (selectedDate) {
       setStartDate(selectedDate);
+      setIsFormDirty(true);
     }
   };
 
@@ -153,12 +195,14 @@ const AddEvent = ({
     setShowEndDatePicker(false);
     if (selectedDate) {
       setEndDate(selectedDate);
+      setIsFormDirty(true);
     }
   };
 
   /* Function that handles the user changing location data */
   const handleChangeLocation = (field, value) => {
     setLocation({ ...location, [field]: value });
+    setIsFormDirty(true);
   };
 
   /* 
@@ -184,6 +228,7 @@ const AddEvent = ({
 
     apiCall("events.add", data).then((response) => {
       setIsSubmitting(false);
+      setIsFormDirty(false);
 
       if (!response.success) {
         showError('An error occurred while adding event. Please try again.');
@@ -266,7 +311,10 @@ const AddEvent = ({
                       variant="rounded"
                       size="lg"
                       placeholder="Event Name"
-                      onChangeText={handleChange("title")}
+                      onChangeText={(value) => {
+                        handleChange("title")(value);
+                        setIsFormDirty(true);
+                      }}
                       onBlur={handleBlur("title")}
                       value={values.title}
                       mt={2}
@@ -371,6 +419,7 @@ const AddEvent = ({
                       onChange={(value) => {
                         setFormat(value);
                         handleChange("format")(value);
+                        setIsFormDirty(true);
                       }}
                       onBlur={handleBlur("format")}
                       style={{
@@ -434,7 +483,12 @@ const AddEvent = ({
                           style={{
                             marginTop: 10,
                           }}
-                          onChangeText={(value) => handleChangeLocation("building_name", value)}
+                          onChangeText={
+                            (value) => {
+                              handleChangeLocation("building_name", value);
+                              setIsFormDirty(true);
+                            }
+                          }
                         />
                         <Input
                           variant="rounded"
@@ -444,7 +498,12 @@ const AddEvent = ({
                           style={{
                             marginTop: 10,
                           }}
-                          onChangeText={(value) => handleChangeLocation("room", value)}
+                          onChangeText={
+                            (value) => {
+                              handleChangeLocation("room", value);
+                              setIsFormDirty(true);
+                            }
+                          }
                         />
                         <Input
                           variant="rounded"
@@ -454,7 +513,12 @@ const AddEvent = ({
                           style={{
                             marginTop: 10,
                           }}
-                          onChangeText={(value) => handleChangeLocation("address", value)}
+                          onChangeText={
+                            (value) => {
+                              handleChangeLocation("address", value);
+                              setIsFormDirty(true);
+                            }
+                          }
                         />
                         <Input
                           variant="rounded"
@@ -464,7 +528,12 @@ const AddEvent = ({
                           style={{
                             marginTop: 10,
                           }}
-                          onChangeText={(value) => handleChangeLocation("city", value)}
+                          onChangeText={
+                            (value) => {
+                              handleChangeLocation("city", value);
+                              setIsFormDirty(true);
+                            }
+                          }
                         />
                       </View>
                     ) : null}
@@ -483,7 +552,10 @@ const AddEvent = ({
                             size="lg"
                             placeholder="Paste link here"
                             value={values.external_link}
-                            onChangeText={handleChange("external_link")}
+                            onChangeText={(value) => {
+                              handleChange("external_link")(value);
+                              setIsFormDirty(true);
+                            }}
                             onBlur={handleBlur("external_link")}
                             style={{
                               marginTop: 10,
@@ -494,6 +566,7 @@ const AddEvent = ({
                             value={values.link_type}
                             onChange={(value) => {
                               handleChange("link_type")(value);
+                              setIsFormDirty(true);
                             }}
                             onBlur={handleBlur("link_type")}
                             style={{
@@ -603,7 +676,10 @@ const AddEvent = ({
                       textAlignVertical="top"
                       multiline={true}
                       height={40}
-                      onChangeText={handleChange("description")}
+                      onChangeText={(value) => {
+                        handleChange("description")(value);
+                        setIsFormDirty(true);
+                      }}
                       onBlur={handleBlur("description")}
                       value={values.description}
                     />

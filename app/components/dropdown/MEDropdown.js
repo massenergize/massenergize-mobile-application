@@ -1,4 +1,21 @@
-import { ScrollView, Text, View, Pressable } from "react-native";
+/******************************************************************************
+ *                          MEDropdown
+ * 
+ *      This page is responsible for rendering the app's standard
+ *      dropdown component.
+ * 
+ *      Written by: Will Soylemez and Moizes Almeida
+ *      Last edited: July 19, 2024
+ * 
+ *****************************************************************************/
+
+/* Imports and set up */
+import { 
+  ScrollView, 
+  Text, 
+  View, 
+  Pressable 
+} from "react-native";
 import { toggleUniversalModalAction } from "../../config/redux/actions";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -13,6 +30,7 @@ const MEDropdown = ({
   title,
   style
 }) => {
+  /* Uses local state to determine whether the dropdown is open or not. */
   const [isOpen, setIsOpen] = useState(false);
 
   // Fix empty props
@@ -77,7 +95,15 @@ const MEDropdown = ({
         ...style,
       }}
     >
-      <Text>{value ? options.find(option => option.value === value).label : "Select an option"}</Text>
+      <Text>
+        {value 
+          ? options.find(
+              option => option.value === value
+            ).label 
+          : "Select an option"
+        }
+      </Text>
+      
       <Text>{isOpen}</Text>
       <IonicIcon name={isOpen ? "chevron-up" : "chevron-down"} size={20} />
     </Pressable>
