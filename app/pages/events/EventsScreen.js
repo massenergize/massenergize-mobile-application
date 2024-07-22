@@ -169,16 +169,7 @@ const EventsScreen = ({ navigation, events, fireAuth, toggleModal }) => {
                     ) : (
                         newEvents.map((item) => (
                             <EventCard
-                                key={item.id}
-                                title={item.name}
-                                date={formatDateString(
-                                    new Date(item.start_date_and_time),
-                                    new Date(item.end_date_and_time)
-                                )}
-                                location={item.location}
-                                imgUrl={item.image?.url}
-                                canRSVP={item.rsvp_enabled}
-                                id={item.id}
+                                data={item}
                                 navigation={navigation}
                                 my="3"
                                 mx={2}

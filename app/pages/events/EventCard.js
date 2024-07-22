@@ -5,99 +5,116 @@
  *      as a component called EventCard. Through this component, it
  *      is possible to keep consistency across all events pages.
  * 
- *      Written by: Moizes Almeida
- *      Last edited: July 3, 2024
+ *      Written by: Moizes Almeida and William Soylemez
+ *      Last edited: July 22, 2024
  * 
  *****************************************************************************/
 
 /* Imports and set up */
 import React from "react";
 import {
-    Box,
-    Pressable,
-    AspectRatio,
-    Image,
-    Text,
-    Icon,
-    Flex,
-    Center,
-    Button,
+  Box,
+  Pressable,
+  AspectRatio,
+  Image,
+  Text,
+  Icon,
+  Flex,
+  Badge,
 } from "@gluestack-ui/themed-native-base";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import events from "../../stylesheet/events";
+import Moment from "moment";
 
 
 export default EventCard = React.memo(
-    ({
-        title, 
-        date,
-        location,
-        imgUrl,
-        id,
-        navigation,
-        ...props
-    })  => {
-    
+  ({
+    data,
+    navigation,
+    ...props
+  }) => {
+    console.log(JSON.stringify(data, null, 2));
+
     /* Displays the community's events as a EventCard */
     return (
-        <Pressable
-            onPress={() => navigation.navigate('EventDetails', { event_id: id })}
-            backgroundColor="white"
-            width={events.cardWidth}
-            rounded="lg"
-            {...props}
-        >
-            <Box rounded="lg" flex={1} overflow="hidden">
-                {/* Image */}
-                <Flex>
-                    {imgUrl ? (
-                        <AspectRatio width="100%" ratio={16 / 9}>
-                            <Image 
-                                source={{ uri: imgUrl }}
-                                alt="event's image"
-                                resizeMode="cover"
-                            />
-                        </AspectRatio>
-                    ) : (
-                        <Box height={200} bg="gray.300"></Box>
-                    )}
-                </Flex>
+      <Pressable
+        onPress={() => navigation.navigate('EventDetails', { event_id: data.id })}
+        backgroundColor="white"
+        width={events.cardWidth}
+        rounded="lg"
+        {...props}
+      >
+        <Box rounded="lg" flex={1} overflow="hidden">
+          {/* Pending Approval Banner */}
+          {
+            !data.is_approved &&
+            <Badge
+              colorScheme="red"
+              position="absolute"
+              top={2}
+              right={2}
+              zIndex={1}
+              style={{
+                backgroundColor: '#DC4E34',
+                color: 'white',
+              }}
+              _text={{
+                color: "white"
+              }}
+            >
+              Pending Approval
+            </Badge>
+          }
+          {/* Image */}
+          <Flex>
+            {data?.image?.url ? (
+              <AspectRatio width="100%" ratio={16 / 9}>
+                <Image
+                  source={{ uri: data?.image?.url }}
+                  alt="event's image"
+                  resizeMode="cover"
+                />
+              </AspectRatio>
+            ) : (
+              <Box height={200} bg="gray.300"></Box>
+            )}
+          </Flex>
 
-                {/* Title */}
-                <Flex
-                    flexDirection="row"
-                    justifyContent="space-between"
-                    flexGrow="1"
-                    px="4"
-                    pt="4"
-                    pb="2"
-                >
-                    <Text fontWeight="bold" fontSize="md" w="90%" mr="3">
-                            {title}
-                    </Text>
-                    <Icon 
-                        as={FontAwesome}
-                        name="arrow-right"
-                        size="md"
-                        color="primary.400"
-                    />
-                </Flex>
+          {/* Title */}
+          <Flex
+            flexDirection="row"
+            justifyContent="space-between"
+            flexGrow="1"
+            px="4"
+            pt="4"
+            pb="2"
+          >
+            <Text fontWeight="bold" fontSize="md" w="90%" mr="3">
+              {data.name}
+            </Text>
+            <Icon
+              as={FontAwesome}
+              name="arrow-right"
+              size="md"
+              color="primary.400"
+            />
+          </Flex>
 
-                {/* Meta */}
-                <Flex
-                    backgroundColor="gray.100"
-                    flexDirection="row" 
-                    flexWrap="wrap"
-                    justifyContent="space-between"
-                    py={2}
-                >
-                    <Box px="4" style={{ alignItems: 'center', justifyContent: 'center' }}>
-                            <Text fontSize={events.cardMetaFontSize} color="primary.400">
-                                {date}
-                            </Text>
-                    </Box>
-                </Flex>
+          {/* Meta */}
+          <Flex
+            backgroundColor="gray.100"
+            flexDirection="row"
+            flexWrap="wrap"
+            justifyContent="space-between"
+            py={2}
+          >
+            <Box px="4" style={{ alignItems: 'center', justifyContent: 'center' }}>
+              <Text fontSize={events.cardMetaFontSize} color="primary.400">
+                {Moment(data.start_date).format('ll')}
+              </Text>
             </Box>
-        </Pressable>
+          </Flex>
+        </Box>
+      </Pressable>
     );
-});
+  });
