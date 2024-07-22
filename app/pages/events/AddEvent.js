@@ -71,8 +71,12 @@ const AddEvent = ({
   events,
   user,
   activeCommunity,
-  setEvents
+  setEvents,
+  route
 }) => {
+  /* Check if we're in edit mode with an event */
+  const { event, editMode } = route?.params ?? {};
+
   /* Saves the community's ID into a variable */
   const community_id = activeCommunity.id;
 
@@ -147,7 +151,8 @@ const AddEvent = ({
         ]
       );
     });
-  });
+    return unsubscribe;
+  }, [navigation, isFormDirty]);
 
   /* 
    * Saves the information about the location the event will take 
@@ -156,12 +161,12 @@ const AddEvent = ({
    * location within the state of Massachusetts.
    */
   const [location, setLocation] = useState({
-    "address": null,
-    "city": null,
+    "address": event?.location?.address ?? "",
+    "city": event?.location?.city ?? "",
     "country": "US",
     "state": "MA",
-    "building": null,
-    "room": "",
+    "building": event?.location?.building ?? "",
+    "room": event?.location?.room ?? "",
   });
 
   /* 
@@ -239,25 +244,35 @@ const AddEvent = ({
       ...(values.format === 'online' || values.format === 'both' ? {
         external_link_type: values.external_link_type,
         external_link: values.external_link,
-      } : null)
+      } : null),
+
+      // Existing event if editing
+      ...(editMode ? { event_id: event.id } : null)
     };
 
-    apiCall("events.add", data).then((response) => {
-      setIsSubmitting(false);
-      setIsFormDirty(false);
+    apiCall(editMode ? "events.update" : "events.add", data)
+      .then((response) => {
+        setIsSubmitting(false);
+        setIsFormDirty(false);
 
-      if (!response.success) {
-        showError('An error occurred while adding event. Please try again.');
-        console.error('ERROR_ADDING_EVENT: ', response);
-        return;
-      }
+        if (!response.success) {
+          showError('An error occurred while adding event. Please try again.');
+          console.error('ERROR_ADDING_EVENT: ', response);
+          return;
+        }
 
-      console.log('EVENT_ADDED');
-      setIsSent(true);
-      /* Add the new event to the redux store */
-      setEvents([response.data, ...events]);
-      actions.resetForm();
-    })
+        console.log('EVENT_ADDED');
+        setIsSent(true);
+
+        /* Add the new event to the redux store */
+        if (editMode) {
+          const newEvents = events.map(e => e.id === event.id ? response.data : e);
+          setEvents(newEvents);
+        } else {
+          setEvents([response.data, ...events]);
+        }
+        actions.resetForm();
+      })
       .catch((error) => {
         console.error('ERROR_ADDING_EVENT: ', error);
         showError('An error occurred while adding an event. Please try again.');
@@ -291,15 +306,15 @@ const AddEvent = ({
             </Text>
             <Formik
               initialValues={{
-                title: "",
-                start_date_and_time: "",
-                end_date_and_time: "",
-                format: "",
-                location: [],
+                title: event?.name ?? "",
+                start_date_and_time: event?.start_date_and_time ?? "",
+                end_date_and_time: event?.end_date_and_time ?? "",
+                format: event?.event_type ?? "",
+                location: location,
                 image: null,
-                description: "",
-                external_link_type: "",
-                external_link: null
+                description: event?.description ?? "",
+                external_link_type: event?.external_link_type ?? "",
+                external_link: event?.external_link ?? "",
               }}
               validationSchema={validationSchema}
               onSubmit={handleSendEvent}
@@ -494,13 +509,13 @@ const AddEvent = ({
                           variant="rounded"
                           size="lg"
                           placeholder="Building Name"
-                          value={location.building_name}
+                          value={location.building}
                           style={{
                             marginTop: 10,
                           }}
                           onChangeText={
                             (value) => {
-                              handleChangeLocation("building_name", value);
+                              handleChangeLocation("building", value);
                               setIsFormDirty(true);
                             }
                           }
@@ -796,7 +811,7 @@ const AddEvent = ({
                 fontWeight="bold"
                 py="5"
               >
-                Event successfully added!
+                Event successfully {editMode ? 'updated' : 'added'}!
               </Text>
               <Text
                 textAlign="center"
@@ -806,7 +821,11 @@ const AddEvent = ({
             </Center>
             <Button
               colorScheme={"gray"}
-              onPress={() => setIsSent(false)}
+              onPress={() => {
+                setIsSent(false);
+                setIsFormDirty(false);
+                navigation.navigate('CommunityPages');
+              }}
             >
               Back
             </Button>

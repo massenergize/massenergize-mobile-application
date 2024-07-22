@@ -15,9 +15,9 @@ import { connect } from 'react-redux';
 import { useDetails } from '../../utils/hooks';
 import { formatDateString } from '../../utils/Utils';
 import HTMLParser from '../../utils/HTMLParser';
-import { FontAwesomeIcon } from '../../components/icons';
+import { FontAwesomeIcon, IonicIcon } from '../../components/icons';
 import Share from 'react-native-share';
-import { 
+import {
   ScrollView,
   VStack,
   Text,
@@ -34,17 +34,21 @@ import {
   Link,
   Button,
   Modal,
+  Badge,
 } from '@gluestack-ui/themed-native-base';
-import { 
-  PermissionsAndroid, 
-  Platform, 
+import {
+  PermissionsAndroid,
+  Platform,
   TouchableOpacity,
-  Linking
+  Linking,
+  Pressable
 } from 'react-native';
 import * as AddCalendarEvent from 'react-native-add-calendar-event';
 import { Icon as SocialIcons } from 'react-native-elements';
+import { COLOR_SCHEME } from '../../stylesheet';
+import { useNavigation } from '@react-navigation/native';
 
-const EventDetails = ({ route }) => {
+const EventDetails = ({ route, navigation }) => {
   /*
    * Gets the id of the community through the parameters of the route;
    */
@@ -101,49 +105,49 @@ const EventDetails = ({ route }) => {
 
   /* Function that adds an event to the user's calendar */
   const addEventToCalendar = () => {
-    let notes = event.description ? 
-                event.description.replace(/<\/?[^>]+(>|$)/g, "") : '';
-  
+    let notes = event.description ?
+      event.description.replace(/<\/?[^>]+(>|$)/g, "") : '';
+
     /* Adding access link to the notes if the event is online or both */
     if (['online', 'both'].includes(event.event_type) && event.external_link) {
       notes += `\nAccess Link: ${event.external_link}`;
     }
-  
+
     /* Configuring the event object */
     const eventConfig = {
       title: event.name,
       startDate: new Date(event.start_date_and_time).toISOString(),
       endDate: new Date(event.end_date_and_time).toISOString(),
-      location: ['in-person', 'both'].includes(event.event_type) && 
-                event.location ? `${event.location.city}, MA` : undefined,
-      url: ['online', 'both'].includes(event.event_type) && 
-            event.external_link ? addHttp(event.external_link) : undefined,
+      location: ['in-person', 'both'].includes(event.event_type) &&
+        event.location ? `${event.location.city}, MA` : undefined,
+      url: ['online', 'both'].includes(event.event_type) &&
+        event.external_link ? addHttp(event.external_link) : undefined,
       notes: notes,
       alarms: [{
         date: -60 * 60,
       }]
     };
-  
+
     /* Presenting the event creating dialog */
     AddCalendarEvent.presentEventCreatingDialog(eventConfig)
-    .then((eventInfo) => {
-      /* 
-       * If in the middle of the action the user's cancel the operation, 
-       * then they still haven't added the event to their calendar.
-       */
-      if (eventInfo.action === "CANCELED") {
-        setHasAdded(false);
-        console.log("User has cancelled adding the event to calendar.")
-      } else {
-        console.log('Event added to calendar successfully: ', eventInfo);
-        setHasAdded(true);
-        setOpenModal(true);
-      }
-    })
-    .catch((error) => {
-      console.log('Error adding event to calendar: ', error);
-    });
-  };  
+      .then((eventInfo) => {
+        /* 
+         * If in the middle of the action the user's cancel the operation, 
+         * then they still haven't added the event to their calendar.
+         */
+        if (eventInfo.action === "CANCELED") {
+          setHasAdded(false);
+          console.log("User has cancelled adding the event to calendar.")
+        } else {
+          console.log('Event added to calendar successfully: ', eventInfo);
+          setHasAdded(true);
+          setOpenModal(true);
+        }
+      })
+      .catch((error) => {
+        console.log('Error adding event to calendar: ', error);
+      });
+  };
 
   /* 
    * Function that handles adding the web protocol to the provided 
@@ -163,7 +167,7 @@ const EventDetails = ({ route }) => {
   const SocialIcon = ({ name, onPress }) => {
     /* Configuration of styling for the button */
     let iconName, colorName;
-  
+
     if (name === 'facebook') {
       iconName = 'facebook';
       colorName = '#3b5998';
@@ -174,26 +178,26 @@ const EventDetails = ({ route }) => {
       iconName = 'envelope';
       colorName = '#004f9f';
     }
-    
+
     /* Calls on the onPress function passed as a parameter for this function */
     const handlePress = () => {
       onPress();
     };
-    
+
     /* Displays the Social Icon button */
     return (
-      <TouchableOpacity 
-        onPress={handlePress} 
-        style={{ 
-          marginHorizontal: 15, 
+      <TouchableOpacity
+        onPress={handlePress}
+        style={{
+          marginHorizontal: 15,
           paddingBottom: 20,
         }}
       >
-        <SocialIcons 
-          name={iconName} 
-          type='font-awesome' 
+        <SocialIcons
+          name={iconName}
+          type='font-awesome'
           color={colorName}
-          size={30} 
+          size={30}
         />
       </TouchableOpacity>
     );
@@ -210,20 +214,20 @@ const EventDetails = ({ route }) => {
       { name: 'linkedin', onPress: () => shareEvent('linkedin') },
       { name: 'email', onPress: () => shareEvent('email') },
     ];
-    
+
     /* Renders the Social Icons */
     return (
-      <View 
-        style={{ 
-          flexDirection: 'row', 
-          justifyContent: 'center' 
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'center'
         }}
       >
         {socialIcons.map((icon, index) => (
-          <SocialIcon 
-            key={index} 
-            name={icon.name} 
-            onPress={icon.onPress} 
+          <SocialIcon
+            key={index}
+            name={icon.name}
+            onPress={icon.onPress}
           />
         ))}
       </View>
@@ -239,15 +243,15 @@ const EventDetails = ({ route }) => {
     const shareOptions = {
       title: 'Share Event',
       message: `Check out this event: ${event.name}\n\nDate: ${formatDateString(
-        new Date(event.start_date_and_time), 
+        new Date(event.start_date_and_time),
         new Date(event.end_date_and_time)
-      )}\n\nDescription: ${event.description 
-        ? event.description.replace(/<\/?[^>]+(>|$)/g, "") 
+      )}\n\nDescription: ${event.description
+        ? event.description.replace(/<\/?[^>]+(>|$)/g, "")
         : ''}\n\nLink: ${addHttp(event.external_link)}`,
       url: `https://community.massenergize.org/${event.community.subdomain}/events/${event_id}`,
       failOnCancel: false,
     };
-    
+
     /* Share on social media or email or copy to clipboard */
     try {
       if (platform === 'facebook') {
@@ -268,7 +272,14 @@ const EventDetails = ({ route }) => {
     } catch (error) {
       console.log('Error sharing event: ', error);
     }
-  };  
+  };
+
+  const editEvent = () => {
+    navigation.navigate('AddEvent', {
+      event: event,
+      editMode: true
+    });
+  }
 
   /* Displays a spinner while the information from is loading from the API */
   if (isEventLoading) {
@@ -296,7 +307,7 @@ const EventDetails = ({ route }) => {
           {/* Event Image */}
           {event.image?.url && (
             <AspectRatio ratio={16 / 9}>
-              <Image 
+              <Image
                 source={{ uri: event.image.url }}
                 alt="event's image"
                 resizeMode="contain"
@@ -317,7 +328,7 @@ const EventDetails = ({ route }) => {
             </Text>
           </VStack>
 
-          {/* Event's format: in-person, online, or hibrid (both) */}
+          {/* Event's format: in-person, online, or hybrid (both) */}
           {['in-person', 'both'].includes(event.event_type) && (
             <VStack>
               <Text fontSize="lg" fontWeight="bold" color="primary.400">
@@ -386,27 +397,46 @@ const EventDetails = ({ route }) => {
         <Divider my="4" />
 
         {/* Event's name and description */}
-        <Box>
+        <Box pt={5}>
+          {/* Pending Approval Badge */}
+          {event.is_approved === false && (
+            <Badge
+              colorScheme="red"
+              position="absolute"
+              top={-4}
+              right={2}
+              zIndex={1}
+              style={{
+                backgroundColor: "#DC4E34",
+                color: 'white'
+              }}
+              _text={{
+                color: "white"
+              }}
+            >
+              Pending Approval
+            </Badge>
+          )}
           <Heading textAlign="center">
             {event.name || "Event Name"}
           </Heading>
 
           {event.description && (
-            <HTMLParser 
+            <HTMLParser
               htmlString={event.description}
               baseStyle={textStyle}
             />
           )}
 
           {/* 
-            * If the event is not past, then display the option to share 
-            * that event with other people.
+            * If the event is not past and approved then display the
+            * option to share that event with other people.
             */}
-          { 
-            !isPastEvent() && <>
+          {
+            !isPastEvent() && event.is_approved && <>
               <Divider my="4" />
 
-              <Text 
+              <Text
                 fontSize="xs"
                 textAlign="center"
                 px={10}
@@ -415,9 +445,49 @@ const EventDetails = ({ route }) => {
               >
                 Share this Event!
               </Text>
-              
-              { shareEventButtons() }
+
+              {shareEventButtons()}
             </>
+          }
+          {/* For pending events */}
+          {
+            event.is_approved === false && (
+              <View
+                width="100%"
+                style={{
+                  marginTop: 40
+                }}
+              >
+                {/* 
+                  * Divisor between the description of the event 
+                  * and the edit button.
+                  */}
+                <Divider my="4" />
+
+                <Pressable
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    marginTop: 10,
+                  }}
+                  onPress={editEvent}
+                >
+                  <IonicIcon
+                    name="pencil"
+                    size={20}
+                    color={COLOR_SCHEME.GREEN}
+                  />
+                  <Text
+                    color={COLOR_SCHEME.GREEN}
+                    ml={2}
+                    bold
+                  >
+                    Edit Event
+                  </Text>
+                </Pressable>
+
+              </View>
+            )
           }
         </Box>
       </ScrollView>
@@ -448,7 +518,7 @@ const EventDetails = ({ route }) => {
                 Event successfully added to your Calendar!
               </Text>
               <Text>
-                You will be informed when the event is 
+                You will be informed when the event is
                 happening 1 hour before.
               </Text>
             </Center>
