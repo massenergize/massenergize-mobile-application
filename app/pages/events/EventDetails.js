@@ -5,7 +5,7 @@
  *      information as a component called EventDetails.
  * 
  *      Written by: Moizes Almeida and Will Soylemez
- *      Last edited: July 18, 2024
+ *      Last edited: July 22, 2024
  * 
  *****************************************************************************/
 
@@ -342,7 +342,7 @@ const EventDetails = ({ route, navigation }) => {
           {['online', 'both'].includes(event.event_type) && (
             <VStack>
               <Text
-                mt={event.event_type === "both" ? 2 : 0}
+                mt={event.event_type === "both" ? 1 : 0}
                 fontSize="lg"
                 fontWeight="bold"
                 color="primary.400"
