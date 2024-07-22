@@ -20,7 +20,7 @@ import {
   Text,
   Spacer,
   Center,
-  Spinner, 
+  Spinner,
   Button,
   Box,
   Stack,
@@ -36,6 +36,7 @@ import { toggleUniversalModalAction } from '../../config/redux/actions';
 import AuthOptions from '../auth/AuthOptions';
 import { fetchAllUserInfo } from "../../config/redux/actions";
 import MEImage from '../../components/image/MEImage';
+import MEInfoModal from '../../components/modal/MEInfoModal';
 
 const TeamsScreen = ({ navigation, teams, fireAuth, toggleModal, user }) => {
   /*
@@ -119,14 +120,14 @@ const TeamsScreen = ({ navigation, teams, fireAuth, toggleModal, user }) => {
         <Heading mb={5} alignSelf="center">My Teams</Heading>
 
         {
-          teams?.length === 0 && 
+          teams?.length === 0 &&
           <Text
             fontSize="xs"
             textAlign="center"
             px={10}
             color="gray.400"
           >
-            You have not joined any teams. 
+            You have not joined any teams.
             Explore the teams in this community below.
           </Text>
         }
@@ -167,10 +168,10 @@ const TeamsScreen = ({ navigation, teams, fireAuth, toggleModal, user }) => {
                       height={120}
                       bg="gray.300"
                       altComponent={
-                        <Box 
-                          height={120} 
-                          bg="gray.300" 
-                          borderTopRadius="xl" 
+                        <Box
+                          height={120}
+                          bg="gray.300"
+                          borderTopRadius="xl"
                         />
                       }
                     />
@@ -180,10 +181,10 @@ const TeamsScreen = ({ navigation, teams, fireAuth, toggleModal, user }) => {
                       <Stack space={2}>
                         <Heading
                           size="sm"
-                        > 
-                          {team.name} 
+                        >
+                          {team.name}
                         </Heading>
-                        
+
                         {team.tagline !== "" ? (
                           <Text
                             fontSize="xs"
@@ -222,6 +223,22 @@ const TeamsScreen = ({ navigation, teams, fireAuth, toggleModal, user }) => {
         </Center>
       ) : (
         <ScrollView showsVerticalScrollIndicator={false}>
+          <HStack alignItems="center" justifyContent="center" mt={10}>
+            <Heading mr={5}>Teams</Heading>
+            <MEInfoModal>
+              <Text
+                bold
+                color="primary.400"
+                fontSize="lg"
+              >
+                Teams
+              </Text>
+              <Text>
+                Join a team to measure your impact with another group of people.
+              </Text>
+            </MEInfoModal>
+
+          </HStack>
           <VStack space={5} p={5}>
             {
               renderAddTeam()
@@ -234,74 +251,74 @@ const TeamsScreen = ({ navigation, teams, fireAuth, toggleModal, user }) => {
 
             {/* Display all community's teams and sub-teams */}
             <Heading mb={2} alignSelf="center">All Teams</Heading>
-            { teamsList.length === 0 ? (
+            {teamsList.length === 0 ? (
               <View>
                 <Text fontSize="xs"
                   textAlign="center"
                   px={10}
                   color="gray.400"
                 >
-                  There are curently no Teams in this community. 
+                  There are curently no Teams in this community.
                   You can create the first one!
                 </Text>
               </View>
-            ) : ( 
+            ) : (
               teamsList.map((team, i) => {
-              return (
-                <View key={i}>
-                  <TeamCard
-                    navigation={navigation}
-                    team={team}
-                    isSubteam={false}
-                  />
+                return (
+                  <View key={i}>
+                    <TeamCard
+                      navigation={navigation}
+                      team={team}
+                      isSubteam={false}
+                    />
 
-                  {
-                  /* 
-                   * Display the subteams associated with a parent if 
-                   * expanded.
-                   */
-                  team.subteams.length > 0 && (
-                    <View>
-                      <Pressable onPress={() => changeExpanded(team.team.id)}>
-                        <HStack mt={2} alignItems="center">
-                          <Spacer />
-                          <Text color="primary.600" mr={1}>
-                            {
-                              subteamsExpanded[team.team.id] ? 
-                                "Collapse Subteams" : 
-                                "Expand Subteams"
-                            }
-                          </Text>
-                          <Ionicons
-                            name={
-                              subteamsExpanded[team.team.id]
-                                ? "chevron-up-outline"
-                                : "chevron-down-outline"
-                            }
-                            color="#64B058"
-                          />
-                        </HStack>
-                      </Pressable>
-
-                      {subteamsExpanded[team.team.id] && (
-                        <VStack ml={5} space={3} mt={3}>
-                          {team.subteams.map((subteam, j) => {
-                            return (
-                              <TeamCard
-                                key={j}
-                                navigation={navigation}
-                                team={subteam}
-                                isSubteam={true}
+                    {
+                      /* 
+                       * Display the subteams associated with a parent if 
+                       * expanded.
+                       */
+                      team.subteams.length > 0 && (
+                        <View>
+                          <Pressable onPress={() => changeExpanded(team.team.id)}>
+                            <HStack mt={2} alignItems="center">
+                              <Spacer />
+                              <Text color="primary.600" mr={1}>
+                                {
+                                  subteamsExpanded[team.team.id] ?
+                                    "Collapse Subteams" :
+                                    "Expand Subteams"
+                                }
+                              </Text>
+                              <Ionicons
+                                name={
+                                  subteamsExpanded[team.team.id]
+                                    ? "chevron-up-outline"
+                                    : "chevron-down-outline"
+                                }
+                                color="#64B058"
                               />
-                            );
-                          })}
-                        </VStack>
+                            </HStack>
+                          </Pressable>
+
+                          {subteamsExpanded[team.team.id] && (
+                            <VStack ml={5} space={3} mt={3}>
+                              {team.subteams.map((subteam, j) => {
+                                return (
+                                  <TeamCard
+                                    key={j}
+                                    navigation={navigation}
+                                    team={subteam}
+                                    isSubteam={true}
+                                  />
+                                );
+                              })}
+                            </VStack>
+                          )}
+                        </View>
                       )}
-                    </View>
-                  )}
-                </View>
-              );
-            }))}
+                  </View>
+                );
+              }))}
           </VStack>
         </ScrollView>
       )}

@@ -10,12 +10,12 @@
 
 /* Imports and setup */
 import React, { useEffect, useState } from "react";
-import { 
-  VStack, 
-  Box, 
-  Heading, 
-  ScrollView, 
-  HStack, 
+import {
+  VStack,
+  Box,
+  Heading,
+  ScrollView,
+  HStack,
   Pressable,
   View,
   Text,
@@ -26,6 +26,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import ServiceProviderCard from "./ServiceProviderCard";
 import { StyleSheet } from "react-native";
 import MEDropdown from "../../components/dropdown/MEDropdown";
+import MEInfoModal from "../../components/modal/MEInfoModal";
 
 function ServiceProvidersPage({ navigation, vendors, questionnaire }) {
   /*
@@ -83,14 +84,14 @@ function ServiceProvidersPage({ navigation, vendors, questionnaire }) {
             onChange={setCategory}
             style={styles.filterSelect}
             options={[
-              {label: "All", value: "All"},
-              {label: "Transportation", value: "Transportation"},
-              {label: "Home Energy", value: "Home Energy"},
-              {label: "Waste & Recycling", value: "Waste & Recycling"},
-              {label: "Food", value: "Food"},
-              {label: "Activism & Education", value: "Activism & Education"},
-              {label: "Solar", value: "Solar"},
-              {label: "Land, Soil, & Water", value: "Land, Soil, & Water"},
+              { label: "All", value: "All" },
+              { label: "Transportation", value: "Transportation" },
+              { label: "Home Energy", value: "Home Energy" },
+              { label: "Waste & Recycling", value: "Waste & Recycling" },
+              { label: "Food", value: "Food" },
+              { label: "Activism & Education", value: "Activism & Education" },
+              { label: "Solar", value: "Solar" },
+              { label: "Land, Soil, & Water", value: "Land, Soil, & Water" },
             ]}
           />
         </VStack>
@@ -110,7 +111,7 @@ function ServiceProvidersPage({ navigation, vendors, questionnaire }) {
         </Text>
 
         {
-          vendors?.length === 0 && 
+          vendors?.length === 0 &&
           (
             <View>
               <Text
@@ -176,14 +177,14 @@ function ServiceProvidersPage({ navigation, vendors, questionnaire }) {
         <ScrollView px="5" showsVerticalScrollIndicator={false}>
           <VStack mt="5">
             <Text style={styles.title}>Vendors</Text>
-            <View 
-              style={{ 
-                justifyContent: 'center', 
-                alignItems: 'center', 
-                marginTop: 200 
+            <View
+              style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginTop: 200
               }}
             >
-              <Text 
+              <Text
                 fontSize="xs"
                 textAlign="center"
                 px={10}
@@ -204,8 +205,25 @@ function ServiceProvidersPage({ navigation, vendors, questionnaire }) {
     <View bg="white" height="100%">
       <ScrollView px="5" showsVerticalScrollIndicator={false}>
         <VStack mt="5">
-          {/* Header */}
-          <Text style={styles.title}>Vendors</Text>
+          <HStack alignItems="center" justifyContent="center">
+            {/* Header */}
+            <Text style={styles.title}>Vendors</Text>
+            <MEInfoModal>
+              <Text
+                color="primary.400"
+                bold
+                fontSize="lg"
+              >
+                Vendors
+              </Text>
+              <Text>
+                This page displays a list of companies in your community that
+                can help you reduce your carbon footprint. You can filter the
+                list by category to find the services you need.
+              </Text>
+
+            </MEInfoModal>
+          </HStack>
 
           {/* Apply Filter Button */}
           <Pressable
@@ -225,17 +243,17 @@ function ServiceProvidersPage({ navigation, vendors, questionnaire }) {
               </Text>
             </HStack>
           </Pressable>
-          
+
           {/* Filter Options */}
           {expand && filterOptions()}
-          
+
           {/* 
             * Display filtered vendors, otherwise display a list of the 
             * suggested service providers based on the User's Preferences
             * questionnaire they've filled plus All the vendors offered 
             * to that community.
             */}
-          { isFilterApplied ? (
+          {isFilterApplied ? (
             <View height="100%">
               {VendorsList(filteredVendors, `${category} Vendors`)}
             </View>
@@ -251,10 +269,10 @@ function ServiceProvidersPage({ navigation, vendors, questionnaire }) {
               <Box>
                 <Heading>All</Heading>
                 {
-                 /* 
-                  * Render cards vertically instead of horizontally as in 
-                  * the VendorsList function
-                  */
+                  /* 
+                   * Render cards vertically instead of horizontally as in 
+                   * the VendorsList function
+                   */
                 }
                 {vendors && (
                   <VStack space="3" my="5" mx="2">

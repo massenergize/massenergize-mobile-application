@@ -10,16 +10,16 @@
 
 /* Imports and set up */
 import React, { useEffect, useState } from "react";
-import { 
-  Button, 
-  Container, 
-  View, ScrollView, 
-  Text, 
-  Pressable, 
-  HStack, 
-  VStack, 
-  Select, 
-  Heading 
+import {
+  Button,
+  Container,
+  View, ScrollView,
+  Text,
+  Pressable,
+  HStack,
+  VStack,
+  Select,
+  Heading
 } from "@gluestack-ui/themed-native-base";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -29,13 +29,14 @@ import { StyleSheet } from "react-native";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { TestimonialCard } from "./TestimonialCard";
 import MEDropdown from "../../components/dropdown/MEDropdown";
+import MEInfoModal from "../../components/modal/MEInfoModal";
 
-function TestimonialsPage({ 
-  navigation, 
-  testimonials, 
-  fireAuth, 
-  toggleModal, 
-  actions 
+function TestimonialsPage({
+  navigation,
+  testimonials,
+  fireAuth,
+  toggleModal,
+  actions
 }) {
   /*
    * Uses local state to determine wheter the user has or not applied any 
@@ -78,13 +79,13 @@ function TestimonialsPage({
          * Checks if testimonial.action is defined and either an array 
          * or an object.
          */
-        if (!testimonial.action || 
-            (Array.isArray(testimonial.action) && 
+        if (!testimonial.action ||
+          (Array.isArray(testimonial.action) &&
             testimonial.action.length === 0)) {
           /* Filter out testimonials without valid actions */
           return false;
         }
-  
+
         /* Handles both array and object cases for testimonial.action */
         if (Array.isArray(testimonial.action)) {
           /* Case where testimonial.action is an array */
@@ -96,7 +97,7 @@ function TestimonialsPage({
         }
       });
     }
-  };  
+  };
 
   /* Function that display the filter options for the user */
   function filterOptions() {
@@ -111,10 +112,10 @@ function TestimonialsPage({
             onChange={setFilter}
             style={styles.filterSelect}
             options={[
-              {label: "All", value: "All"},
+              { label: "All", value: "All" },
               ...actions.map((action, index) => ({
-                  label: action.title,
-                  value: action.id
+                label: action.title,
+                value: action.id
               }))
             ]}
           />
@@ -144,15 +145,15 @@ function TestimonialsPage({
         </Heading>
 
         {testimonials.length === 0 ? (
-            <Text 
-              color="gray.300" 
-              fontSize="sm" 
-              textAlign="center" 
-              mt={5}
-            >
-              No Testimonials with this filter...{"\n"}
-              You can be the first one!
-            </Text>
+          <Text
+            color="gray.300"
+            fontSize="sm"
+            textAlign="center"
+            mt={5}
+          >
+            No Testimonials with this filter...{"\n"}
+            You can be the first one!
+          </Text>
         ) : (
           <ScrollView
             showsVerticalScrollIndicator={false}
@@ -204,7 +205,24 @@ function TestimonialsPage({
     <View style={{ flex: 1, backgroundColor: 'white' }}>
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Header */}
-        <Text style={styles.title}>Testimonials</Text>
+        <HStack justifyContent="center" alignItems="center">
+          <Text style={styles.title}>Testimonials</Text>
+          <MEInfoModal>
+            <Text
+              color="primary.400"
+              bold
+              fontSize="lg"
+            >
+              Testimonials
+            </Text>
+            <Text>
+              Testimonials are a great way to share your experiences about
+              taking action with the community. Read what others
+              have to say and share your own story.
+            </Text>
+
+          </MEInfoModal>
+        </HStack>
 
         {/* Filter Testimonials Button */}
         <Pressable
@@ -230,24 +248,24 @@ function TestimonialsPage({
           * expanded the filtering options.
           */}
         {!expand && renderAddTestimonial()}
-        
+
         {/* 
           * Display filtered testimonials, otherwise display a list of All 
           * testimonials saved to that community.
           */}
         {isFilterApplied ? (
-          <TestimonialsList 
-            testimonials={filteredTestimonials} 
-            title="Filtered Testimonials" 
+          <TestimonialsList
+            testimonials={filteredTestimonials}
+            title="Filtered Testimonials"
           />
         ) : (
           /* Checks if there are no testimonials yet in the community */
           testimonials.length === 0 ? (
             <View style={styles.emptyList}>
-              <Text 
-                color="gray.400" 
-                fontSize="sm" 
-                textAlign="center" 
+              <Text
+                color="gray.400"
+                fontSize="sm"
+                textAlign="center"
                 mt={5}
               >
                 No testimonials so far. Be the first one!

@@ -13,13 +13,13 @@
 /* Imports and set up */
 import React, { useState, useEffect } from "react";
 import {
-    Button,
-    Center,
-    HStack,
-    Spinner,
-    View,
-    ScrollView,
-    Text,
+  Button,
+  Center,
+  HStack,
+  Spinner,
+  View,
+  ScrollView,
+  Text,
 } from '@gluestack-ui/themed-native-base';
 import { StyleSheet } from "react-native";
 import EventCard from "./EventCard";
@@ -28,159 +28,181 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from "redux";
 import { toggleUniversalModalAction } from "../../config/redux/actions";
 import AuthOptions from "../auth/AuthOptions";
+import MEInfoModal from "../../components/modal/MEInfoModal";
 
 const EventsScreen = ({ navigation, events, fireAuth, toggleModal }) => {
-    /*
-     * Uses local state to determine whether the information about the events
-     * is loading, and depending on the id of the filter (upcoming, past or
-     * campaign), it loads the 'newEvents' with the array of events information.
-     */
-    const [isLoading, setIsLoading] = useState(true);
-    const [newEvents, setNewEvents] = useState([]);
-    const [eventFilterID, setEventFilterID] = useState(0);
-    
-    /* 
-     * Filters the events depending on if it is an upcoming event, 
-     * past event or campaign, and loads all the information about each 
-     * event in the 'newEvents'.
-     */
-    useEffect(() => {
-        const filterEvents = () => {
-            let filteredEvents = [];
-            const now = new Date();
+  /*
+   * Uses local state to determine whether the information about the events
+   * is loading, and depending on the id of the filter (upcoming, past or
+   * campaign), it loads the 'newEvents' with the array of events information.
+   */
+  const [isLoading, setIsLoading] = useState(true);
+  const [newEvents, setNewEvents] = useState([]);
+  const [eventFilterID, setEventFilterID] = useState(0);
 
-            if (eventFilterID === 0) {
-                /* Upcoming events */
-                filteredEvents = events.filter(
-                  (event) => new Date(event.start_date_and_time) > now
-                );
-            } else if (eventFilterID === 1) {
-                /* Past Events */
-                filteredEvents = events.filter(
-                  (event) => new Date(event.start_date_and_time) < now
-                );
-            } else {
-                /* TODO: campaigns */
-                filteredEvents = [];
-            }
+  /* 
+   * Filters the events depending on if it is an upcoming event, 
+   * past event or campaign, and loads all the information about each 
+   * event in the 'newEvents'.
+   */
+  useEffect(() => {
+    const filterEvents = () => {
+      let filteredEvents = [];
+      const now = new Date();
 
-            setNewEvents(filteredEvents);
-            setIsLoading(false);
-        };
-
-        setIsLoading(true);
-        filterEvents();
-    }, [events, eventFilterID]);
-
-    /* Generates the Tab button component for each tab in the Details page */
-    function TabButton({ label, id }) {
-      return (
-        <Button
-          variant={eventFilterID === id ? "solid" : "outline"}
-          _text={{ fontSize: 'xs' }}
-          borderRadius="full"
-          onPress={() => setEventFilterID(id)}
-        >
-          {label + " Events"}
-        </Button>
-      );
-    }
-
-    /* Generates the top tab of events for Upcoming, Past, or Campaigns */
-    const renderHeader = () => {
-        return (
-            <HStack 
-              style={{ marginTop: 10 }}
-              width="100%" 
-              justifyContent="center" 
-              space={1} 
-              mb={1}
-            >
-                <TabButton label="Upcoming" id={0} />
-                <TabButton label="Past" id={1} />
-
-                <Button
-                    variant="outline"
-                    _text={{ fontSize: 'xs' }}
-                    borderRadius="full"
-                    onPress={() => setEventFilterID(2)}
-                    isDisabled
-                >
-                    Campaigns
-                </Button>
-            </HStack>
+      if (eventFilterID === 0) {
+        /* Upcoming events */
+        filteredEvents = events.filter(
+          (event) => new Date(event.start_date_and_time) > now
         );
+      } else if (eventFilterID === 1) {
+        /* Past Events */
+        filteredEvents = events.filter(
+          (event) => new Date(event.start_date_and_time) < now
+        );
+      } else {
+        /* TODO: campaigns */
+        filteredEvents = [];
+      }
+
+      setNewEvents(filteredEvents);
+      setIsLoading(false);
     };
 
-    /* Renders the Add Event button */
-    const renderAddEvent = () => {
-      return (
-        <Button
-          title="Add Event"
-          onPress={() => {
-            if (fireAuth) navigation.navigate("AddEvent");
-            else {
-              toggleModal({
-                isVisible: true,
-                Component: AuthOptions,
-                title: 'How would you like to sign in or Join?',
-              });
-            }
-          }}
-          m={5}
-          px={10}
-        >
-          Add Event
-        </Button>
-      );
-    }
+    setIsLoading(true);
+    filterEvents();
+  }, [events, eventFilterID]);
 
-    /* Displays the information for all events and campaigns */
+  /* Generates the Tab button component for each tab in the Details page */
+  function TabButton({ label, id }) {
     return (
-        <View bg="white" height="100%">
-            { isLoading ? (
-                <Center flex="1">
-                    <Spinner />
-                </Center>
-            ) : (
-                <ScrollView contentContainerStyle={{ alignItems: 'center' }}>
-                    {
-                      renderHeader()
-                    }
-                    {
-                      renderAddEvent()
-                    }
-                    { newEvents.length === 0 ? (
-                      <View 
-                        style={{ 
-                          justifyContent: 'center', 
-                          alignItems: 'center', 
-                          marginTop: 200 
-                        }}
-                      >
-                          <Text fontSize="xs"
-                            textAlign="center"
-                            px={10}
-                            color="gray.400"
-                          >
-                            No events so far...{"\n"}You can create one!
-                          </Text>
-                      </View>
-                    ) : (
-                        newEvents.map((item) => (
-                            <EventCard
-                                data={item}
-                                navigation={navigation}
-                                my="3"
-                                mx={2}
-                                shadow={3}
-                            />
-                        ))
-                    )}
-                </ScrollView>
-            )}
-        </View>
+      <Button
+        variant={eventFilterID === id ? "solid" : "outline"}
+        _text={{ fontSize: 'xs' }}
+        borderRadius="full"
+        onPress={() => setEventFilterID(id)}
+      >
+        {label + " Events"}
+      </Button>
     );
+  }
+
+  /* Generates the top tab of events for Upcoming, Past, or Campaigns */
+  const renderHeader = () => {
+    return (
+      <>
+        <HStack alignItems="center">
+          <Text fontSize={30} bold p={5}>
+            Events
+          </Text>
+          <MEInfoModal>
+            <Text
+              bold
+              color="primary.400"
+              fontSize="lg"
+            >
+              Events
+            </Text>
+            <Text>
+              This page displays all the events that are happening in your community.{"\n"}
+              You can create an event by clicking the "Add Event" button.
+            </Text>
+
+          </MEInfoModal>
+        </HStack>
+        <HStack
+          style={{ marginTop: 10 }}
+          width="100%"
+          justifyContent="center"
+          space={1}
+          mb={1}
+        >
+          <TabButton label="Upcoming" id={0} />
+          <TabButton label="Past" id={1} />
+
+          {/* <Button
+          variant="outline"
+          _text={{ fontSize: 'xs' }}
+          borderRadius="full"
+          onPress={() => setEventFilterID(2)}
+          isDisabled
+        >
+          Campaigns
+        </Button> */}
+        </HStack>
+      </>
+    );
+  };
+
+  /* Renders the Add Event button */
+  const renderAddEvent = () => {
+    return (
+      <Button
+        title="Add Event"
+        onPress={() => {
+          if (fireAuth) navigation.navigate("AddEvent");
+          else {
+            toggleModal({
+              isVisible: true,
+              Component: AuthOptions,
+              title: 'How would you like to sign in or Join?',
+            });
+          }
+        }}
+        m={5}
+        px={10}
+      >
+        Add Event
+      </Button>
+    );
+  }
+
+  /* Displays the information for all events and campaigns */
+  return (
+    <View bg="white" height="100%">
+      {isLoading ? (
+        <Center flex="1">
+          <Spinner />
+        </Center>
+      ) : (
+        <ScrollView contentContainerStyle={{ alignItems: 'center' }}>
+          {
+            renderHeader()
+          }
+          {
+            renderAddEvent()
+          }
+          {newEvents.length === 0 ? (
+            <View
+              style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginTop: 200
+              }}
+            >
+              <Text fontSize="xs"
+                textAlign="center"
+                px={10}
+                color="gray.400"
+              >
+                No events so far...{"\n"}You can create one!
+              </Text>
+            </View>
+          ) : (
+            newEvents.map((item) => (
+              <EventCard
+                data={item}
+                navigation={navigation}
+                my="3"
+                mx={2}
+                shadow={3}
+              />
+            ))
+          )}
+        </ScrollView>
+      )}
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
