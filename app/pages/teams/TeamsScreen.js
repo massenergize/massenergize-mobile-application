@@ -105,8 +105,10 @@ const TeamsScreen = ({ navigation, teams, fireAuth, toggleModal, user }) => {
             });
           }
         }}
-        m={5}
+        m={3}
         px={10}
+        w="50%"
+        alignSelf="center"
       >
         Add Team
       </Button>
@@ -223,8 +225,10 @@ const TeamsScreen = ({ navigation, teams, fireAuth, toggleModal, user }) => {
         </Center>
       ) : (
         <ScrollView showsVerticalScrollIndicator={false}>
-          <HStack alignItems="center" justifyContent="center" mt={10}>
-            <Heading mr={5}>Teams</Heading>
+          <HStack alignItems="center" justifyContent="center" space={5} mt={5}>
+            <Text fontSize={30} bold>
+              Teams
+            </Text>
             <MEInfoModal>
               <Text
                 bold
@@ -234,7 +238,8 @@ const TeamsScreen = ({ navigation, teams, fireAuth, toggleModal, user }) => {
                 Teams
               </Text>
               <Text>
-                Join a team to measure your impact with another group of people.
+                Join and create teams to measure your impact with
+                groups of people.
               </Text>
             </MEInfoModal>
 

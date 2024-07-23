@@ -24,8 +24,6 @@ import {
   Radio,
   Modal,
   Center,
-  Icon,
-  Select,
 } from '@gluestack-ui/themed-native-base';
 import { FontAwesomeIcon } from "../../components/icons";
 import { Formik } from "formik";
@@ -155,6 +153,10 @@ const AddEvent = ({
     return unsubscribe;
   }, [navigation, isFormDirty]);
 
+  useEffect(() => {
+    if (isSent) setIsFormDirty(false);
+  }, []);
+
   /* 
    * Saves the information about the location the event will take 
    * place. This is an optional field completed by the user, 
@@ -179,6 +181,41 @@ const AddEvent = ({
     setImageData(newImageData);
     setIsFormDirty(true);
   };
+
+  const uploadImage = async () => {
+    if (!imageUri) {
+      Alert.alert("Please, select an image first!");
+      return;
+    }
+
+    const filename = imageUri.substring(imageUri.lastIndexOf('/') + 1);
+    const uploadURI = Platform.OS === 'ios' 
+      ? imageUri.replace('file://', '') 
+      : imageUri;
+    
+    setUploading(true);
+    setTransferred(0);
+
+    const task = storage()
+      .ref(filename)
+      .putFile(uploadURI);
+
+    task.on('state_changed', snapshot => {
+      setTransferred(
+        Math.round(snapshot.bytesTransferred / snapshot.totalBytes) * 10000
+      );
+    });
+
+    try {
+      await task;
+      Alert.alert('The image has been successfully uploaded!');
+    } catch (error) {
+      console.error(error);
+    }
+
+    setUploading(false);
+    setImageUri(null);
+  }
 
   /* Function the handles the change of the start date of the event */
   const handleStartDateChange = (event, selectedDate) => {
@@ -255,8 +292,10 @@ const AddEvent = ({
         if (editMode) {
           const newEvents = events.map(e => e.id === event.id ? response.data : e);
           setEvents(newEvents);
+          setIsFormDirty(false);
         } else {
           setEvents([response.data, ...events]);
+          setIsFormDirty(false);
         }
         actions.resetForm();
       })
