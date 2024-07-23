@@ -41,6 +41,7 @@ import { bindActionCreators } from 'redux';
 import { FontAwesomeIcon } from '../../components/icons';
 import MEDropdown from '../../components/dropdown/MEDropdown';
 import { Alert, KeyboardAvoidingView } from 'react-native';
+import ImagePicker from '../../components/imagePicker/ImagePicker';
 
 /* 
  * This serves as a validation schema to prevent the user to add a
@@ -71,7 +72,7 @@ const AddTeam = ({
   const [isSent, setIsSent] = useState(false);
 
   /* Uses local state to save the uri of the selected image. */
-  const [imageUri, setImageUri] = useState(null);
+  const [imageData, setImageData] = useState(null);
 
   /* 
    * Uses local state to save the emails of the admins of the newly 
@@ -144,26 +145,10 @@ const AddTeam = ({
    * Function that handles the selection of an image for the newly 
    * added event.
    */
-  const handleSelectImage = () => {
+  const handleSelectImage = (newImageData) => {
     /* Image settings */
-    const options = {
-      mediaType: 'photo',
-      includeBase64: false,
-      maxHeight: 500,
-      maxWidth: 500,
-    };
-
-    launchImageLibrary(options, response => {
-      if (response.didCancel) {
-        console.log('User canceled image picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      } else {
-        const source = { uri: response.assets[0].uri };
-        setImageUri(source);
-        setIsFormDirty(true);
-      }
-    });
+    setImageData(newImageData);
+    setIsFormDirty(true);
   };
 
   /* 
@@ -200,7 +185,7 @@ const AddTeam = ({
       tagline: values.tagline,
       admin_emails: adminsEmails,
       description: values.description,
-      // image: values.image,
+      // logo: imageData,
       parent_id: values.parent
     };
 
@@ -466,7 +451,7 @@ const AddTeam = ({
                   </FormControl>
 
                   {/* Image */}
-                  <FormControl
+                  {/* <FormControl
                     mt={5}
                     isInvalid={
                       errors.image && touched.image
@@ -480,41 +465,8 @@ const AddTeam = ({
                     <FormControl.Label>
                       Select a logo for your team
                     </FormControl.Label>
-                    <Button
-                      style={{
-                        width: "50%",
-                        marginTop: 10
-                      }}
-                      onPress={handleSelectImage}
-                    >
-                      Select Image
-                    </Button>
-                    {
-                      imageUri && (
-                        <View
-                          style={{
-                            flex: 1,
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: 10,
-                            marginBottom: 10
-                          }}
-                        >
-                          <Text mt={5} color="#64B058">
-                            Selected image:
-                          </Text>
-                          <Image
-                            source={imageUri}
-                            style={{
-                              width: 200,
-                              height: 200,
-                            }}
-                            alt="teams logo"
-                          />
-                        </View>
-                      )
-                    }
-                  </FormControl>
+                    <ImagePicker onChange={handleSelectImage} />
+                  </FormControl> */}
 
                   {/* Parent */}
                   {

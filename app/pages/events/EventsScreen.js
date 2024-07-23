@@ -196,6 +196,7 @@ const EventsScreen = ({ navigation, events, fireAuth, toggleModal }) => {
                 my="3"
                 mx={2}
                 shadow={3}
+                key={item.id}
               />
             ))
           )}

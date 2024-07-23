@@ -33,7 +33,6 @@ export default EventCard = React.memo(
     navigation,
     ...props
   }) => {
-    console.log(JSON.stringify(data, null, 2));
 
     /* Displays the community's events as a EventCard */
     return (

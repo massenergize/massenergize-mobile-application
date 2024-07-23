@@ -32,6 +32,7 @@ import { launchImageLibrary } from 'react-native-image-picker';
 import { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '../../components/icons';
 import MEDropdown from '../../components/dropdown/MEDropdown';
+import ImagePicker from '../../components/imagePicker/ImagePicker';
 
 /* 
  * This serves as a validation schema to prevent the user to add a
@@ -71,7 +72,7 @@ const AddTestimonial = ({
   const [isSent, setIsSent] = useState(false);
 
   /* Uses local state to save the uri of the selected image */
-  const [imageUri, setImageUri] = useState(testimonial?.file?.url ?? null);
+  const [imageData, setImageData] = useState(null);
 
   /* 
    * Uses local state to determine whether some text or input field 
@@ -119,26 +120,10 @@ const AddTestimonial = ({
    * Function that handles the selection of an image for the newly 
    * added event.
    */
-  const handleSelectImage = () => {
+  const handleSelectImage = (newImageData) => {
     /* Image Settings */
-    const options = {
-      mediaType: 'photo',
-      includeBase64: false,
-      maxHeight: 500,
-      maxWidth: 500,
-    };
-
-    launchImageLibrary(options, response => {
-      if (response.didCancel) {
-        console.log('User canceled image picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      } else {
-        const source = { uri: response.assets[0].uri };
-        setImageUri(source);
-        setIsFormDirty(true);
-      }
-    });
+    setImageData(newImageData);
+    setIsFormDirty(true);
   };
 
   /* 
@@ -159,8 +144,10 @@ const AddTestimonial = ({
       body: values.description,
       community_id: activeCommunity.id,
       rank: 0,
+      // image: imageData,
       ...(editMode && { testimonial_id: testimonial.id }),
     };
+    console.log('DATA:', data);
 
     apiCall(editMode ? 'testimonials.update' : 'testimonials.add', data)
       .then((response) => {
@@ -302,41 +289,7 @@ const AddTestimonial = ({
                     It should be your own picture, or one you are sure is not
                     copyrighted material.
                   </Text>
-                  <Button
-                    style={{
-                      width: "50%",
-                      marginTop: 10,
-                      alignSelf: 'center'
-                    }}
-                    onPress={handleSelectImage}
-                  >
-                    Select Image
-                  </Button>
-                  {
-                    imageUri && (
-                      <View
-                        style={{
-                          flex: 1,
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          gap: 10,
-                          marginBottom: 10,
-                        }}
-                      >
-                        <Text mt={5} color="#64B058">
-                          Selected image:
-                        </Text>
-                        <Image
-                          source={imageUri}
-                          style={{
-                            width: 200,
-                            height: 200,
-                          }}
-                          alt="testimonial image"
-                        />
-                      </View>
-                    )
-                  } */}
+                  <ImagePicker onChange={handleSelectImage}/> */}
 
                   {/* Description */}
                   <Text mt={5} mb={2}>Testimonial Description</Text>

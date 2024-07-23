@@ -38,6 +38,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { launchImageLibrary } from "react-native-image-picker";
 import { Alert, KeyboardAvoidingView } from "react-native";
 import MEDropdown from "../../components/dropdown/MEDropdown";
+import ImagePicker from "../../components/imagePicker/ImagePicker";
 
 /* 
  * This serves as a validation schema to prevent the user to add an
@@ -111,7 +112,7 @@ const AddEvent = ({
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
 
   /* Uses local state to save the uri of the selected image. */
-  const [imageUri, setImageUri] = useState(null);
+  const [imageData, setImageData] = useState(null);
 
   /* 
    * Uses local state to determine whether some text or input field 
@@ -173,26 +174,10 @@ const AddEvent = ({
    * Function that handles the selection of an image for the newly 
    * added event.
    */
-  const handleSelectImage = () => {
+  const handleSelectImage = (newImageData) => {
     /* Image settings */
-    const options = {
-      mediaType: 'photo',
-      includeBase64: false,
-      maxHeight: 500,
-      maxWidth: 500,
-    };
-
-    launchImageLibrary(options, response => {
-      if (response.didCancel) {
-        console.log('User canceled image picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      } else {
-        const source = { uri: response.assets[0].uri };
-        setImageUri(source);
-        setIsFormDirty(true);
-      }
-    });
+    setImageData(newImageData);
+    setIsFormDirty(true);
   };
 
   /* Function the handles the change of the start date of the event */
@@ -233,7 +218,7 @@ const AddEvent = ({
       name: values.title,
       start_date_and_time: startDate?.toISOString(),
       end_date_and_time: endDate?.toISOString(),
-      // image: imageUri,
+      ...(imageData ? {image: imageData} : null),
       event_type: values.format,
       description: values.description,
 
@@ -249,6 +234,8 @@ const AddEvent = ({
       // Existing event if editing
       ...(editMode ? { event_id: event.id } : null)
     };
+
+    console.log(data);
 
     apiCall(editMode ? "events.update" : "events.add", data)
       .then((response) => {
@@ -663,63 +650,12 @@ const AddEvent = ({
                   </FormControl>
 
                   {/* Event Image */}
-                  {/* <FormControl
-                    mt={5}
-                    isInvalid={
-                      errors.image && touched.image
-                    }
-                    style={{
-                      flex: 1,
-                      alignItems: 'center',
-                      justifyContent: 'center'
-                    }}
-                  >
-                    <FormControl.Label
-                      _text={{ textAlign: "center" }}
-                    >
-                      You can add an image to your event.
-                      It should be your own picture,
-                      or one you are sure is not
-                      copyrighted material.
-                    </FormControl.Label>
-                    <Button
-                      style={{
-                        width: "50%",
-                        marginTop: 10,
-                      }}
-                      onPress={handleSelectImage}
-                    >
-                      Select Image
-                    </Button>
-                    {
-                      imageUri && (
-                        <View
-                          style={{
-                            flex: 1,
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: 10,
-                            marginBottom: 10
-                          }}
-                        >
-                          <Text
-                            mt={5}
-                            color="#64B058"
-                          >
-                            Selected image:
-                          </Text>
-                          <Image
-                            source={imageUri}
-                            style={{
-                              width: 200,
-                              height: 200,
-                            }}
-                            alt="image"
-                          />
-                        </View>
-                      )
-                    }
-                  </FormControl> */}
+                  <Text mb={2}>
+                    You can add an image to your event.
+                    It should be your own picture, or one you are sure is not
+                    copyrighted material.
+                  </Text>
+                  <ImagePicker onChange={handleSelectImage} />
 
                   {/* Event Description */}
                   <FormControl
