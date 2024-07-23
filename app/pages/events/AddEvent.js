@@ -24,8 +24,6 @@ import {
   Radio,
   Modal,
   Center,
-  Icon,
-  Select,
 } from '@gluestack-ui/themed-native-base';
 import { FontAwesomeIcon } from "../../components/icons";
 import { Formik } from "formik";
@@ -36,8 +34,8 @@ import { SET_EVENT_LIST } from "../../config/redux/types";
 import { showError, showSuccess } from "../../utils/common";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { launchImageLibrary } from "react-native-image-picker";
-import { Alert, KeyboardAvoidingView } from "react-native";
-import MEDropdown from "../../components/dropdown/MEDropdown";
+import { Alert, KeyboardAvoidingView, Platform } from "react-native";
+import storage from '@react-native-firebase/storage';
 
 /* 
  * This serves as a validation schema to prevent the user to add an
@@ -112,6 +110,8 @@ const AddEvent = ({
 
   /* Uses local state to save the uri of the selected image. */
   const [imageUri, setImageUri] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [transferred, setTransferred] = useState(0);
 
   /* 
    * Uses local state to determine whether some text or input field 
@@ -154,6 +154,10 @@ const AddEvent = ({
     return unsubscribe;
   }, [navigation, isFormDirty]);
 
+  useEffect(() => {
+    if (isSent) setIsFormDirty(false);
+  }, []);
+
   /* 
    * Saves the information about the location the event will take 
    * place. This is an optional field completed by the user, 
@@ -176,24 +180,55 @@ const AddEvent = ({
   const handleSelectImage = () => {
     /* Image settings */
     const options = {
-      mediaType: 'photo',
-      includeBase64: false,
-      maxHeight: 500,
-      maxWidth: 500,
+        mediaType: 'photo',
     };
 
     launchImageLibrary(options, response => {
-      if (response.didCancel) {
-        console.log('User canceled image picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      } else {
-        const source = { uri: response.assets[0].uri };
-        setImageUri(source);
-        setIsFormDirty(true);
-      }
+        if (response.didCancel) {
+            console.log('User cancelled image picker');
+        } else if (response.error) {
+            console.log('ImagePicker Error: ', response.error);
+        } else {
+            const source = { uri: response.assets[0].uri };
+            setImageUri(source.uri);
+        }
     });
   };
+
+  const uploadImage = async () => {
+    if (!imageUri) {
+      Alert.alert("Please, select an image first!");
+      return;
+    }
+
+    const filename = imageUri.substring(imageUri.lastIndexOf('/') + 1);
+    const uploadURI = Platform.OS === 'ios' 
+      ? imageUri.replace('file://', '') 
+      : imageUri;
+    
+    setUploading(true);
+    setTransferred(0);
+
+    const task = storage()
+      .ref(filename)
+      .putFile(uploadURI);
+
+    task.on('state_changed', snapshot => {
+      setTransferred(
+        Math.round(snapshot.bytesTransferred / snapshot.totalBytes) * 10000
+      );
+    });
+
+    try {
+      await task;
+      Alert.alert('The image has been successfully uploaded!');
+    } catch (error) {
+      console.error(error);
+    }
+
+    setUploading(false);
+    setImageUri(null);
+  }
 
   /* Function the handles the change of the start date of the event */
   const handleStartDateChange = (event, selectedDate) => {
@@ -268,8 +303,10 @@ const AddEvent = ({
         if (editMode) {
           const newEvents = events.map(e => e.id === event.id ? response.data : e);
           setEvents(newEvents);
+          setIsFormDirty(false);
         } else {
           setEvents([response.data, ...events]);
+          setIsFormDirty(false);
         }
         actions.resetForm();
       })
@@ -661,6 +698,51 @@ const AddEvent = ({
                       </View>
                     ) : null}
                   </FormControl>
+
+                  <Text fontSize="xs"
+                    textAlign="center"
+                    px={10}
+                    mt={5}
+                    mb={5}
+                    color="gray.400"
+                  >
+                    You can add an image to your event.
+                    It should be your own picture,
+                    or one you are sure is not
+                    copyrighted material.
+                  </Text>
+
+                  <Button title="Pick Image" onPress={handleSelectImage}>
+                    Pick Image
+                  </Button>
+
+                  {
+                    imageUri && (
+                      <>
+                        <Image
+                          source={{ uri: imageUri }}
+                          alt="Image"
+                          w={200}
+                          h={200}
+                          borderRadius={9}
+                          my={5}
+                          alignSelf="center"
+                        />
+
+                        <Button title="Upload Image" onPress={uploadImage}>
+                          Upload Image
+                        </Button>
+                      </>
+                    )
+                  }
+
+                  {
+                    uploading ? (
+                      <View>
+                        <Text>{transferred} % Completed!</Text>
+                      </View>
+                    ) : null
+                  }
 
                   {/* Event Image */}
                   {/* <FormControl

@@ -1,5 +1,7 @@
+# Remove or comment out these lines if you do not need multiple Firebase SDK versions
 # $FirebaseSDKVersion = '10.14.0'
 # $FirebaseSDKVersion = '9.6.0'
+
 use_modular_headers!
 
 require Pod::Executable.execute_command('node', ['-p',
@@ -8,7 +10,6 @@ require Pod::Executable.execute_command('node', ['-p',
     {paths: [process.argv[1]]},
   )', __dir__]).strip
 
-# Set the minimum iOS deployment target
 platform :ios, '12.4'
 
 prepare_react_native_project!
@@ -24,7 +25,6 @@ end
 target 'MassenergizeAppV2' do
   config = use_native_modules!
 
-  # Flags change depending on the env values.
   flags = get_default_flags()
 
   use_frameworks! :linkage => :static
@@ -44,9 +44,9 @@ target 'MassenergizeAppV2' do
   pod 'react-native-share', :path => '../node_modules/react-native-share'
   
   # Firebase
-  pod 'Firebase/Auth'
-  pod 'Firebase/Core'
-  pod 'Firebase/Analytics'
+  pod 'Firebase/Auth', '10.29.0'
+  pod 'Firebase/CoreOnly', '10.29.0'
+  pod 'Firebase/Analytics', '10.29.0'
 
   target 'MassenergizeAppV2Tests' do
     inherit! :complete
