@@ -5,7 +5,7 @@
  *      an event to the selected community.
  * 
  *      Written by: Moizes Almeida and Will Soylemez
- *      Last edited: July 19, 2024
+ *      Last edited: July 23, 2024
  * 
  *****************************************************************************/
 
@@ -181,41 +181,6 @@ const AddEvent = ({
     setImageData(newImageData);
     setIsFormDirty(true);
   };
-
-  const uploadImage = async () => {
-    if (!imageUri) {
-      Alert.alert("Please, select an image first!");
-      return;
-    }
-
-    const filename = imageUri.substring(imageUri.lastIndexOf('/') + 1);
-    const uploadURI = Platform.OS === 'ios' 
-      ? imageUri.replace('file://', '') 
-      : imageUri;
-    
-    setUploading(true);
-    setTransferred(0);
-
-    const task = storage()
-      .ref(filename)
-      .putFile(uploadURI);
-
-    task.on('state_changed', snapshot => {
-      setTransferred(
-        Math.round(snapshot.bytesTransferred / snapshot.totalBytes) * 10000
-      );
-    });
-
-    try {
-      await task;
-      Alert.alert('The image has been successfully uploaded!');
-    } catch (error) {
-      console.error(error);
-    }
-
-    setUploading(false);
-    setImageUri(null);
-  }
 
   /* Function the handles the change of the start date of the event */
   const handleStartDateChange = (event, selectedDate) => {
@@ -689,7 +654,7 @@ const AddEvent = ({
                   </FormControl>
 
                   {/* Event Image */}
-                  <Text mb={2}>
+                  <Text mt={7} mb={3} fontWeight="300">
                     You can add an image to your event.
                     It should be your own picture, or one you are sure is not
                     copyrighted material.

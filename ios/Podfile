@@ -41,7 +41,7 @@ target 'MassenergizeAppV2' do
   pod 'react-native-image-picker', :path => '../node_modules/react-native-image-picker'
   pod 'RNDateTimePicker', :path => '../node_modules/@react-native-community/datetimepicker'
   pod 'react-native-geolocation', :path => '../node_modules/@react-native-community/geolocation'
-  pod 'RNShare', :path => '../node_modules/react-native-share'
+  pod 'react-native-share', :path => '../node_modules/react-native-share'
   
   # Firebase
   pod 'Firebase/Auth', '10.29.0'
