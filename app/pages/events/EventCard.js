@@ -6,7 +6,7 @@
  *      is possible to keep consistency across all events pages.
  * 
  *      Written by: Moizes Almeida and William Soylemez
- *      Last edited: July 22, 2024
+ *      Last edited: July 23, 2024
  * 
  *****************************************************************************/
 
@@ -110,7 +110,7 @@ export default EventCard = React.memo(
           >
             <Box px="4" style={{ alignItems: 'center', justifyContent: 'center' }}>
               <Text fontSize={events.cardMetaFontSize} color="primary.400">
-                {Moment(data.start_date).format('ll')}
+                {Moment(data.start_date_and_time).format('ll')}
               </Text>
             </Box>
           </Flex>
