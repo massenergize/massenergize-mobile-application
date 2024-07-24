@@ -5,7 +5,7 @@
  *      information as a component called TeamDetails.
  * 
  *      Written by: Moizes Almeida and William Soylemez
- *      Last edited: July 18, 2024
+ *      Last edited: July 24, 2024
  * 
  *****************************************************************************/
 
@@ -244,8 +244,9 @@ function TeamDetails({
   }
 
   /* Generates the Tabs components of the Details screen */
-  /* Generates the Tabs components of the Details screen */
   const generateActionsTab = () => {
+    const hasActions = team_stats.actions_completed > 0;
+
     return (
       <VStack space="5">
         <Text alignSelf="center">
@@ -293,13 +294,29 @@ function TeamDetails({
         </HStack>
 
         {
-          (actionDisplay === "chart")
-            ? <TeamActionsChart graphData={getGraphData()} />
-            : <ActionsList listData={actions} />
+          hasActions ? (
+            actionDisplay === "chart"
+              ? <TeamActionsChart graphData={getGraphData()} />
+              : <ActionsList listData={actions} />
+          ) : (
+            <Center>
+              <Text 
+                fontSize="xs"
+                textAlign="center"
+                px={10}
+                color="gray.400"
+              >
+                <Text bold>
+                  No actions to display yet.
+                </Text> {"\n"}
+                Start participating in actions to see your progress here.
+              </Text>
+            </Center>
+          )
         }
       </VStack>
     );
-  };
+  }
 
   /* Generates the Members tab */
   const generateMembersTab = () => {
@@ -542,6 +559,7 @@ function TeamDetails({
           keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
         >
           <View>
+            {/* Team's logo */}
             {team.logo ? (
               <MEImage
                 source={{ uri: team.logo.url }}
@@ -552,7 +570,10 @@ function TeamDetails({
                 resizeMode="contain"
               />
             ) : null}
+
+            {/* Main body */}
             <VStack space="3">
+              {/* Team name */}
               <Heading 
                 alignSelf="center"
                 textAlign="center" 
@@ -562,6 +583,7 @@ function TeamDetails({
                 {team.name}
               </Heading>
 
+              {/* Join/Leave Button */}
               <Button
                 my={2}
                 mx={4}
@@ -571,7 +593,8 @@ function TeamDetails({
               >
                 {inTeam() ? "Leave Team" : "Join Team"}
               </Button>
-
+              
+              {/* Tabs */}
               <Center mx="5">
                 <ScrollView
                   horizontal={true}
@@ -589,6 +612,8 @@ function TeamDetails({
                   </HStack>
                 </ScrollView>
               </Center>
+
+              {/* Tabs' contents */}
               <Tab>
                 {renderTabContent()}
               </Tab>
@@ -599,13 +624,6 @@ function TeamDetails({
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  chartContainer: {
-    width: Dimensions.get("window").width - 40,
-    paddingHorizontal: 20,
-  }
-})
 
 /* 
  * Generates a 'Tab' component used in the display member of the 
