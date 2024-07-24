@@ -1,15 +1,3 @@
-/******************************************************************************
- *                                 AddTeam
- * 
- *      This page is responsible for rendering the screen to add
- *      a team or subteam to the selected community.
- * 
- *      Written by: Moizes Almeida and Will Soylemez
- *      Last edited: July 19, 2024
- * 
- *****************************************************************************/
-
-/* Imports and set up */
 import React, { useEffect, useState } from 'react';
 import {
   View,
@@ -18,11 +6,9 @@ import {
   VStack,
   FormControl,
   Input,
-  Image,
   Button,
   IconButton,
   Icon,
-  Select,
   Modal,
   Center
 } from '@gluestack-ui/themed-native-base';
@@ -36,18 +22,12 @@ import {
 } from '../../config/redux/actions';
 import { SET_TEAMS_STATS } from '../../config/redux/types';
 import { connect } from 'react-redux';
-import { launchImageLibrary } from 'react-native-image-picker';
 import { bindActionCreators } from 'redux';
 import { FontAwesomeIcon } from '../../components/icons';
 import MEDropdown from '../../components/dropdown/MEDropdown';
 import { Alert, KeyboardAvoidingView } from 'react-native';
 import ImagePicker from '../../components/imagePicker/ImagePicker';
 
-/* 
- * This serves as a validation schema to prevent the user to add a
- * team or subteam to the selected community if all the required fields 
- * are not filled. 
- */
 const validationSchema = Yup.object({
   name: Yup.string().required("Name of Team is required"),
   tagline: Yup.string().required("Tagline of Team is required"),
@@ -61,48 +41,20 @@ const AddTeam = ({
   user,
   setTeams
 }) => {
-  /* Saves the community's ID into a variable */
   const community_id = activeCommunity.id;
-
-  /* 
-   * Uses local state to determine if the team or subteam is in the 
-   * process to being added to the community or if it was already added. 
-   */
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSent, setIsSent] = useState(false);
-
-  /* Uses local state to save the uri of the selected image. */
   const [imageData, setImageData] = useState(null);
-
-  /* 
-   * Uses local state to save the emails of the admins of the newly 
-   * created team or subteam. 
-   */
   const [adminsEmails, setAdminsEmails] = useState([user?.email]);
-
-  /* Saves the name of each team in the community */
   const [teamsList, setTeamsList] = useState([]);
-
-  /* 
-   * Uses local state to determine whether some text or input field 
-   * was changed in the form.
-   */
   const [isFormDirty, setIsFormDirty] = useState(false);
-
-  /* Fetch the information from each team/sub-team */
+  
   useEffect(() => {
     if (teams) {
       getTeams();
     }
   }, [teams]);
 
-  /* 
-   * If the user by accident or on purpose leaves the form page and
-   * they modified any input or text field in the page, they will be
-   * warned that the information they entered will be lost if they 
-   * leave, so they can stay in the page if it was a mistake or they
-   * can leave the page and lose the information they entered previously. 
-   */
   useEffect(() => {
     const unsubscribe = navigation.addListener('beforeRemove', (e) => {
       if (!isFormDirty) {
@@ -132,29 +84,19 @@ const AddTeam = ({
     return unsubscribe;
   }, [navigation, isFormDirty]);
 
-  /* Gets a list of the name of each team in the community */
   const getTeams = () => {
     const teamNames = teams
       .filter(team => team.team.parent === null)
-      .map(team => team.team.name);
-
+      .map(team => ({ label: team.team.name, value: team.team.id })); // Changed here
+  
     setTeamsList(teamNames);
-  }
+  }  
 
-  /* 
-   * Function that handles the selection of an image for the newly 
-   * added event.
-   */
   const handleSelectImage = (newImageData) => {
-    /* Image settings */
     setImageData(newImageData);
     setIsFormDirty(true);
   };
 
-  /* 
-   * Function that handles the action of adding an admin to the newly 
-   * created team.
-   */
   const handleAddAdmin = (email) => {
     if (!adminsEmails.includes(email)) {
       setAdminsEmails([...adminsEmails, email]);
@@ -162,43 +104,34 @@ const AddTeam = ({
     }
   };
 
-  /* 
-   * Function that handles the action of removing an admin to the newly 
-   * created team.
-   */
   const handleRemoveAdmin = (email) => {
     setAdminsEmails(adminsEmails.filter(e => e !== email));
     setIsFormDirty(true);
   };
 
-  /* 
-   * Function that handles the action of the user of clicking in the
-   * 'Add Team' button.
-   */
   const handleSendTeam = (values, actions) => {
     setIsSubmitting(true);
-
-    /* Data that will be sent to the API. */
+  
     const data = {
       community_id: community_id,
       name: values.name,
       tagline: values.tagline,
       admin_emails: adminsEmails,
       description: values.description,
-      // logo: imageData,
-      parent_id: values.parent
+      logo: imageData,
+      parent_id: values.parent ? parseInt(values.parent, 10) : null  // Ensure parent_id is a number
     };
-
+  
     apiCall("teams.add", data)
       .then((response) => {
         setIsSubmitting(false);
-
+  
         if (!response.success) {
           showError('An error occurred while adding team. Please try again.');
           console.log('ERROR_ADDING_TEAM: ', response);
           return;
         }
-
+  
         setIsSent(true);
         console.log('TEAM_ADDED: ', response.data);
         setIsFormDirty(false);
@@ -208,9 +141,10 @@ const AddTeam = ({
         showError('An error occurred while adding team. Please try again.');
         return;
       });
-
+  
     actions.resetForm();
   };
+  
 
   /* Displays the form to create a new team */
   return (
@@ -450,23 +384,10 @@ const AddTeam = ({
                     }
                   </FormControl>
 
-                  {/* Image */}
-                  {/* <FormControl
-                    mt={5}
-                    isInvalid={
-                      errors.image && touched.image
-                    }
-                    style={{
-                      flex: 1,
-                      alignItems: 'center',
-                      justifyContent: 'center'
-                    }}
-                  >
-                    <FormControl.Label>
-                      Select a logo for your team
-                    </FormControl.Label>
-                    <ImagePicker onChange={handleSelectImage} />
-                  </FormControl> */}
+                  <Text mt={7} mb={3} fontWeight="300" textAlign="center">
+                    Select a logo for your team
+                  </Text>
+                  <ImagePicker onChange={handleSelectImage} />
 
                   {/* Parent */}
                   {
@@ -497,18 +418,11 @@ const AddTeam = ({
                           minWidth={200}
                           accessibilityLabel="Choose Category"
                           placeholder="Choose which team is the parent team"
-                          onChange={
-                            (itemValue) => {
-                              setFieldValue('parent', itemValue);
-                              setIsFormDirty(true);
-                            }
-                          }
-                          options={
-                            teamsList.map((teamName, index) => ({
-                              label: teamName,
-                              value: teamName,
-                            }))
-                          }
+                          onChange={(itemValue) => {
+                            setFieldValue('parent', itemValue);
+                            setIsFormDirty(true);
+                          }}
+                          options={teamsList}
                         />
                       </FormControl>
                     ) : null}
@@ -573,10 +487,6 @@ const AddTeam = ({
   );
 }
 
-/* 
- * Transforms the local state of the app into the properties of the 
- * AddTeam function, in which it is got from the API.
- */
 const mapStateToProps = state => {
   return {
     teams: state.teamsStats,
@@ -585,10 +495,6 @@ const mapStateToProps = state => {
   };
 }
 
-/* 
- * Transforms the dispatch function from the API in order to get the information
- * of the current community and sends it to the AddTeam properties.
- */
 const mapDispatchToProps = dispatch => {
   bindActionCreators({
     fetchAllUserInfo: fetchAllUserInfo,
