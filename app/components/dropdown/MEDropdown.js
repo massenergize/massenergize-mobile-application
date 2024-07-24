@@ -99,7 +99,7 @@ const MEDropdown = ({
         {value 
           ? options.find(
               option => option.value === value
-            ).label 
+            )?.label 
           : "Select an option"
         }
       </Text>

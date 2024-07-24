@@ -27,6 +27,8 @@ import ServiceProviderCard from "./ServiceProviderCard";
 import { StyleSheet } from "react-native";
 import MEDropdown from "../../components/dropdown/MEDropdown";
 import MEInfoModal from "../../components/modal/MEInfoModal";
+import FilterSelector from "../../components/filter/FilterSelector";
+import { set } from "@gluestack-style/react";
 
 function ServiceProvidersPage({ navigation, vendors, questionnaire }) {
   /*
@@ -34,29 +36,32 @@ function ServiceProvidersPage({ navigation, vendors, questionnaire }) {
    * filter to the vendors page, or if they selected the 'Apply Filter'
    * button, or what is the filter they applied to the page.
    */
-  const [category, setCategory] = useState('All');
+  const [filter, setFilter] = useState({ Category: 'All' });
   const [expand, setExpand] = useState(false);
   const [isFilterApplied, setIsFilterApplied] = useState(false);
-
-  /* Check if any filter is applied */
-  useEffect(() => {
-    if (category !== 'All') {
-      setIsFilterApplied(true);
-    } else {
-      setIsFilterApplied(false);
-    }
-  }, [category]);
+  const [filteredVendors, setFilteredVendors] = useState([]);
 
   /* 
    * Function that filters the vendors according to the user's 
    * filtering action.
    */
-  const applyFilter = (vendors) => {
-    return vendors.filter(vendor => {
+  const applyFilter = (newFilter) => {
+    setFilter(newFilter);
+    const category = newFilter.Category;
+
+    if (category === 'All') {
+      setIsFilterApplied(false);
+    } else {
+      setIsFilterApplied(true);
+    }
+
+    const newFilteredVendors = vendors.filter(vendor => {
       const vendorTags = vendor.tags.map(tag => tag.name);
 
       return (category === 'All' || vendorTags.includes(category));
     });
+
+    setFilteredVendors(newFilteredVendors);
   };
 
   /* List of suggested vendors based on questionnaire profile */
@@ -67,37 +72,6 @@ function ServiceProvidersPage({ navigation, vendors, questionnaire }) {
       (questionnaire?.categories.some(category => vendorTags.includes(category)))
     );
   });
-
-  /* Variable that holds the list of filtered vendors */
-  const filteredVendors = applyFilter(vendors);
-
-  /* Function that display the filter options for the user */
-  function filterOptions() {
-    return (
-      <View style={styles.filterContainer}>
-        <VStack
-          space={2}
-          style={styles.filterVStack}
-        >
-          <MEDropdown
-            value={category}
-            onChange={setCategory}
-            style={styles.filterSelect}
-            options={[
-              { label: "All", value: "All" },
-              { label: "Transportation", value: "Transportation" },
-              { label: "Home Energy", value: "Home Energy" },
-              { label: "Waste & Recycling", value: "Waste & Recycling" },
-              { label: "Food", value: "Food" },
-              { label: "Activism & Education", value: "Activism & Education" },
-              { label: "Solar", value: "Solar" },
-              { label: "Land, Soil, & Water", value: "Land, Soil, & Water" },
-            ]}
-          />
-        </VStack>
-      </View>
-    );
-  }
 
   /* 
    * Function that displays the list of vendors after the user has set 
@@ -226,26 +200,18 @@ function ServiceProvidersPage({ navigation, vendors, questionnaire }) {
           </HStack>
 
           {/* Apply Filter Button */}
-          <Pressable
-            onPress={() => setExpand(!expand)}
-            style={styles.expandButton}
-          >
-            <HStack alignItems="center">
-              <Ionicons
-                name={
-                  expand ? "chevron-up-outline" : "filter"
-                }
-                color="#64B058"
-              />
-
-              <Text color="#64B058" ml={2}>
-                {expand ? "Collapse Filters" : "Filter Vendors"}
-              </Text>
-            </HStack>
-          </Pressable>
-
-          {/* Filter Options */}
-          {expand && filterOptions()}
+          <FilterSelector filter={filter} handleChangeFilter={applyFilter}>
+            <FilterSelector.Filter name="Category">
+              <FilterSelector.Option value="All" />
+              <FilterSelector.Option value="Transportation" />
+              <FilterSelector.Option value="Home Energy" />
+              <FilterSelector.Option value="Waste & Recycling" />
+              <FilterSelector.Option value="Food" />
+              <FilterSelector.Option value="Activism & Education" />
+              <FilterSelector.Option value="Solar" />
+              <FilterSelector.Option value="Land, Soil, & Water" />
+            </FilterSelector.Filter>
+          </FilterSelector>
 
           {/* 
             * Display filtered vendors, otherwise display a list of the 
@@ -255,7 +221,7 @@ function ServiceProvidersPage({ navigation, vendors, questionnaire }) {
             */}
           {isFilterApplied ? (
             <View height="100%">
-              {VendorsList(filteredVendors, `${category} Vendors`)}
+              {VendorsList(filteredVendors, `${filter.Category} Vendors`)}
             </View>
           ) : (
             <View>
@@ -266,31 +232,7 @@ function ServiceProvidersPage({ navigation, vendors, questionnaire }) {
               }
 
               {/* All Service Providers */}
-              <Box>
-                <Heading>All</Heading>
-                {
-                  /* 
-                   * Render cards vertically instead of horizontally as in 
-                   * the VendorsList function
-                   */
-                }
-                {vendors && (
-                  <VStack space="3" my="5" mx="2">
-                    {vendors.map((vendor, index) => {
-                      return (
-                        <ServiceProviderCard
-                          id={vendor.id}
-                          key={index}
-                          direction="row"
-                          name={vendor.name}
-                          imageURI={vendor.logo ? vendor.logo.url : null}
-                          navigation={navigation}
-                        />
-                      );
-                    })}
-                  </VStack>
-                )}
-              </Box>
+              {vendors && VendorsList(vendors, "All")}
             </View>
           )}
         </VStack>
