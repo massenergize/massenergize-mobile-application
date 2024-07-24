@@ -30,6 +30,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { TestimonialCard } from "./TestimonialCard";
 import MEDropdown from "../../components/dropdown/MEDropdown";
 import MEInfoModal from "../../components/modal/MEInfoModal";
+import FilterSelector from "../../components/filter/FilterSelector";
 
 function TestimonialsPage({
   navigation,
@@ -45,83 +46,48 @@ function TestimonialsPage({
    * and the list of the filtered testimonials if filter is applied.
    */
   const [expand, setExpand] = useState(false);
-  const [filter, setFilter] = useState('All');
+  const [filter, setFilter] = useState({ Action: 'All' });
   const [isFilterApplied, setIsFilterApplied] = useState(false);
   const [filteredTestimonials, setFilteredTestimonials] = useState([]);
 
-  /* Check whether any filter is applied */
-  useEffect(() => {
-    /* If the filter is 'All', then no filter was applied */
-    setIsFilterApplied(filter !== 'All');
-  }, [filter]);
-
-  /* 
-   * Uses local state to get a list of the filtered testimonials once 
-   * the user has chosen which filter they want to apply based on the 
-   * actions of the community. 
-   */
-  useEffect(() => {
-    const filtered = applyFilter(testimonials);
-    setFilteredTestimonials(filtered);
-  }, [testimonials, filter, actions]);
 
   /* 
    * Function that filters the testimonials according to the user's 
    * preferences on the filtering options.
    */
-  const applyFilter = (testimonials) => {
+  const applyFilter = (newFilter) => {
+    setFilter(newFilter);
+
     /* If the filter is 'All', then just return all the testimonials */
-    if (filter === 'All') {
-      return testimonials;
+    if (newFilter.Action === 'All') {
+      setIsFilterApplied(false);
     } else {
-      return testimonials.filter(testimonial => {
-        /* 
-         * Checks if testimonial.action is defined and either an array 
-         * or an object.
-         */
-        if (!testimonial.action ||
-          (Array.isArray(testimonial.action) &&
-            testimonial.action.length === 0)) {
-          /* Filter out testimonials without valid actions */
-          return false;
-        }
-
-        /* Handles both array and object cases for testimonial.action */
-        if (Array.isArray(testimonial.action)) {
-          /* Case where testimonial.action is an array */
-          const actionIds = testimonial.action.map(action => action.id);
-          return actionIds.includes(filter);
-        } else {
-          /* Case where testimonial.action is a single object */
-          return testimonial.action.id === filter;
-        }
-      });
+      setIsFilterApplied(true);
     }
-  };
+    const newFilteredTestimonials = testimonials.filter(testimonial => {
+      /* 
+       * Checks if testimonial.action is defined and either an array 
+       * or an object.
+       */
+      if (!testimonial.action ||
+        (Array.isArray(testimonial.action) &&
+          testimonial.action.length === 0)) {
+        /* Filter out testimonials without valid actions */
+        return false;
+      }
 
-  /* Function that display the filter options for the user */
-  function filterOptions() {
-    return (
-      <View style={styles.filterContainer}>
-        <VStack
-          space={2}
-          style={styles.filterVStack}
-        >
-          <MEDropdown
-            value={filter}
-            onChange={setFilter}
-            style={styles.filterSelect}
-            options={[
-              { label: "All", value: "All" },
-              ...actions.map((action, index) => ({
-                label: action.title,
-                value: action.id
-              }))
-            ]}
-          />
-        </VStack>
-      </View>
-    );
+      /* Handles both array and object cases for testimonial.action */
+      if (Array.isArray(testimonial.action)) {
+        /* Case where testimonial.action is an array */
+        const actionIds = testimonial.action.map(action => action.id);
+        return actionIds.includes(newFilter.Action);
+      } else {
+        /* Case where testimonial.action is a single object */
+        return testimonial.action.id === newFilter.Action;
+      }
+    });
+
+    setFilteredTestimonials(newFilteredTestimonials);
   }
 
   /* 
@@ -225,23 +191,21 @@ function TestimonialsPage({
         </HStack>
 
         {/* Filter Testimonials Button */}
-        <Pressable
-          onPress={() => setExpand(!expand)}
-          style={styles.expandButton}
-        >
-          <HStack alignItems="center">
-            <Ionicons
-              name={expand ? "chevron-up-outline" : "filter"}
-              color="#64B058"
-            />
-            <Text color="#64B058" ml="2">
-              {expand ? "Collapse Filters" : "Filter Testimonials"}
-            </Text>
-          </HStack>
-        </Pressable>
-
-        {/* Filter Options */}
-        {expand && filterOptions()}
+        <FilterSelector filter={filter} handleChangeFilter={applyFilter}>
+          <FilterSelector.Filter name="Action">
+            <FilterSelector.Option value="All" />
+            {
+              /* Filter by Action */
+              actions.map((action, index) => (
+                <FilterSelector.Option
+                  key={index}
+                  value={action.id}
+                  label={action.title}
+                />
+              ))
+            }
+          </FilterSelector.Filter>
+        </FilterSelector>
 
         {/* 
           * Shows Add Testimonial button whenever the user hasn't 

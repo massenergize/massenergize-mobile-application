@@ -32,6 +32,7 @@ import { border } from 'native-base/lib/typescript/theme/styled-system';
 import { BorderlessButton } from 'react-native-gesture-handler';
 import MEDropdown from '../../components/dropdown/MEDropdown';
 import MEInfoModal from '../../components/modal/MEInfoModal';
+import FilterSelector from '../../components/filter/FilterSelector';
 
 const ActionsScreen = ({ navigation, actions, questionnaire }) => {
   /*
@@ -39,43 +40,50 @@ const ActionsScreen = ({ navigation, actions, questionnaire }) => {
    * filter to the actions page, or if they selected the 'Expand Filters'
    * button, or what are the filters they applied to the page.
    */
-  const [userType, setUserType] = useState('All');
-  const [category, setCategory] = useState('All');
-  const [impact, setImpact] = useState('All');
-  const [cost, setCost] = useState('All');
+  const [filter, setFilter] = useState({
+    Category: "All",
+    Role: "All",
+    Impact: "All",
+    Cost: "All"
+  });
   const [expand, setExpand] = useState(false);
   const [isFilterApplied, setIsFilterApplied] = useState(false);
+  const [filteredActions, setFilteredActions] = useState([]);
 
-  /* Check if any filter is applied */
-  useEffect(() => {
-    if (userType !== 'All' ||
-      category !== 'All' ||
-      impact !== 'All' ||
-      cost !== 'All') {
-      setIsFilterApplied(true);
-    } else {
-      setIsFilterApplied(false);
-    }
-  }, [userType, category, impact, cost]);
 
   /* Function that filters the actions according to the user's preferences */
-  const applyFilter = (actions) => {
-    return actions.filter(action => {
-      const actionTags = action.tags.map(tag => tag.name);
+  const applyFilter = (newFilter) => {
 
-      return (userType === 'All' || actionTags.includes(userType)) &&
-        (category === 'All' || actionTags.includes(category)) &&
-        (impact === 'All' || actionTags.includes(impact)) &&
-        (cost === 'All' || actionTags.includes(cost));
+    if (newFilter.Role === 'All' &&
+      newFilter.Category === 'All' &&
+      newFilter.Impact === 'All' &&
+      newFilter.Cost === 'All'
+    ) {
+      setIsFilterApplied(false);
+    } else {
+      setIsFilterApplied(true);
+    }
+    setFilter(newFilter);
+
+    const newFilteredActions = actions.filter(action => {
+      const actionTags = action.tags.map(tag => tag.name);
+      console.log(actionTags);
+
+      return (newFilter.Role === 'All' || actionTags.includes(newFilter.Role)) &&
+        (newFilter.Category === 'All' || actionTags.includes(newFilter.Category)) &&
+        (newFilter.Impact === 'All' || actionTags.includes(newFilter.Impact)) &&
+        (newFilter.Cost === 'All' || actionTags.includes(newFilter.Cost));
     });
+
+    console.log(newFilteredActions);
+
+    setFilteredActions(newFilteredActions);
   };
 
   /* List of suggested actions based on questionnaire profile */
   const suggestedActions = getSuggestedActions(questionnaire, actions);
 
 
-  /* Variable that holds the list of filtered actions */
-  const filteredActions = applyFilter(actions);
 
   /* Displays the actions page and the applied filters */
   return (
@@ -104,26 +112,39 @@ const ActionsScreen = ({ navigation, actions, questionnaire }) => {
           </MEInfoModal>
         </HStack>
 
-        {/* Expand Filters Button */}
-        <Pressable
-          onPress={() => setExpand(!expand)}
-          style={styles.expandButton}
-        >
-          <HStack mt={2} alignItems="center">
-            <Ionicons
-              name={
-                expand ? "chevron-up-outline" : "filter"
-              }
-              color="#64B058"
-            />
-            <Text color="#64B058" ml={2}>
-              {expand ? "Collapse Filters" : "Filter Actions"}
-            </Text>
-          </HStack>
-        </Pressable>
-
-        {/* Filter Options */}
-        {expand ? filterOptions() : (isFilterApplied && displayAppliedFilters())}
+        <FilterSelector filter={filter} handleChangeFilter={applyFilter}>
+          <FilterSelector.Filter name="Role">
+            <FilterSelector.Option value="All" />
+            <FilterSelector.Option value="Student" />
+            <FilterSelector.Option value="Homeowner" />
+            <FilterSelector.Option value="Renter" />
+            <FilterSelector.Option value="Condo" />
+            <FilterSelector.Option value="Business" />
+          </FilterSelector.Filter>
+          <FilterSelector.Filter name="Category">
+            <FilterSelector.Option value="All" />
+            <FilterSelector.Option value="Transportation" />
+            <FilterSelector.Option value="Home Energy" />
+            <FilterSelector.Option value="Waste & Recycling" />
+            <FilterSelector.Option value="Food" />
+            <FilterSelector.Option value="Activism & Education" />
+            <FilterSelector.Option value="Solar" />
+            <FilterSelector.Option value="Land, Soil, & Water" />
+          </FilterSelector.Filter>
+          <FilterSelector.Filter name="Impact">
+            <FilterSelector.Option value="All" />
+            <FilterSelector.Option value="High" />
+            <FilterSelector.Option value="Medium" />
+            <FilterSelector.Option value="Low" />
+          </FilterSelector.Filter>
+          <FilterSelector.Filter name="Cost">
+            <FilterSelector.Option value="All" />
+            <FilterSelector.Option value="0" />
+            <FilterSelector.Option value="$" />
+            <FilterSelector.Option value="$$" />
+            <FilterSelector.Option value="$$$" />
+          </FilterSelector.Filter>
+        </FilterSelector>
 
         {/* Display loading spinner if actions are not loaded */}
         {!actions ? (
@@ -211,77 +232,6 @@ const ActionsScreen = ({ navigation, actions, questionnaire }) => {
     </View>
   );
 
-  /* Function that display the filter options for the user */
-  function filterOptions() {
-    return (
-      <View style={styles.filterContainer}>
-        <VStack
-          space={2}
-          style={styles.filterVStack}
-        >
-          <Text>I am a...</Text>
-          <MEDropdown
-            value={userType}
-            onChange={(value) => setUserType(value)}
-            style={styles.filterSelect}
-            options={[
-              { label: "All", value: "All" },
-              { label: "Student", value: "Student" },
-              { label: "Homeowner", value: "Homeowner" },
-              { label: "Renter", value: "Renter" },
-              { label: "Condo", value: "Condo" },
-              { label: "Business", value: "Business" },
-            ]}
-          />
-
-          <Text>Category</Text>
-          <MEDropdown
-            value={category}
-            onChange={(value) => setCategory(value)}
-            style={styles.filterSelect}
-            options={[
-              { label: "All", value: "All" },
-              { label: "Transportation", value: "Transportation" },
-              { label: "Home Energy", value: "Home Energy" },
-              { label: "Waste & Recycling", value: "Waste & Recycling" },
-              { label: "Food", value: "Food" },
-              { label: "Activism & Education", value: "Activism & Education" },
-              { label: "Solar", value: "Solar" },
-              { label: "Land, Soil, & Water", value: "Land, Soil, & Water" },
-            ]}
-          />
-
-          <Text>Impact</Text>
-          <MEDropdown
-            value={impact}
-            onChange={(value) => setImpact(value)}
-            style={styles.filterSelect}
-            options={[
-              { label: "All", value: "All" },
-              { label: "High", value: "High" },
-              { label: "Medium", value: "Medium" },
-              { label: "Low", value: "Low" },
-            ]}
-          />
-
-          <Text>Cost</Text>
-          <MEDropdown
-            value={cost}
-            onChange={(value) => setCost(value)}
-            style={styles.filterSelect}
-            options={[
-              { label: "All", value: "All" },
-              { label: "0", value: "0" },
-              { label: "$", value: "$" },
-              { label: "$$", value: "$$" },
-              { label: "$$$", value: "$$$" },
-            ]}
-          />
-        </VStack>
-      </View>
-    );
-  }
-
   /* 
    * Function that displays the list of actions after the user has set 
    * the filters.
@@ -331,33 +281,6 @@ const ActionsScreen = ({ navigation, actions, questionnaire }) => {
         </ScrollView>
       </>
     );
-  }
-
-  function displayAppliedFilters() {
-    return <View px={3} my={5}>
-      <View flexDirection="row" flexWrap="wrap">
-        {(userType !== 'All') &&
-          <Pressable onPress={() => setUserType('All')}>
-            <Text style={styles.appliedFilter}>{userType}</Text>
-          </Pressable>
-        }
-        {(category !== 'All') &&
-          <Pressable onPress={() => setCategory('All')}>
-            <Text style={styles.appliedFilter}>{category}</Text>
-          </Pressable>
-        }
-        {(impact !== 'All') &&
-          <Pressable onPress={() => setImpact('All')}>
-            <Text style={styles.appliedFilter}>{impact}</Text>
-          </Pressable>
-        }
-        {(cost !== 'All') &&
-          <Pressable onPress={() => setCost('All')}>
-            <Text style={styles.appliedFilter}>{cost}</Text>
-          </Pressable>
-        }
-      </View>
-    </View>;
   }
 }
 

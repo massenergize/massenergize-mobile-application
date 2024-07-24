@@ -29,6 +29,7 @@ import { bindActionCreators } from "redux";
 import { toggleUniversalModalAction } from "../../config/redux/actions";
 import AuthOptions from "../auth/AuthOptions";
 import MEInfoModal from "../../components/modal/MEInfoModal";
+import FilterSelector from "../../components/filter/FilterSelector";
 
 const EventsScreen = ({ navigation, events, fireAuth, toggleModal }) => {
   /*
@@ -36,62 +37,41 @@ const EventsScreen = ({ navigation, events, fireAuth, toggleModal }) => {
    * is loading, and depending on the id of the filter (upcoming, past or
    * campaign), it loads the 'newEvents' with the array of events information.
    */
-  const [isLoading, setIsLoading] = useState(true);
-  const [newEvents, setNewEvents] = useState([]);
-  const [eventFilterID, setEventFilterID] = useState(0);
+  const [newEvents, setNewEvents] = useState(events);
+  const [filter, setFilter] = useState({ Time: 'All', Type: 'All' });
 
   /* 
    * Filters the events depending on if it is an upcoming event, 
    * past event or campaign, and loads all the information about each 
    * event in the 'newEvents'.
    */
-  useEffect(() => {
-    const filterEvents = () => {
-      let filteredEvents = [];
-      const now = new Date();
+  const applyFilter = (newFilter) => {
+    setFilter(newFilter);
 
-      if (eventFilterID === 0) {
-        /* Upcoming events */
-        filteredEvents = events.filter(
-          (event) => new Date(event.start_date_and_time) > now
-        );
-      } else if (eventFilterID === 1) {
-        /* Past Events */
-        filteredEvents = events.filter(
-          (event) => new Date(event.start_date_and_time) < now
-        );
-      } else {
-        /* TODO: campaigns */
-        filteredEvents = [];
+    const filteredEvents = events.filter((event) => {
+
+      if (newFilter.Type !== 'All' && event.event_type !== newFilter.Type) {
+        return false;
       }
 
-      setNewEvents(filteredEvents);
-      setIsLoading(false);
-    };
+      if (newFilter.Time === 'Upcoming') {
+        return new Date(event.start_date_and_time) >= new Date();
+      } else if (newFilter.Time === 'Past') {
+        return new Date(event.start_date_and_time) < new Date();
+      } else {
+        return true;
+      }
+    });
 
-    setIsLoading(true);
-    filterEvents();
-  }, [events, eventFilterID]);
-
-  /* Generates the Tab button component for each tab in the Details page */
-  function TabButton({ label, id }) {
-    return (
-      <Button
-        variant={eventFilterID === id ? "solid" : "outline"}
-        _text={{ fontSize: 'xs' }}
-        borderRadius="full"
-        onPress={() => setEventFilterID(id)}
-      >
-        {label + " Events"}
-      </Button>
-    );
+    setNewEvents(filteredEvents);
   }
+
 
   /* Generates the top tab of events for Upcoming, Past, or Campaigns */
   const renderHeader = () => {
     return (
       <>
-        <HStack alignItems="center">
+        <HStack alignItems="center" justifyContent="center">
           <Text fontSize={30} bold p={5}>
             Events
           </Text>
@@ -110,26 +90,18 @@ const EventsScreen = ({ navigation, events, fireAuth, toggleModal }) => {
 
           </MEInfoModal>
         </HStack>
-        <HStack
-          style={{ marginTop: 10 }}
-          width="100%"
-          justifyContent="center"
-          space={1}
-          mb={1}
-        >
-          <TabButton label="Upcoming" id={0} />
-          <TabButton label="Past" id={1} />
-
-          {/* <Button
-          variant="outline"
-          _text={{ fontSize: 'xs' }}
-          borderRadius="full"
-          onPress={() => setEventFilterID(2)}
-          isDisabled
-        >
-          Campaigns
-        </Button> */}
-        </HStack>
+        <FilterSelector filter={filter} handleChangeFilter={applyFilter}>
+          <FilterSelector.Filter name="Time">
+            <FilterSelector.Option value="All"/>
+            <FilterSelector.Option value="Upcoming"/>
+            <FilterSelector.Option value="Past"/>
+          </FilterSelector.Filter>
+          <FilterSelector.Filter name="Type">
+            <FilterSelector.Option value="All"/>
+            <FilterSelector.Option label="In-Person" value="in-person"/>
+            <FilterSelector.Option label="Online" value="online"/>
+          </FilterSelector.Filter>
+        </FilterSelector>
       </>
     );
   };
@@ -159,49 +131,43 @@ const EventsScreen = ({ navigation, events, fireAuth, toggleModal }) => {
 
   /* Displays the information for all events and campaigns */
   return (
-    <View bg="white" height="100%">
-      {isLoading ? (
-        <Center flex="1">
-          <Spinner />
-        </Center>
-      ) : (
-        <ScrollView contentContainerStyle={{ alignItems: 'center' }}>
-          {
-            renderHeader()
-          }
-          {
-            renderAddEvent()
-          }
-          {newEvents.length === 0 ? (
-            <View
-              style={{
-                justifyContent: 'center',
-                alignItems: 'center',
-                marginTop: 200
-              }}
+    <View bg="white" height="100%" alignItems="center">
+      <ScrollView>
+        {
+          renderHeader()
+        }
+        {
+          renderAddEvent()
+        }
+        {newEvents.length === 0 ? (
+          <View
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginTop: 200
+            }}
+          >
+            <Text fontSize="xs"
+              textAlign="center"
+              px={10}
+              color="gray.400"
             >
-              <Text fontSize="xs"
-                textAlign="center"
-                px={10}
-                color="gray.400"
-              >
-                No events so far...{"\n"}You can create one!
-              </Text>
-            </View>
-          ) : (
-            newEvents.map((item) => (
-              <EventCard
-                data={item}
-                navigation={navigation}
-                my="3"
-                mx={2}
-                shadow={3}
-                key={item.id}
-              />
-            ))
-          )}
-        </ScrollView>
-      )}
+              No events so far...{"\n"}You can create one!
+            </Text>
+          </View>
+        ) : (
+          newEvents.map((item) => (
+            <EventCard
+              data={item}
+              navigation={navigation}
+              my="3"
+              mx={2}
+              shadow={3}
+              key={item.id}
+            />
+          ))
+        )}
+      </ScrollView>
     </View>
   );
 };
