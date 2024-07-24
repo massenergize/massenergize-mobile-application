@@ -5,7 +5,7 @@
  *      an event to the selected community.
  * 
  *      Written by: Moizes Almeida and Will Soylemez
- *      Last edited: July 23, 2024
+ *      Last edited: July 24, 2024
  * 
  *****************************************************************************/
 
@@ -62,7 +62,6 @@ const validationSchema = Yup.object().shape({
     otherwise: () => Yup.string().notRequired(),
   }),
 });
-
 
 
 const AddEvent = ({
@@ -153,6 +152,11 @@ const AddEvent = ({
     return unsubscribe;
   }, [navigation, isFormDirty]);
 
+  /* 
+   * Makes sure that after the user has submited the form and the 
+   * data was sent to the API, clear out the form and the user can 
+   * leave the page without losing the data they entered. 
+   */
   useEffect(() => {
     if (isSent) setIsFormDirty(false);
   }, []);
@@ -225,7 +229,11 @@ const AddEvent = ({
       description: values.description,
 
       // Location info
-      ...((values.format === 'in-person' || values.format === 'both') ? location : null),
+      ...(
+        (values.format === 'in-person' || values.format === 'both') 
+          ? location 
+          : null
+      ),
 
       // Online info
       ...(values.format === 'online' || values.format === 'both' ? {
@@ -255,7 +263,12 @@ const AddEvent = ({
 
         /* Add the new event to the redux store */
         if (editMode) {
-          const newEvents = events.map(e => e.id === event.id ? response.data : e);
+          const newEvents = events.map(
+            e => e.id === event.id 
+              ? response.data 
+              : e
+          );
+          
           setEvents(newEvents);
           setIsFormDirty(false);
         } else {

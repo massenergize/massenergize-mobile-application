@@ -1,13 +1,22 @@
+/******************************************************************************
+ *                            AddTestimonial.js
+ * 
+ *      This page allows users to add a testimonial for a particular action.
+ * 
+ *      Written by: William Soylemez and Moizes Almeida
+ *      Last edited: July 24, 2024
+ * 
+ *****************************************************************************/
+
+/* Imports and set up */
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, KeyboardAvoidingView, Alert, Platform } from 'react-native';
 import {
   View,
   Input,
   Button,
-  Select,
   ScrollView,
   Text,
-  Image,
   Modal,
   Center,
   Icon
@@ -23,6 +32,11 @@ import { FontAwesomeIcon } from '../../components/icons';
 import MEDropdown from '../../components/dropdown/MEDropdown';
 import ImagePicker from '../../components/imagePicker/ImagePicker';
 
+/* 
+ * This serves as a validation schema to prevent the user to add a
+ * testimonial to the selected community unless all the required fields 
+ * are filled. 
+ */
 const validationSchema = Yup.object({
   name: Yup.string()
     .min(3, 'Must be at least 3 characters')
@@ -44,17 +58,37 @@ const AddTestimonial = ({
   setTestimonials,
   route
 }) => {
+  /* If given a testimonial, it will be in edit mode */
   const { testimonial, editMode } = route?.params ?? {};
   const testimonialAction = actions.find(
     action => testimonial?.action &&
       action.id === testimonial.action.id
   );
 
+  /* 
+   * Uses local state to determine whether the user has submitted 
+   * and the data they filled out the form with has been sent to 
+   * the API. 
+   */
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSent, setIsSent] = useState(false);
+
+  /* Uses local state to save the uri of the selected image */
   const [imageData, setImageData] = useState(null);
+
+  /* 
+   * Uses local state to determine whether some text or input field 
+   * was changed in the form.
+   */
   const [isFormDirty, setIsFormDirty] = useState(false);
 
+  /* 
+   * If the user by accident or on purpose leaves the form page and
+   * they modified any input or text field in the page, they will be
+   * warned that the information they entered will be lost if they 
+   * leave, so they can stay in the page if it was a mistake or they
+   * can leave the page and lose the information they entered previously. 
+   */
   useEffect(() => {
     const unsubscribe = navigation.addListener('beforeRemove', (e) => {
       if (!isFormDirty) {
@@ -84,14 +118,23 @@ const AddTestimonial = ({
     return unsubscribe;
   }, [isFormDirty, navigation]);
 
+  /* 
+   * Function that handles the selection of an image for the newly 
+   * added testimonial.
+   */
   const handleSelectImage = (newImageData) => {
     setImageData(newImageData);
     setIsFormDirty(true);
   };
 
+  /* 
+   * Function that handles the action of the user of clicking in the
+   * 'Add Testimonial' button.
+   */
   const onSubmit = (values, { setSubmitting }) => {
     setIsSubmitting(true);
 
+    /* Data that will be sent to the API. */
     const data = {
       user_email: user.email,
       action_id: values.action || '--',
@@ -104,6 +147,8 @@ const AddTestimonial = ({
       ...(editMode && { testimonial_id: testimonial.id }),
     };
 
+    console.log('DATA:', data);
+
     apiCall(editMode ? 'testimonials.update' : 'testimonials.add', data)
       .then((response) => {
         setIsSubmitting(false);
@@ -111,13 +156,22 @@ const AddTestimonial = ({
         setIsFormDirty(false);
 
         if (!response.success) {
-          showError('An error occurred while adding testimonial. Please try again.');
+          showError(
+            'An error occurred while adding testimonial. Please try again.'
+          );
           console.error('ERROR_ADDING_TESTIMONIAL:', response);
           return;
         }
-        showSuccess(`Testimonial ${editMode ? 'edited' : 'added'} successfully.`);
+
+        showSuccess(
+          `Testimonial ${editMode ? 'edited' : 'added'} successfully.`
+        );
+        
+        /* Add the new testimonial to the redux store */
         if (editMode) {
-          setTestimonials(testimonials.map(t => t.id === testimonial.id ? response.data : t));
+          setTestimonials(testimonials.map(
+            t => t.id === testimonial.id ? response.data : t
+          ));
         } else {
           setTestimonials([response.data, ...testimonials]);
         }
@@ -125,10 +179,13 @@ const AddTestimonial = ({
       })
       .catch((error) => {
         console.error('ERROR_ADDING_TESTIMONIAL:', error);
-        showError('An error occurred while adding testimonial. Please try again.');
+        showError(
+          'An error occurred while adding testimonial. Please try again.'
+        );
       });
   };
 
+  /* Displays the form to create a new testimonial */
   return (
     <View bg="white" height="100%">
       <KeyboardAvoidingView
@@ -330,6 +387,10 @@ const styles = StyleSheet.create({
   },
 });
 
+/* 
+ * Transforms the local state of the app into the properties of the 
+ * AddTestimonial function, in which it is got from the API.
+ */
 const mapStateToProps = state => {
   return {
     actions: state.actions,
@@ -339,9 +400,15 @@ const mapStateToProps = state => {
   };
 };
 
+/* 
+ * Transforms the dispatch function from the API in order to get the information
+ * of the current community and sends it to the AddTestimonial properties.
+ */
 const mapDispatchToProps = dispatch => {
   return {
-    setTestimonials: (testimonials) => dispatch(setActionWithValue(SET_TESTIMONIALS_LIST, testimonials)),
+    setTestimonials: (testimonials) => dispatch(
+      setActionWithValue(SET_TESTIMONIALS_LIST, testimonials)
+    ),
   };
 };
 
