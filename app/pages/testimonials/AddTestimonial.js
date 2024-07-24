@@ -192,6 +192,7 @@ const AddTestimonial = ({
                     options={actions.map((action, index) => (
                       { label: action.title, value: action.id }
                     ))}
+                    value={values.action}
                   />
 
                   {/* Name */}
