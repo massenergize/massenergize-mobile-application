@@ -509,6 +509,7 @@ const AddTeam = ({
                               value: teamName,
                             }))
                           }
+                          value={values.parent}
                         />
                       </FormControl>
                     ) : null}
