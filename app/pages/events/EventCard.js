@@ -21,11 +21,11 @@ import {
   Icon,
   Flex,
   Badge,
+  View,
 } from "@gluestack-ui/themed-native-base";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import events from "../../stylesheet/events";
 import Moment from "moment";
-
 
 export default EventCard = React.memo(
   ({
@@ -136,6 +136,32 @@ export default EventCard = React.memo(
                 {Moment(data.start_date_and_time).format('ll')}
               </Text>
             </Box>
+            
+            {/* 
+              * If the event is shared between communities, display a 
+              * badge incidating this is a shared event. 
+              */}
+            {data?.shared_to?.length !== 0 ? (
+              <View
+                mx={3}
+                style={{
+                  paddingHorizontal: 10,
+                  borderWidth: 1,
+                  borderColor: '#EC763F',
+                  borderRadius: 20,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Text
+                  color="#EC763F"
+                  bold
+                  fontSize="sm"
+                >
+                  SHARED
+                </Text>
+              </View>
+            ) : null}
           </Flex>
         </Box>
       </Pressable>

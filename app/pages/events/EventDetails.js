@@ -5,7 +5,7 @@
  *      information as a component called EventDetails.
  * 
  *      Written by: Moizes Almeida and Will Soylemez
- *      Last edited: July 22, 2024
+ *      Last edited: July 25, 2024
  * 
  *****************************************************************************/
 
@@ -35,6 +35,7 @@ import {
   Button,
   Modal,
   Badge,
+  Spacer,
 } from '@gluestack-ui/themed-native-base';
 import {
   PermissionsAndroid,
@@ -57,16 +58,20 @@ const EventDetails = ({ route, navigation }) => {
   /*
    * Uses local state to determine whether the user has added the event
    * to their calendar, and if they did then displays a Modal to alert
-   * them that the event has been added to their calendar.
+   * them that the event has been added to their calendar. Also, if the
+   * event is shared between communities, use local state to determine
+   * if the user has clicked in the Shared Event modal.
    */
   const [hasAdded, setHasAdded] = useState(false);
   const [openModal, setOpenModal] = useState(false);
+  const [openSharedModal, setOpenSharedModal] = useState(false);
 
   /* 
    * Calls on the API again to display the information of that specific
    * event from that community using the useDetails function.
    */
   const [event, isEventLoading] = useDetails("events.info", { event_id });
+  console.log(JSON.stringify(event, null, 2));
 
   /* 
    * Checked if the current platform is Android or no; in case it is, 
@@ -417,6 +422,39 @@ const EventDetails = ({ route, navigation }) => {
               Pending Approval
             </Badge>
           )}
+          
+          {/* Shared Event Badge */}
+          {event.shared_to?.length !== 0 && (
+            <>
+              <Pressable
+                mx={3}
+                position="absolute"
+                top={-4}
+                left={2}
+                zIndex={1}
+                style={{
+                  paddingHorizontal: 10,
+                  marginBottom: 10,
+                  borderWidth: 1,
+                  borderColor: '#EC763F',
+                  borderRadius: 20,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+                onPress={() => {setOpenSharedModal(true)}}
+              >
+                <Text
+                  color="#EC763F"
+                  bold
+                  fontSize="sm"
+                >
+                  SHARED
+                </Text>
+              </Pressable>
+              <Spacer my="1.5"/>
+            </>
+          )}
+
           <Heading textAlign="center">
             {event.name || "Event Name"}
           </Heading>
@@ -491,6 +529,74 @@ const EventDetails = ({ route, navigation }) => {
           }
         </Box>
       </ScrollView>
+      
+      {/* Shared Event Modal */}
+      <Modal
+        onClose={() => setOpenSharedModal(false)}
+        isOpen={openSharedModal}
+        animationType="slide"
+      >
+        <ScrollView
+          contentContainerStyle={{ 
+            flexGrow: 1, 
+            justifyContent: 'center' 
+          }}
+        >
+          <View 
+            style={{ 
+              width: 300, 
+              alignSelf: 'center',
+            }}
+          >
+            <Modal.Content
+              style={{ width: 300 }} 
+              alignSelf="center"
+            >
+              {/* Close Button */}
+              <Modal.CloseButton/>
+
+              {/* Modal Body */}
+              <Modal.Body>
+                {/* Header */}
+                <Text
+                  bold
+                  color="primary.400"
+                  fontSize="lg"
+                  mb={1}
+                >
+                  This is a Shared Event with other Communities
+                </Text>
+
+                {/* Body */}
+                <Text mb={2}>
+                  The communities partnering with this event are:
+                </Text>
+                
+                {/* Display community that created the event */}
+                <Text
+                  color="gray.600"
+                  fontWeight="600"
+                >
+                  - {event.community.name} (Creator)
+                </Text>
+
+                {/* List of partnering communties */}
+                {
+                  event.shared_to?.map((community, index) => (
+                    <Text
+                      key={index}
+                      color="gray.600"
+                      fontWeight="300"
+                    >
+                      - {community.name}
+                    </Text>
+                  ))
+                }
+              </Modal.Body>
+            </Modal.Content>
+          </View>
+        </ScrollView>
+      </Modal>
 
       {/* 
         * Modal for alerting user that the event has been added 
