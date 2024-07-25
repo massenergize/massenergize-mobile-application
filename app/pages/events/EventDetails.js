@@ -572,7 +572,7 @@ const EventDetails = ({ route, navigation }) => {
                   The communities partnering with this event are:
                 </Text>
                 
-                {/* Display community that created the event */}
+                {/* Display community that created the shared event */}
                 <Text
                   color="gray.600"
                   fontWeight="600"
