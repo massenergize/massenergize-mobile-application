@@ -71,7 +71,6 @@ const EventDetails = ({ route, navigation }) => {
    * event from that community using the useDetails function.
    */
   const [event, isEventLoading] = useDetails("events.info", { event_id });
-  console.log(JSON.stringify(event, null, 2));
 
   /* 
    * Checked if the current platform is Android or no; in case it is, 

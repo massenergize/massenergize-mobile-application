@@ -7,7 +7,7 @@
  *      of the community.
  * 
  *      Written by: Moizes Almeida and Will Soylemez
- *      Last edited: July 17, 2024
+ *      Last edited: July 25, 2024
  * 
  *****************************************************************************/
 
@@ -236,6 +236,8 @@ const CommunityHomeScreen = ({
     { community_id }
   );
 
+  console.log(JSON.stringify(homeSettings, null, 2))
+
   /* When the app is loading, display an activity indicator */
   if (isLoading) {
     return (
@@ -362,11 +364,22 @@ const CommunityHomeScreen = ({
           <HStack alignItems="center" pb={2} pt={3}>
             <HeaderText text="Recommended Actions" />
             <Spacer />
-            <ShowMore navigation={navigation} page="Actions" text={"Show More"} />
+            <ShowMore 
+              navigation={navigation} 
+              page="Actions" 
+              text={"Show More"} 
+            />
           </HStack>
 
-          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-            <HStack space={2} justifyContent="center" mx={15} mb={15}>
+          <ScrollView 
+            horizontal={true} 
+            showsHorizontalScrollIndicator={false}>
+            <HStack 
+              space={2} 
+              justifyContent="center" 
+              mx={15} 
+              mb={15}
+            >
               {
                 /* 
                  * Displays all recommended actions based on the user's
@@ -412,17 +425,7 @@ const CommunityHomeScreen = ({
                     {homeSettings.featured_events.map((event) => (
                       <EventCard
                         key={event.id}
-                        title={event.name}
-                        date={formatDateString(
-                          new Date(event.start_date_and_time),
-                          new Date(event.end_date_and_time)
-                        )}
-                        location={event.location}
-                        imgUrl={event.image?.url}
-                        canRSVP={event.rsvp_enabled}
-                        isRSVPED={event.is_rsvped}
-                        isShared={event.is_shared}
-                        id={event.id}
+                        data={event}
                         navigation={navigation}
                         my={3}
                         shadow={3}
