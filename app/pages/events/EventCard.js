@@ -6,7 +6,7 @@
  *      is possible to keep consistency across all events pages.
  * 
  *      Written by: Moizes Almeida and William Soylemez
- *      Last edited: July 23, 2024
+ *      Last edited: July 25, 2024
  * 
  *****************************************************************************/
 
@@ -98,6 +98,30 @@ export default EventCard = React.memo(
               size="md"
               color="primary.400"
             />
+          </Flex>
+
+          <Flex
+            flexDirection="row"
+            justifyContent="space-between"
+            flexGrow="1"
+            px="4"
+            pb="1"
+          >
+            <Text 
+              fontWeight="300" 
+              color="gray.600" 
+              fontSize="sm" 
+              w="90%" 
+              mr="3"
+            >
+              {
+                data.event_type === "in-person"
+                  ? "In-Person"
+                  : data.event_type === "online"
+                      ? "Online"
+                      : "In-Person & Online"
+              }
+            </Text>
           </Flex>
 
           {/* Meta */}

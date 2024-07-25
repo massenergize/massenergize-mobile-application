@@ -4,34 +4,74 @@
  *      This page is responsible for rendering the Drawer menu.
  * 
  *      Written by: Frimpong, William Soylemez, and Moizes Almeida
- *      Last edited: July 9, 2024
+ *      Last edited: July 25, 2024
  * 
  *****************************************************************************/
 
 /* Imports and set up */
-import React, {useEffect, useRef} from 'react';
-import {createDrawerNavigator} from '@react-navigation/drawer';
+import React, { useState } from 'react';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import HomeScreen from '../../pages/home/HomeScreen';
-import {DrawerItem, DrawerContentScrollView} from '@react-navigation/drawer';
-// import Icon from 'react-native-vector-icons/FontAwesome';
+import { DrawerContentScrollView } from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/Ionicons';
-
-import {Text, View, TouchableOpacity, Image, Button} from 'react-native';
-import {COLOR_SCHEME, ME_ORANGE} from '../../stylesheet';
+import { 
+  Text, 
+  View, 
+  TouchableOpacity, 
+  Image 
+} from 'react-native';
+import { COLOR_SCHEME } from '../../stylesheet';
 import AboutUsScreen from '../../pages/about/AboutUsScreen';
 import ContactUsScreen from '../../pages/contact-us/ContactUsScreen';
-import {FontAwesomeIcon} from '../icons';
+import { FontAwesomeIcon } from '../icons';
 import UserProfile from '../../pages/user-profile/UserProfile';
 import AuthOptions from '../../pages/auth/AuthOptions';
-import {bindActionCreators} from 'redux';
+import { bindActionCreators } from 'redux';
 import {
   signOutAction,
   toggleUniversalModalAction,
 } from '../../config/redux/actions';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import ServiceProvidersScreen from '../../pages/service-providers/ServiceProvidersScreen';
 import TestimonialsScreen from '../../pages/testimonials/TestimonialsScreen';
+import ImpactPage from '../../pages/home/ImpactPage';
 
+/* Creates the list of goals for the charts to display */
+const getGoalsList = (goals) => {
+  let goalsList = [];
+
+  /* Don't display a chart if the goal is 0 */
+  if (goals?.target_number_of_actions !== 0) {
+    goalsList.push({
+      nameLong: "Individual Actions Completed",
+      nameShort: "Actions",
+      goal: goals.target_number_of_actions,
+      current: goals.displayed_number_of_actions
+    });
+  }
+
+  if (goals?.target_number_of_households !== 0) {
+    goalsList.push({
+      nameLong: "Households Taking Action",
+      nameShort: "Households",
+      goal: goals.target_number_of_households,
+      current: goals.displayed_number_of_households
+    });
+  }
+
+  if (goals?.target_carbon_footprint_reduction !== 0) {
+    goalsList.push({
+      nameLong: "Carbon Reduction Impact",
+      nameShort: "Carbon",
+      goal: goals.target_carbon_footprint_reduction / 133,
+      current: (goals.displayed_carbon_footprint_reduction / 133)
+    });
+  }
+
+  return goalsList;
+};
+
+/* Defines the constant that holds the value of the Drawer navigator */
 const Drawer = createDrawerNavigator();
 
 const CustomDrawerContent = ({
@@ -39,10 +79,19 @@ const CustomDrawerContent = ({
   toggleModal,
   activeCommunity,
   fireAuth,
+  communityInfo,
   signMeOut,
   user,
 }) => {
+  /* Uses local state to determine whether the dropdown is open or not. */
+  const [openDropdown, setOpenDropdown] = useState(null);
+
+  /* Function that defines and returns the items in the Drawer */
   const getDrawerItems = () => {
+    /* Creates the constant that will hold the list of goals */
+    const goalsList = getGoalsList(communityInfo?.goal || {});
+
+    /* Defines the list of items that will be displayed in the Drawer */
     const drawerItems = [
       {
         name: 'Community',
@@ -54,9 +103,18 @@ const CustomDrawerContent = ({
       {
         name: 'About Us',
         icon: 'information-circle-outline',
-        dropdown: false,
-        route: 'About',
-        dropdownItems: [],
+        dropdown: true,
+        dropdownItems: [
+          { name: 'Our Story', route: 'About' },
+          {
+            name: 'Impact',
+            route: 'Goals',
+            params: {
+              community_id: activeCommunity.id,
+              goalsList: goalsList,
+            }
+          },
+        ],
       },
       {
         name: 'Testimonials',
@@ -81,11 +139,21 @@ const CustomDrawerContent = ({
       route: 'Contact Us',
       dropdownItems: [],
     });
+
     return drawerItems;
   };
 
-  const {preferred_name} = user || {};
+  /* 
+   * Function that handles when the user clicks in one of the items 
+   * of the Drawer.
+   */
+  const handlePress = (route, params) => {
+    if (route) {
+      navigation.navigate(route, params);
+    }
+  };
 
+  /* Displays the content of the Drawer */
   return (
     <>
       <DrawerContentScrollView>
@@ -96,14 +164,15 @@ const CustomDrawerContent = ({
               alignItems: 'center',
               justifyContent: 'center',
             }}>
+            {/* Community Logo */}
             <Image
-              // src="https://massenergize-prod-files.s3.amazonaws.com/media/energizewayland_resized.jpg"
-              src={activeCommunity?.logo?.url}
-              alt="Community Logo"
-              style={{width: 120, height: 120, objectFit: 'contain'}}
+              source={{ uri: activeCommunity?.logo?.url }} 
+              style={{ width: 120, height: 120, resizeMode: 'contain' }} 
             />
           </View>
-          {preferred_name ? (
+
+          {/* User's preferred name */}
+          {user?.preferred_name && (
             <View
               style={{
                 backgroundColor: COLOR_SCHEME.GREEN,
@@ -116,51 +185,98 @@ const CustomDrawerContent = ({
                   textAlign: 'center',
                   fontSize: 10,
                 }}>
-                {preferred_name}
+                {user.preferred_name}
               </Text>
             </View>
-          ) : (
-            <></>
           )}
+
+          {/* Community name */}
           <View
             style={{
               padding: 15,
-              // paddingLeft: 25,
               backgroundColor: '#f2f3f5',
               marginBottom: 20,
             }}>
             <Text
-              style={{fontWeight: 'bold', fontSize: 15, textAlign: 'center'}}>
+              style={{ fontWeight: 'bold', fontSize: 15, textAlign: 'center' }}>
               @{activeCommunity?.name}
             </Text>
           </View>
-
+          
+          {/* Displays the items of the Drawer */}
           {getDrawerItems().map(menu => (
-            <TouchableOpacity
-              key={menu?.name}
-              style={{
-                padding: 15,
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}
-              onPress={() => navigation.navigate(menu?.route)}>
-              <Icon name={menu?.icon} size={24} color="black" />
-              <Text
+            <View key={menu.name}>
+              <TouchableOpacity
                 style={{
-                  color: 'black',
-                  fontWeight: '500',
-                  marginLeft: 20,
-                  fontSize: 15,
-                }}>
-                {menu?.name}
-              </Text>
-            </TouchableOpacity>
+                  padding: 15,
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}
+                onPress={() =>
+                  menu.dropdown
+                    ? setOpenDropdown(
+                        openDropdown === menu.name 
+                          ? null 
+                          : menu.name
+                      )
+                    : handlePress(menu.route, menu.params)
+                }
+              >
+                {/* Item's icon */}
+                <Icon name={menu.icon} size={24} color="black" />
+
+                {/* Item's name */}
+                <Text
+                  style={{
+                    color: 'black',
+                    fontWeight: '500',
+                    marginLeft: 20,
+                    fontSize: 15,
+                  }}>
+                  {menu.name}
+                </Text>
+              </TouchableOpacity>
+
+              {/* Dropdown items */}
+              {menu.dropdown && openDropdown === menu.name && (
+                <View style={{ paddingLeft: 20 }}>
+                  {menu.dropdownItems.map(item => (
+                    <TouchableOpacity
+                      key={item.name}
+                      style={{
+                        padding: 10,
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        marginLeft: 15,
+                        fontWeight: 300,
+                      }}
+                      onPress={() => handlePress(item.route, item.params)}
+                    >
+                      {/* Dropdown item's name */}
+                      <Text
+                        style={{
+                          color: 'black',
+                          fontWeight: '400',
+                          marginLeft: 20,
+                          fontSize: 14,
+                        }}>
+                        {item.name}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              )}
+            </View>
           ))}
         </View>
       </DrawerContentScrollView>
-      <View style={{width: '100%', marginBottom: 20, padding: 20}}>
-        {preferred_name ? (
+
+      {/* Sign in / Sign out / Switch Community */}
+      <View style={{ width: '100%', marginBottom: 20, padding: 20 }}>
+        {/* Sign out button */}
+        {user?.preferred_name ? (
           <TouchableOpacity
             onPress={() => signMeOut()}
             style={{
@@ -181,7 +297,7 @@ const CustomDrawerContent = ({
             </Text>
           </TouchableOpacity>
         ) : (
-          <TouchableOpacity
+          <TouchableOpacity /* Sign in Button */
             onPress={() => {
               toggleModal({
                 isVisible: true,
@@ -207,10 +323,11 @@ const CustomDrawerContent = ({
             </Text>
           </TouchableOpacity>
         )}
+
+        {/* Switch communities button */}
         <TouchableOpacity
           onPress={() => navigation.navigate('CommunitySelectionPage')}
           style={{
-            // backgroundColor: ME_ORANGE,
             padding: 12,
             borderWidth: 2,
             borderColor: COLOR_SCHEME.GREEN,
@@ -231,7 +348,8 @@ const CustomDrawerContent = ({
     </>
   );
 };
-// ------------------------------------------ NAVIGATOR ------------------------------
+
+/*------------------------------ NAVIGATOR ------------------------------*/
 
 const MEDrawerNavigator = ({
   toggleModal,
@@ -239,14 +357,20 @@ const MEDrawerNavigator = ({
   fireAuth,
   signMeOut,
   user,
+  communityInfo,
 }) => {
-  const renderProfileIcon = ({navigation}) => {
-    const {profile_picture} = user || {};
+  /* 
+   * Function that handles rendering the profile icon at the top right 
+   * corner of the Header.
+   */
+  const renderProfileIcon = ({ navigation }) => {
+    const { profile_picture } = user || {};
+
+    /* If the user has uploaded a picture, display it */
     if (profile_picture?.url)
       return (
         <Image
           src={profile_picture?.url}
-          // src="https://massenergize-prod-files.s3.amazonaws.com/media/energizewayland_resized.jpg"
           style={{
             height: 27,
             width: 27,
@@ -258,10 +382,11 @@ const MEDrawerNavigator = ({
           }}
         />
       );
-
+    
+    {/* Otherwise, display a profile icon */}
     return (
       <TouchableOpacity
-        style={{marginRight: 15}}
+        style={{ marginRight: 15 }}
         onPress={() => navigation.navigate('Profile')}>
         <FontAwesomeIcon
           name="user-circle"
@@ -272,7 +397,12 @@ const MEDrawerNavigator = ({
     );
   };
 
+  {/* 
+    * Function that holds the navigation options of the Header, 
+    * such as the Hamburger Menu icon and the profile icon.
+    */}
   const options = ({ navigation }) => ({
+    /* Access Drawer */
     headerLeft: () => {
       return (
         <TouchableOpacity
@@ -284,10 +414,15 @@ const MEDrawerNavigator = ({
       );
     },
 
+    /* Access user profile */
     headerRight: () => renderProfileIcon({ navigation }),
   });
 
-  const testimonialOptions = ({ navigation }) => ({
+  /* 
+   * Function that holds the option to render the header of the page 
+   * without the title of the page in display in the middle.
+   */
+  const noPageTitleOption = ({ navigation }) => ({
     headerLeft: () => {
       return (
         <TouchableOpacity
@@ -306,10 +441,11 @@ const MEDrawerNavigator = ({
     headerTitle: "",
   })
 
+  /* Display the Drawer navigator */
   return (
     <Drawer.Navigator
       initialRouteName="Community"
-      drawerContent={props => (
+      drawerContent={(props) => (
         <CustomDrawerContent
           {...props}
           toggleModal={toggleModal}
@@ -317,55 +453,73 @@ const MEDrawerNavigator = ({
           fireAuth={fireAuth}
           signMeOut={signMeOut}
           user={user}
+          communityInfo={communityInfo}
         />
       )}
-      drawerStyle={{width: 250}}>
-
-      {/* Main navigation options */}
-      <Drawer.Screen 
-        options={options} 
-        name="Community" 
-        component={HomeScreen} />
-      <Drawer.Screen 
-        options={options} 
-        name="About" 
-        component={AboutUsScreen} />
-      <Drawer.Screen 
-        options={testimonialOptions} 
-        name="Testimonials" 
-        component={TestimonialsScreen} />
-      <Drawer.Screen 
-        options={options} 
-        name="Teams" 
-        component={HomeScreen} />
-      <Drawer.Screen 
-        options={options} 
-        name="Service Providers" 
-        component={ServiceProvidersScreen} />
-      <Drawer.Screen 
-        options={options} 
-        name="Contact Us" 
-        component={ContactUsScreen} />
-      <Drawer.Screen 
-        options={options} 
-        name="Profile" 
-        component={UserProfile} />
+      drawerStyle={{ width: 250 }}
+    >
+      {/* Main Navigation options */}
+    
+      <Drawer.Screen
+        name="Community"
+        component={HomeScreen}
+        options={options}
+      />
+      <Drawer.Screen
+        name="UserProfile"
+        component={UserProfile}
+        options={options}
+      />
+      <Drawer.Screen
+        name="About"
+        component={AboutUsScreen}
+        options={options}
+      />
+      <Drawer.Screen
+        name="Contact Us"
+        component={ContactUsScreen}
+        options={options}
+      />
+      <Drawer.Screen
+        name="Service Providers"
+        component={ServiceProvidersScreen}
+        options={options}
+      />
+      <Drawer.Screen
+        name="Testimonials"
+        component={TestimonialsScreen}
+        options={noPageTitleOption}
+      />
+      <Drawer.Screen
+        name="Goals"
+        component={ImpactPage}
+        options={noPageTitleOption}
+      />
     </Drawer.Navigator>
   );
 };
 
-const mapSateToProps = state => {
+/* 
+ * Transforms the local state of the app into the properties of the 
+ * Drawer functions, in which it is got from the API.
+ */
+const mapStateToProps = (state) => {
   return {
-    activeCommunity: state.activeCommunity,
-    fireAuth: state.fireAuth,
     user: state.user,
+    activeCommunity: state.activeCommunity,
+    communityInfo: state.communityInfo,
   };
 };
+
+/* 
+ * Transforms the dispatch function from the API in order to get the information
+ * of the current community and sends it to the Drawer functions properties.
+ */
 const mapDispatchToProps = dispatch => {
-  return bindActionCreators(
-    {toggleModal: toggleUniversalModalAction, signMeOut: signOutAction},
-    dispatch,
-  );
+  return bindActionCreators({
+    signMeOut: signOutAction,
+    toggleModal: toggleUniversalModalAction,
+  }, dispatch);
 };
 
-export default connect(mapSateToProps, mapDispatchToProps)(MEDrawerNavigator);
+export default connect(mapStateToProps, mapDispatchToProps)(MEDrawerNavigator);

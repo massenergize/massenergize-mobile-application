@@ -7,7 +7,7 @@
  *      impact of the community through the CommunityHomeScreen.
  * 
  *      Written by: Moizes Almeida and William Soylemez
- *      Last edited: July 22, 2024
+ *      Last edited: July 24, 2024
  * 
  *****************************************************************************/
 
@@ -274,9 +274,6 @@ export default function ImpactPage({ route, navigation }) {
           </VStack>
         </ScrollView>
       )}
-
-      {/* Info Modal */}
-
     </View>
   );
 }
