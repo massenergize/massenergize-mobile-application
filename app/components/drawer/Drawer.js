@@ -4,7 +4,7 @@
  *      This page is responsible for rendering the Drawer menu.
  * 
  *      Written by: Frimpong, William Soylemez, and Moizes Almeida
- *      Last edited: July 24, 2024
+ *      Last edited: July 25, 2024
  * 
  *****************************************************************************/
 
@@ -108,7 +108,7 @@ const CustomDrawerContent = ({
           { name: 'Our Story', route: 'About' },
           {
             name: 'Impact',
-            route: 'Impact',
+            route: 'Goals',
             params: {
               community_id: activeCommunity.id,
               goalsList: goalsList,
@@ -491,7 +491,7 @@ const MEDrawerNavigator = ({
         options={noPageTitleOption}
       />
       <Drawer.Screen
-        name="Impact"
+        name="Goals"
         component={ImpactPage}
         options={noPageTitleOption}
       />
