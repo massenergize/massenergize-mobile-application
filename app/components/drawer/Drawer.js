@@ -466,7 +466,7 @@ const MEDrawerNavigator = ({
         options={options}
       />
       <Drawer.Screen
-        name="UserProfile"
+        name="Profile"
         component={UserProfile}
         options={options}
       />
