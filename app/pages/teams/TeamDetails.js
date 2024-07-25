@@ -5,7 +5,7 @@
  *      information as a component called TeamDetails.
  * 
  *      Written by: Moizes Almeida and William Soylemez
- *      Last edited: July 24, 2024
+ *      Last edited: July 25, 2024
  * 
  *****************************************************************************/
 
@@ -181,9 +181,13 @@ function TeamDetails({
   /* TODO: Cache these components to avoid re-rendering. */
   /* Creates the tabs */
   const generateAboutTab = () => {
+    const textStyle = {
+      fontSize: "16px",
+    };
+
     return <HTMLParser
-            htmlString={team.description}
-            baseStyle={textStyle}
+              htmlString={team.description}
+              baseStyle={textStyle}
             />
   };
 
@@ -260,7 +264,7 @@ function TeamDetails({
           <Text bold>
             {(team_stats.carbon_footprint_reduction / 133).toFixed(2)}
           </Text>{" "}
-          Number of Trees
+          Carbon Reduction Impact
         </Text>
 
         <HStack width="100%">
@@ -331,6 +335,7 @@ function TeamDetails({
               flexDirection="row" 
               gap={3}
               mx={5}
+              key={i}
             >
               <Ionicons 
                 name="person-outline" 
@@ -632,10 +637,6 @@ function TeamDetails({
 const Tab = ({ children }) => {
   return <Box p="5" >{children}</Box>
 }
-
-const textStyle = {
-  fontSize: "16px",
-};
 
 /* 
  * Transforms the local state of the app into the proprieties of the 
