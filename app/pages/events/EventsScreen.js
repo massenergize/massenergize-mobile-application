@@ -6,7 +6,7 @@
  *      and the Campaigns from a community.
  * 
  *      Written by: Moizes Almeida
- *      Last edited: July 17, 2024
+ *      Last edited: July 25, 2024
  * 
  *****************************************************************************/
 
@@ -123,6 +123,8 @@ const EventsScreen = ({ navigation, events, fireAuth, toggleModal }) => {
         }}
         m={5}
         px={10}
+        w="50%"
+        alignSelf="center"
       >
         Add Event
       </Button>
