@@ -236,8 +236,6 @@ const CommunityHomeScreen = ({
     { community_id }
   );
 
-  console.log(JSON.stringify(homeSettings, null, 2))
-
   /* When the app is loading, display an activity indicator */
   if (isLoading) {
     return (

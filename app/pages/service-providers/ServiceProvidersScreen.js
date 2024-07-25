@@ -4,7 +4,7 @@
  *      This page is responsible for rendering a list of service providers.
  * 
  *      Written by: William Soylemez and Moizes Almeida
- *      Last edited: July 12, 2024
+ *      Last edited: July 25, 2024
  * 
  *****************************************************************************/
 
@@ -150,7 +150,26 @@ function ServiceProvidersPage({ navigation, vendors, questionnaire }) {
       <View height="100%" bg="white">
         <ScrollView px="5" showsVerticalScrollIndicator={false}>
           <VStack mt="5">
-            <Text style={styles.title}>Vendors</Text>
+            <HStack alignItems="center" justifyContent="center">
+              {/* Header */}
+              <Text style={styles.title}>Vendors</Text>
+              <MEInfoModal>
+                <Text
+                  color="primary.400"
+                  bold
+                  fontSize="lg"
+                >
+                  Vendors
+                </Text>
+                <Text>
+                  This page displays a list of companies in your community that
+                  can help you reduce your carbon footprint. You can filter the
+                  list by category to find the services you need.
+                </Text>
+
+              </MEInfoModal>
+            </HStack>
+          
             <View
               style={{
                 justifyContent: 'center',
