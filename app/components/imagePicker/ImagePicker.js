@@ -3,8 +3,8 @@ import { Image, View, Text, Platform } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { Button } from '@gluestack-ui/themed-native-base';
 
-const ImagePicker = ({ onChange }) => {
-  const [imageUri, setImageUri] = useState(null);
+const ImagePicker = ({ value, onChange }) => {
+  const [imageUri, setImageUri] = useState(value?.url ?? null);
 
   const pickImage = async () => {
     launchImageLibrary({ mediaType: 'photo' }, (response) => {

@@ -44,6 +44,8 @@ import MEImage from "../../components/image/MEImage";
 import { Alert, Linking, TouchableOpacity } from "react-native";
 import { Icon as SocialIcons } from 'react-native-elements';
 import Share from 'react-native-share';
+import { COLOR_SCHEME } from "../../stylesheet";
+import { act } from "react-test-renderer";
 
 const ActionDetails = ({
   route,
@@ -73,7 +75,7 @@ const ActionDetails = ({
    * should be opened, and when the user clicks on the "Add to To-Do" 
    * button.
    */
-  const [activeSections, setActiveSections] = useState([]);
+  const [activeSection, setActiveSection] = useState(0);
   const [isDoneOpen, setIsDoneOpen] = useState(false);
   const [isToDoOpen, setIsToDoOpen] = useState(false);
 
@@ -176,7 +178,7 @@ const ActionDetails = ({
       [
         {
           text: "Cancel",
-          onPress: () => {},
+          onPress: () => { },
           style: "cancel"
         },
         {
@@ -316,7 +318,6 @@ const ActionDetails = ({
     return (
       <Box
         p={3}
-        bg={"gray.100"}
       >
         {generateSectionContent(section.title)}
       </Box>
@@ -549,14 +550,20 @@ const ActionDetails = ({
                   </Button>
                 </HStack>
 
-                {/* Accordion that displays the action information */}
-                <Accordion
-                  sections={SECTIONS}
-                  activeSections={activeSections}
-                  renderHeader={renderHeader}
-                  renderContent={renderContent}
-                  onChange={setActiveSections}
-                />
+                {/* Tab buttons to navigate through the sections */}
+                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+                  {SECTIONS.map((section, index) => (
+                    <Button 
+                      onPress={() => setActiveSection(index)}
+                      key={index + " " + (activeSection === index)}
+                      variant={activeSection === index ? "solid" : "outline"}
+                      mr={2}
+                    >
+                      {section.title}
+                    </Button>
+                  ))}
+                </ScrollView>
+                {renderContent(SECTIONS[activeSection])}
 
                 {/* Display the option to share the action with others. */}
                 <>

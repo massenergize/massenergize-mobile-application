@@ -109,7 +109,7 @@ const AddEvent = ({
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
 
   /* Uses local state to save the uri of the selected image. */
-  const [imageData, setImageData] = useState(null);
+  const [imageData, setImageData] = useState(event?.image ?? null);
 
   /* 
    * Uses local state to determine whether some text or input field 
@@ -224,14 +224,14 @@ const AddEvent = ({
       name: values.title,
       start_date_and_time: startDate?.toISOString(),
       end_date_and_time: endDate?.toISOString(),
-      ...(imageData ? {image: imageData} : null),
+      ...(imageData ? { image: imageData } : null),
       event_type: values.format,
       description: values.description,
 
       // Location info
       ...(
-        (values.format === 'in-person' || values.format === 'both') 
-          ? location 
+        (values.format === 'in-person' || values.format === 'both')
+          ? location
           : null
       ),
 
@@ -245,7 +245,7 @@ const AddEvent = ({
       ...(editMode ? { event_id: event.id } : null)
     };
 
-    console.log(data);
+    console.log("DATA:", JSON.stringify(data, null, 2));
 
     apiCall(editMode ? "events.update" : "events.add", data)
       .then((response) => {
@@ -264,11 +264,11 @@ const AddEvent = ({
         /* Add the new event to the redux store */
         if (editMode) {
           const newEvents = events.map(
-            e => e.id === event.id 
-              ? response.data 
+            e => e.id === event.id
+              ? response.data
               : e
           );
-          
+
           setEvents(newEvents);
           setIsFormDirty(false);
         } else {
@@ -667,12 +667,16 @@ const AddEvent = ({
                   </FormControl>
 
                   {/* Event Image */}
-                  <Text mt={7} mb={3} fontWeight="300">
-                    You can add an image to your event.
-                    It should be your own picture, or one you are sure is not
-                    copyrighted material.
-                  </Text>
-                  <ImagePicker onChange={handleSelectImage} />
+                  {!editMode && (
+                    <>
+                      <Text mt={7} mb={3} fontWeight="300">
+                        You can add an image to your event.
+                        It should be your own picture, or one you are sure is not
+                        copyrighted material.
+                      </Text>
+                      <ImagePicker value={imageData} onChange={handleSelectImage} />
+                    </>
+                  )}
 
                   {/* Event Description */}
                   <FormControl
