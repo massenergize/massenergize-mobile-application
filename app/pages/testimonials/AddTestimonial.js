@@ -52,6 +52,7 @@ const validationSchema = Yup.object({
 const AddTestimonial = ({
   navigation,
   actions,
+  vendors,
   user,
   activeCommunity,
   testimonials,
@@ -63,7 +64,8 @@ const AddTestimonial = ({
   const testimonialAction = actions.find(
     action => testimonial?.action &&
       action.id === testimonial.action.id
-  );
+  )?.id;
+
 
   /* 
    * Uses local state to determine whether the user has submitted 
@@ -138,6 +140,7 @@ const AddTestimonial = ({
     const data = {
       user_email: user.email,
       action_id: values.action || '--',
+      vendor_id: values.vendor || '--',
       preferred_name: values.name,
       title: values.title,
       body: values.description,
@@ -146,8 +149,6 @@ const AddTestimonial = ({
       ...(imageData ? { image: imageData } : null),
       ...(editMode && { testimonial_id: testimonial.id }),
     };
-
-    console.log('DATA:', data);
 
     apiCall(editMode ? 'testimonials.update' : 'testimonials.add', data)
       .then((response) => {
@@ -199,6 +200,7 @@ const AddTestimonial = ({
               title: testimonial?.title ?? '',
               image: null,
               description: testimonial?.body ?? '',
+              vendor: testimonial?.vendor?.id ?? '',
             }}
             validationSchema={validationSchema}
             onSubmit={onSubmit}
@@ -229,7 +231,7 @@ const AddTestimonial = ({
                   </Text>
 
                   {/* Action select */}
-                  <Text mb={2}>Associated Action</Text>
+                  <Text>Associated Action</Text>
                   <MEDropdown
                     borderRadius={10}
                     mb={3}
@@ -247,13 +249,32 @@ const AddTestimonial = ({
                     value={values.action}
                   />
 
+                  {/* Vendor select */}
+                  <Text mt={3}>Associated Vendor</Text>
+                  <MEDropdown
+                    borderRadius={10}
+                    mb={3}
+                    selectedValue={values.vendor}
+                    minWidth={200}
+                    onChange={
+                      (itemValue) => {
+                        setFieldValue('vendor', itemValue);
+                        setIsFormDirty(true);
+                      }
+                    }
+                    options={vendors.map((vendor, index) => (
+                      { label: vendor.name, value: vendor.id }
+                    ))}
+                    value={values.vendor}
+                  />
+
+
                   {/* Name */}
-                  <Text mb={2}>Name</Text>
+                  <Text mt={3}>Name</Text>
                   <Input
                     placeholder="Your name..."
                     variant="rounded"
                     size="lg"
-                    mb={3}
                     onChangeText={(value) => {
                       handleChange("name")(value);
                       setIsFormDirty(true);
@@ -269,7 +290,7 @@ const AddTestimonial = ({
                   }
 
                   {/* Title */}
-                  <Text mb={2}>Testimonial Title</Text>
+                  <Text mt={3}>Testimonial Title</Text>
                   <Input
                     variant="rounded"
                     size="lg"
@@ -392,6 +413,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => {
   return {
     actions: state.actions,
+    vendors: state.vendors,
     user: state.user,
     activeCommunity: state.activeCommunity,
     testimonials: state.testimonials,
