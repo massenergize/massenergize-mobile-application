@@ -9,35 +9,27 @@
  *****************************************************************************/
 
 /* Imports and setup */
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   VStack,
-  Box,
-  Heading,
   ScrollView,
   HStack,
-  Pressable,
   View,
   Text,
-  Select,
 } from "@gluestack-ui/themed-native-base";
 import { connect } from "react-redux";
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import ServiceProviderCard from "./ServiceProviderCard";
 import { StyleSheet } from "react-native";
-import MEDropdown from "../../components/dropdown/MEDropdown";
 import MEInfoModal from "../../components/modal/MEInfoModal";
 import FilterSelector from "../../components/filter/FilterSelector";
-import { set } from "@gluestack-style/react";
 
 function ServiceProvidersPage({ navigation, vendors, questionnaire }) {
   /*
    * Uses local state to determine wheter the user has or not applied any 
-   * filter to the vendors page, or if they selected the 'Apply Filter'
-   * button, or what is the filter they applied to the page.
+   * filter to the vendors page, what is the filter they applied to the 
+   * page, and the list of filtered vendors.
    */
   const [filter, setFilter] = useState({ Category: 'All' });
-  const [expand, setExpand] = useState(false);
   const [isFilterApplied, setIsFilterApplied] = useState(false);
   const [filteredVendors, setFilteredVendors] = useState([]);
 
@@ -69,7 +61,9 @@ function ServiceProvidersPage({ navigation, vendors, questionnaire }) {
     const vendorTags = vendor.tags.map(tag => tag.name);
 
     return (
-      (questionnaire?.categories.some(category => vendorTags.includes(category)))
+      (questionnaire?.categories.some(
+        category => vendorTags.includes(category)
+      ))
     );
   });
 
