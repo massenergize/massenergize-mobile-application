@@ -143,7 +143,7 @@ const AddTestimonial = ({
       body: values.description,
       community_id: activeCommunity.id,
       rank: 0,
-      image: imageData,
+      ...(imageData ? { image: imageData } : null),
       ...(editMode && { testimonial_id: testimonial.id }),
     };
 
@@ -152,8 +152,6 @@ const AddTestimonial = ({
     apiCall(editMode ? 'testimonials.update' : 'testimonials.add', data)
       .then((response) => {
         setIsSubmitting(false);
-        setIsSent(true);
-        setIsFormDirty(false);
 
         if (!response.success) {
           showError(
@@ -162,11 +160,9 @@ const AddTestimonial = ({
           console.error('ERROR_ADDING_TESTIMONIAL:', response);
           return;
         }
+        setIsSent(true);
+        setIsFormDirty(false);
 
-        showSuccess(
-          `Testimonial ${editMode ? 'edited' : 'added'} successfully.`
-        );
-        
         /* Add the new testimonial to the redux store */
         if (editMode) {
           setTestimonials(testimonials.map(
@@ -175,7 +171,6 @@ const AddTestimonial = ({
         } else {
           setTestimonials([response.data, ...testimonials]);
         }
-        navigation.navigate('Testimonials');
       })
       .catch((error) => {
         console.error('ERROR_ADDING_TESTIMONIAL:', error);
@@ -292,12 +287,16 @@ const AddTestimonial = ({
                   }
 
                   {/* Image */}
-                  <Text mb={2}>
-                    You can add an image to your testimonial.
-                    It should be your own picture, or one you are sure is not
-                    copyrighted material.
-                  </Text>
-                  <ImagePicker onChange={handleSelectImage} />
+                  {!editMode && (
+                    <>
+                      <Text mb={2}>
+                        You can add an image to your testimonial.
+                        It should be your own picture, or one you are sure is not
+                        copyrighted material.
+                      </Text>
+                      <ImagePicker onChange={handleSelectImage} />
+                    </>
+                  )}
 
                   {/* Description */}
                   <Text mt={5} mb={2}>Testimonial Description</Text>
@@ -346,11 +345,10 @@ const AddTestimonial = ({
         <Modal.Content maxWidth={400}>
           <Modal.Body>
             <Center mb="5">
-              <Icon
-                as={FontAwesomeIcon}
-                name="circle-check"
-                size="90px"
-                color="primary.600"
+              <FontAwesomeIcon
+                name="check"
+                size={90}
+                color="green"
               />
               <Text
                 fontSize="lg"
@@ -365,7 +363,7 @@ const AddTestimonial = ({
             </Center>
             <Button
               colorScheme={"gray"}
-              onPress={() => setIsSent(false)}
+              onPress={() => navigation.goBack()}
             >
               Back
             </Button>
