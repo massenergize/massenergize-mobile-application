@@ -390,7 +390,7 @@ const EventDetails = ({ route, navigation }) => {
             * the feature to add event to their calendar 
             */}
           {
-            !isPastEvent() && (
+            !isPastEvent() && event.is_approved && (
               <>
                 {/* Add Event Button */}
                 <Button
