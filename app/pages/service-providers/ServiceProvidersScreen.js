@@ -4,7 +4,7 @@
  *      This page is responsible for rendering a list of service providers.
  * 
  *      Written by: William Soylemez and Moizes Almeida
- *      Last edited: July 25, 2024
+ *      Last edited: July 26, 2024
  * 
  *****************************************************************************/
 
@@ -190,8 +190,8 @@ function ServiceProvidersPage({ navigation, vendors, questionnaire }) {
   /* Displays the Service Providers page and the applied filters */
   return (
     <View bg="white" height="100%">
-      <ScrollView px="5" showsVerticalScrollIndicator={false}>
-        <VStack mt="5">
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <VStack>
           <HStack alignItems="center" justifyContent="center">
             {/* Header */}
             <Text style={styles.title}>Vendors</Text>
