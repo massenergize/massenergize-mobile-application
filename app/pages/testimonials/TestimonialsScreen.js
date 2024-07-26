@@ -188,10 +188,9 @@ function TestimonialsPage({
         {/* Filter Testimonials Button */}
         <FilterSelector filter={filter} handleChangeFilter={applyFilter}>
           <FilterSelector.Filter name="Action">
-            <FilterSelector.Option value="All" />
             {
               /* Filter by Action */
-              actions.map((action, index) => (
+              [{id: "All"}, ...actions].map((action, index) => (
                 <FilterSelector.Option
                   key={index}
                   value={action.id}

@@ -486,6 +486,7 @@ const AddTeam = ({
                             setIsFormDirty(true);
                           }}
                           options={teamsList}
+                          value={values.parent}
                         />
                       </FormControl>
                     ) : null}

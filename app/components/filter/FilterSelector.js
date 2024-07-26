@@ -51,6 +51,8 @@ const FilterSelector = ({ title, children, filter, handleChangeFilter }) => {
     return child;
   });
 
+  console.log(filters);
+
   return (
     <View style={{ padding: 20 }}>
       <Pressable
@@ -94,8 +96,8 @@ const FilterSelector = ({ title, children, filter, handleChangeFilter }) => {
                 margin: 5,
               }}
             >
-              <Text style={{paddingRight: 5}}>
-                {value}
+              <Text style={{ paddingRight: 5 }}>
+                {key}: {filters.find((f) => f.props.name === key).props.children.find((o) => o.props.value === value)?.props?.label ?? value}
               </Text>
               <IonicIcon name="close" size={16} color={COLOR_SCHEME.GREEN} />
             </Pressable>

@@ -67,15 +67,12 @@ const ActionsScreen = ({ navigation, actions, questionnaire }) => {
 
     const newFilteredActions = actions.filter(action => {
       const actionTags = action.tags.map(tag => tag.name);
-      console.log(actionTags);
 
       return (newFilter.Role === 'All' || actionTags.includes(newFilter.Role)) &&
         (newFilter.Category === 'All' || actionTags.includes(newFilter.Category)) &&
         (newFilter.Impact === 'All' || actionTags.includes(newFilter.Impact)) &&
         (newFilter.Cost === 'All' || actionTags.includes(newFilter.Cost));
     });
-
-    console.log(newFilteredActions);
 
     setFilteredActions(newFilteredActions);
   };
