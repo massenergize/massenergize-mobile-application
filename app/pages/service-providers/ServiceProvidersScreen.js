@@ -142,8 +142,8 @@ function ServiceProvidersPage({ navigation, vendors, questionnaire }) {
   if (vendors.length === 0 || comingSoonCheck(vendors)) {
     return (
       <View height="100%" bg="white">
-        <ScrollView px="5" showsVerticalScrollIndicator={false}>
-          <VStack mt="5">
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <VStack>
             <HStack alignItems="center" justifyContent="center">
               {/* Header */}
               <Text style={styles.title}>Vendors</Text>

@@ -4,21 +4,18 @@
  *      This page is responsible for rendering a list of testimonials.
  * 
  *      Written by: William Soylemez and Moizes Almeida
- *      Last edited: July 12, 2024
+ *      Last edited: July 26, 2024
  * 
  *****************************************************************************/
 
 /* Imports and set up */
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Button,
   Container,
   View, ScrollView,
   Text,
-  Pressable,
   HStack,
-  VStack,
-  Select,
   Heading
 } from "@gluestack-ui/themed-native-base";
 import { connect } from "react-redux";
@@ -26,9 +23,7 @@ import { bindActionCreators } from "redux";
 import { toggleUniversalModalAction } from "../../config/redux/actions";
 import AuthOptions from "../auth/AuthOptions";
 import { StyleSheet } from "react-native";
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import { TestimonialCard } from "./TestimonialCard";
-import MEDropdown from "../../components/dropdown/MEDropdown";
 import MEInfoModal from "../../components/modal/MEInfoModal";
 import FilterSelector from "../../components/filter/FilterSelector";
 
@@ -225,7 +220,11 @@ function TestimonialsPage({
         ) : (
           /* Checks if there are no testimonials yet in the community */
           testimonials.length === 0 ? (
-            <View style={styles.emptyList}>
+            <View
+              h="100%"
+              alignItems="center"
+              justifyContent="center"
+            >
               <Text
                 color="gray.400"
                 fontSize="sm"

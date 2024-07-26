@@ -5,7 +5,7 @@
  *      information as a component called EventDetails.
  * 
  *      Written by: Moizes Almeida and Will Soylemez
- *      Last edited: July 25, 2024
+ *      Last edited: July 26, 2024
  * 
  *****************************************************************************/
 
@@ -339,7 +339,15 @@ const EventDetails = ({ route, navigation }) => {
                 Venue
               </Text>
               <Text>
-                {event.location ? `${event.location.city}, MA` : "N/A"}
+                {
+                  event.location 
+                    ? event.location.address
+                        ? `${event.location.address},\n${event.location.city 
+                                                        ? event.location.city + "," 
+                                                        : ""} MA`
+                        : `${event.location.city}, MA` 
+                    : "N/A"
+                }
               </Text>
             </VStack>
           )}
