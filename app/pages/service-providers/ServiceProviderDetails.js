@@ -9,147 +9,224 @@
  * 
  *****************************************************************************/
 
+/* Imports and set up */
 import React, { useEffect, useState } from "react";
-import {
-  Box,
-  Center,
-  HStack,
-  Text,
-  Heading,
-  VStack,
-  Icon,
-  Link,
-  Image,
-  ScrollView,
-  Spinner,
-} from "@gluestack-ui/themed-native-base";
-import { FontAwesomeIcon } from "../../components/icons";
-import HTMLParser from "../../utils/HTMLParser";
+import { Linking, TouchableOpacity } from "react-native";
 import { useDetails } from "../../utils/hooks";
-import { Linking, View } from "react-native";
+import Share from 'react-native-share';
+import { 
+  Box, 
+  Center, 
+  Heading, 
+  HStack, 
+  Icon, 
+  Link, 
+  ScrollView, 
+  Spinner, 
+  Text, 
+  VStack,
+  View
+} from "@gluestack-ui/themed-native-base";
 import MEImage from "../../components/image/MEImage";
+import HTMLParser from "../../utils/HTMLParser";
+import { FontAwesomeIcon } from "../../components/icons";
 
 export default function ServiceProviderDetails({ route, navigation }) {
+  /* Saves the vendor id passed through the route's parameters */
   const { vendor_id } = route.params;
 
+  /* Search for the vendor's information in the API */
   const [spDetails, isSpLoading] = useDetails("vendors.info", {
     vendor_id: vendor_id,
   });
 
-  const [imageError, setImageError] = useState(false);
-
+  /* 
+   * Function that handles adding the web protocol to a link 
+   * if it doesn't include one.
+   */
   const addHttp = (url) => {
     if (!/^(?:f|ht)tps?\:\/\//.test(url)) {
       return "http://" + url;
     }
     return url;
-  }
+  };
 
-  // set the header title when the details are loaded
+  /* 
+   * Function that handles the action of pressing on the phone number 
+   * of the vendor displayed in the page.
+   */
+  const handlePhonePress = (phoneNumber) => {
+    Linking.openURL(`tel:${phoneNumber}`);
+  };
+
+  /* 
+   * Function that handles sending an email to the service provider
+   * when the user presses on the email icon displayed in the page.
+   */
+  const handleEmailPress = async (email) => {
+    try {
+      await Share.open({
+        title: 'Contact Service Provider',
+        message: 'Hi, I would like to contact you regarding your services.',
+        failOnCancel: false,
+        social: Share.Social.EMAIL,
+        email: email,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  /* Sets the Page title to be the name of the service provider */
   useEffect(() => {
     spDetails
       ? navigation.setOptions({ title: spDetails?.name })
       : navigation.setOptions({ title: "" });
   }, [spDetails]);
 
+  /* Displays the Service Provider information to the page */
   return (
-    <View style={{ height: '100%', backgroundColor: 'white' }}>
+    <View
+      height="100%"
+      bg="white"
+    >
+      {/* If the information is being searched, display a spinner */}
       {isSpLoading ? (
-        <Center width="100%" height="100%">
+        <Center
+          width="100%"
+          height="100%"
+        >
           <Spinner size="lg" />
         </Center>
       ) : (
-        <ScrollView showsVerticalScrollIndicator={false}>
-
-          {/* image */}
-          <Center> 
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Image */}
+          <Center>
             <MEImage
               source={{
-                uri: spDetails.logo?.url,
+                uri: spDetails.logo?.url
               }}
               resizeMode="contain"
               alt="service provider's image"
               w="full"
               h="200"
-              py="20" px="5"
+              py="20"
+              px="5"
               altComponent={<></>}
             />
           </Center>
 
-          {/* content */}
+          {/* Content */}
           <Box
-            backgroundColor="white"
+            bg="white"
             px="5"
             pt="5"
             pb="20"
             borderTopRadius="2xl"
           >
-
-            <Heading size="xl" mb="5">
+            {/* Vendor's name */}
+            <Heading
+              size="xl"
+              mb="5"
+            >
               {spDetails.name}
             </Heading>
 
             {/* Description */}
-            {
-              spDetails.description !== "" && (
-                <Box mb="5">
-                  <Text fontSize="lg" fontWeight="bold">
-                    Description
-                  </Text>
-                  {spDetails.description && (
-                    <HTMLParser
-                      htmlString={spDetails.description}
-                      baseStyle={{ fontSize: "16px" }}
-                    />
-                  )}
-                </Box>
-              )
-            }
+            {spDetails.description !== "" && (
+              <Box>
+                <Text
+                  fontSize="lg"
+                  fontWeight="bold"
+                >
+                  Description
+                </Text>
+                {spDetails.description && (
+                  <HTMLParser
+                    htmlString={spDetails.description}
+                    baseStyle={{ fontSize: "16px" }}
+                  />
+                )}
+              </Box>
+            )}
 
             {/* Contact Information */}
             <Box>
-              <Text fontSize="lg" fontWeight="bold">
+              <Text
+                fontSize="lg"
+                fontWeight="bold"
+              >
                 Contact Information
               </Text>
-              <VStack space="2" mt="2">
-                <HStack space="5" alignItems="center">
-                  <Icon 
-                    as={FontAwesomeIcon} 
-                    name="phone" 
-                    size="sm" 
-                    color="blue.400" 
-                  />
-
-                  <Text>{spDetails.phone_number || "N/A"}</Text>
-                </HStack>
-
-                <HStack space="5" alignItems="center">
-                  <Icon 
-                    as={FontAwesomeIcon} 
-                    name="envelope" 
-                    size="sm" 
-                    color="yellow.400"
-                  />
-
-                  <Link isUnderlined={false}>{spDetails.email || "N/A"}</Link>
-                </HStack>
-                
-                {spDetails.website &&
-                  <HStack space="5" alignItems="center">
+              
+              {/* Phone number */}
+              <VStack
+                space="2"
+                mt="2"
+              >
+                <TouchableOpacity
+                  onPress={() => handlePhonePress(spDetails.phone_number)}
+                >
+                  <HStack
+                    space="5"
+                    alignItems="center"
+                  >
                     <Icon 
                       as={FontAwesomeIcon} 
-                      name="globe" 
-                      size="sm" 
-                      color="green.400"
+                      name="phone"
+                      size="sm"
+                      color="blue.400"
                     />
 
-                    <Link 
-                      _text={{ color: "primary.400" }} 
-                      href={addHttp(spDetails.website)}
-                    >
-                      {spDetails.website}
-                    </Link>
+                    <Text>{spDetails.phone_number || "N/A"}</Text>
                   </HStack>
+                </TouchableOpacity>
+                
+                {/* Email */}
+                <TouchableOpacity
+                  onPress={() => handleEmailPress(spDetails.email)}
+                >
+                  <HStack
+                    space="5"
+                    alignItems="center"
+                  >
+                    <Icon 
+                      as={FontAwesomeIcon} 
+                      name="envelope"
+                      size="sm"
+                      color="yellow.400"
+                    />
+
+                    <Link isUnderlined={false}>{spDetails.email || "N/A"}</Link>
+                  </HStack>
+                </TouchableOpacity>
+                
+                {/* Website */}
+                {
+                  spDetails.website && (
+                    <HStack
+                      space="5"
+                      alignItems="center"
+                    >
+                      <Icon
+                        as={FontAwesomeIcon}
+                        name="globe"
+                        size="sm"
+                        color="green.400"
+                      />
+
+                      <Link
+                        _text={{
+                          color: "primary.400"
+                        }}
+                        href={addHttp(spDetails.website)}
+                      >
+                        {spDetails.website}
+                      </Link>
+                    </HStack>
+                  )
                 }
               </VStack>
             </Box>
