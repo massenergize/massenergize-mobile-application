@@ -16,6 +16,8 @@ import {
   HStack,
   View,
   Text,
+  Box,
+  Heading,
 } from "@gluestack-ui/themed-native-base";
 import { connect } from "react-redux";
 import ServiceProviderCard from "./ServiceProviderCard";
@@ -74,52 +76,77 @@ function ServiceProvidersPage({ navigation, vendors, questionnaire }) {
   function VendorsList(vendors, title) {
     return (
       <>
-        <Text style={styles.category}>
+        <Heading ml={6} mt={5} mb={5}>
           {title}
-        </Text>
+        </Heading>
 
         {
           vendors?.length === 0 &&
           (
-            <View>
+            <View
+              height="100%"
+            >
               <Text
                 color="gray.300"
                 fontSize="sm"
                 textAlign="center"
-                mt={5}
+                mt={10}
               >
-                {`No ${title} for now :(`}
+                {`No ${title} for now...`}
               </Text>
             </View>
           )
         }
 
-        <ScrollView
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-        >
-          <HStack
-            space={2}
-            justifyContent="center"
-            mx={15}
-            marginBottom={15}
-          >
-            {vendors.map((vendor, index) => {
-              return (
-                <ServiceProviderCard
-                  id={vendor.id}
-                  key={index}
-                  direction="column"
-                  name={vendor.name}
-                  imageURI={vendor.logo ? vendor.logo.url : null}
-                  navigation={navigation}
-                  my="3"
-                  mx="2"
-                />
-              );
-            })}
-          </HStack>
-        </ScrollView>
+        {
+          title === "All" ? (
+            <Box
+              px={5}
+            >
+              <VStack space="3" my="5" mx="2">
+                {vendors.map((vendor, index) => {
+                  return (
+                    <ServiceProviderCard
+                      id={vendor.id}
+                      key={index}
+                      direction="row"
+                      name={vendor.name}
+                      imageURI={vendor.logo ? vendor.logo.url : null}
+                      navigation={navigation}
+                    />
+                  );
+                })}
+              </VStack>
+            </Box>
+          ) : (
+            <ScrollView
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}
+            >
+              <HStack
+                space={2}
+                justifyContent="center"
+                mx={15}
+                marginBottom={15}
+              >
+                {vendors.map((vendor, index) => {
+                  return (
+                    <ServiceProviderCard
+                      id={vendor.id}
+                      key={index}
+                      direction="column"
+                      name={vendor.name}
+                      imageURI={vendor.logo ? vendor.logo.url : null}
+                      navigation={navigation}
+                      my="3"
+                      mx="2"
+                    />
+                  );
+                })}
+              </HStack>
+            </ScrollView>
+          )
+        }
       </>
     );
   }

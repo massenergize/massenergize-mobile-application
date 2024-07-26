@@ -5,7 +5,7 @@
  *      single service provider.
  * 
  *      Written by: William Soylemez and Moizes Almeida
- *      Last edited: July 2, 2024
+ *      Last edited: July 26, 2024
  * 
  *****************************************************************************/
 
@@ -90,17 +90,21 @@ export default function ServiceProviderDetails({ route, navigation }) {
             </Heading>
 
             {/* Description */}
-            <Box mb="5">
-              <Text fontSize="lg" fontWeight="bold">
-                Description
-              </Text>
-              {spDetails.description && (
-                <HTMLParser
-                  htmlString={spDetails.description}
-                  baseStyle={{ fontSize: "16px" }}
-                />
-              )}
-            </Box>
+            {
+              spDetails.description !== "" && (
+                <Box mb="5">
+                  <Text fontSize="lg" fontWeight="bold">
+                    Description
+                  </Text>
+                  {spDetails.description && (
+                    <HTMLParser
+                      htmlString={spDetails.description}
+                      baseStyle={{ fontSize: "16px" }}
+                    />
+                  )}
+                </Box>
+              )
+            }
 
             {/* Contact Information */}
             <Box>
