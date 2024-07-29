@@ -4,7 +4,7 @@
  *      This page is responsible for rendering a list of testimonials.
  * 
  *      Written by: William Soylemez and Moizes Almeida
- *      Last edited: July 29, 2024
+ *      Last edited: July 29, 2024 
  * 
  *****************************************************************************/
 
