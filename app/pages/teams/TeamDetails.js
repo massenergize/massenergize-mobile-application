@@ -181,13 +181,9 @@ function TeamDetails({
   /* TODO: Cache these components to avoid re-rendering. */
   /* Creates the tabs */
   const generateAboutTab = () => {
-    const textStyle = {
-      fontSize: "16px",
-    };
-
     return <HTMLParser
               htmlString={team.description}
-              baseStyle={textStyle}
+              baseStyle={{ fontSize: "16px "}}
             />
   };
 

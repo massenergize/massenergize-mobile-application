@@ -7,7 +7,7 @@
  *      of the community.
  * 
  *      Written by: Moizes Almeida and Will Soylemez
- *      Last edited: July 25, 2024
+ *      Last edited: July 29, 2024
  * 
  *****************************************************************************/
 
@@ -297,7 +297,7 @@ const CommunityHomeScreen = ({
 
   /* Displays the community home screen and its information */
   return (
-    <View bg="white">
+    <View bg="white" h="100%">
       <ScrollView
         nestedScrollEnabled={true}
         showsVerticalScrollIndicator={false}

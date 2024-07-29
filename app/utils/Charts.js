@@ -19,7 +19,6 @@ import {
   Container,
   View,
   Button,
-  Spacer
 } from "@gluestack-ui/themed-native-base";
 import { Dimensions, Pressable } from 'react-native';
 import {
