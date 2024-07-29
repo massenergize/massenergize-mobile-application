@@ -6,7 +6,7 @@
  *      and the Campaigns from a community.
  * 
  *      Written by: Moizes Almeida
- *      Last edited: July 26, 2024
+ *      Last edited: July 29, 2024
  * 
  *****************************************************************************/
 
@@ -80,7 +80,8 @@ const EventsScreen = ({ navigation, events, fireAuth, toggleModal }) => {
               Events
             </Text>
             <Text>
-              This page displays all the events that are happening in your community.{"\n"}
+              This page displays all the events that are happening in your 
+              community.{"\n"}
               You can create an event by clicking the "Add Event" button.
             </Text>
 
@@ -143,7 +144,7 @@ const EventsScreen = ({ navigation, events, fireAuth, toggleModal }) => {
             style={{
               justifyContent: 'center',
               alignItems: 'center',
-              marginTop: 200
+              marginTop: 100
             }}
           >
             <Text fontSize="xs"
@@ -151,7 +152,15 @@ const EventsScreen = ({ navigation, events, fireAuth, toggleModal }) => {
               px={10}
               color="gray.400"
             >
-              No events so far...{"\n"}You can create one!
+              {
+                filter.Time !== "All" || filter.Type !== "All"
+                  ? (
+                      "No events with the applied filters..."
+                    )
+                  : (
+                      "No events so far..." + "\nYou can create one!"
+                    )
+              }
             </Text>
           </View>
         ) : (
@@ -160,6 +169,7 @@ const EventsScreen = ({ navigation, events, fireAuth, toggleModal }) => {
               data={item}
               navigation={navigation}
               my="3"
+              alignSelf="center"
               mx={2}
               shadow={3}
               key={item.id}
