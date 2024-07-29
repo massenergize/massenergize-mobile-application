@@ -4,7 +4,7 @@
  *      This page is responsible for rendering a list of testimonials.
  * 
  *      Written by: William Soylemez and Moizes Almeida
- *      Last edited: July 26, 2024
+ *      Last edited: July 29, 2024
  * 
  *****************************************************************************/
 
@@ -40,7 +40,6 @@ function TestimonialsPage({
    * 'Filter Testimonials' button, what is the filter they applied to the page,
    * and the list of the filtered testimonials if filter is applied.
    */
-  const [expand, setExpand] = useState(false);
   const [filter, setFilter] = useState({ Action: 'All' });
   const [isFilterApplied, setIsFilterApplied] = useState(false);
   const [filteredTestimonials, setFilteredTestimonials] = useState([]);
@@ -186,26 +185,26 @@ function TestimonialsPage({
         </HStack>
 
         {/* Filter Testimonials Button */}
-        <FilterSelector filter={filter} handleChangeFilter={applyFilter}>
-          <FilterSelector.Filter name="Action">
-            {
-              /* Filter by Action */
-              [{id: "All"}, ...actions].map((action, index) => (
-                <FilterSelector.Option
-                  key={index}
-                  value={action.id}
-                  label={action.title}
-                />
-              ))
-            }
-          </FilterSelector.Filter>
-        </FilterSelector>
+        {
+          testimonials.length !== 0 && 
+            <FilterSelector filter={filter} handleChangeFilter={applyFilter}>
+            <FilterSelector.Filter name="Action">
+              {
+                /* Filter by Action */
+                [{id: "All"}, ...actions].map((action, index) => (
+                  <FilterSelector.Option
+                    key={index}
+                    value={action.id}
+                    label={action.title}
+                  />
+                ))
+              }
+            </FilterSelector.Filter>
+          </FilterSelector>
+        }
 
-        {/* 
-          * Shows Add Testimonial button whenever the user hasn't 
-          * expanded the filtering options.
-          */}
-        {!expand && renderAddTestimonial()}
+        {/* Shows Add Testimonial */}
+        {renderAddTestimonial()}
 
         {/* 
           * Display filtered testimonials, otherwise display a list of All 
