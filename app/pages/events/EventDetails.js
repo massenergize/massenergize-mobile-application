@@ -341,11 +341,13 @@ const EventDetails = ({ route, navigation }) => {
               <Text>
                 {
                   event.location 
-                    ? event.location.address
-                        ? `${event.location.address},\n${event.location.city 
+                    ? event.location.address && event.location.city 
+                        ? `${event.location.address}\n${event.location.city 
                                                         ? event.location.city + "," 
                                                         : ""} MA`
-                        : `${event.location.city}, MA` 
+                        : event.location.city 
+                          ? `${event.location.city}, MA`
+                          : "See description for more info."
                     : "N/A"
                 }
               </Text>
