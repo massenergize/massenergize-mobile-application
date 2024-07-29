@@ -47,7 +47,6 @@ import {
 import * as AddCalendarEvent from 'react-native-add-calendar-event';
 import { Icon as SocialIcons } from 'react-native-elements';
 import { COLOR_SCHEME } from '../../stylesheet';
-import { useNavigation } from '@react-navigation/native';
 
 const EventDetails = ({ route, navigation }) => {
   /*
