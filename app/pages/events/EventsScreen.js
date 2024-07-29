@@ -5,7 +5,7 @@
  *      screens that display the Upcoming events, the Past events,
  *      and the Campaigns from a community.
  * 
- *      Written by: Moizes Almeida
+ *      Written by: Moizes Almeida and Will Soylemez
  *      Last edited: July 29, 2024
  * 
  *****************************************************************************/
