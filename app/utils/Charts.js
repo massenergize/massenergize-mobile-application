@@ -6,7 +6,7 @@
  *      of the actions completed by each community.
  * 
  *      Written by: Moizes Almeida and Will Soylemez
- *      Last edited: July 19, 2024
+ *      Last edited: July 29, 2024
  * 
  *****************************************************************************/
 
@@ -19,7 +19,7 @@ import {
   Container,
   View,
   Button,
-  Spacer
+  Center,
 } from "@gluestack-ui/themed-native-base";
 import { Dimensions, Pressable } from 'react-native';
 import {
@@ -206,7 +206,7 @@ function BigPieChart({ goal, color }) {
                 : goal.goal
             } 
             
-            {goal.nameShort}
+            {" " + goal.nameShort}
           </Text>
           <Text fontSize="sm">
             ({(goal.current / goal.goal * 100).toFixed(1)}% of Goal)
@@ -364,6 +364,29 @@ function ActionsChart({ graphData }) {
  *              by the team in that commmunity.
  */
 function TeamActionsChart({ graphData }) {
+  /* 
+   * Constant to handle when it is not possible to load any data 
+   * from the graph.
+   */
+  const hasGraphData = graphData.some(data => data.value > 0);
+
+  /* If the graph doesn't have any data, display message */
+  if (!hasGraphData) {
+    return (
+      <Center>
+        <Text 
+          fontSize="xs"
+          textAlign="center"
+          px={10}
+          color="gray.400"
+        >
+          Sorry, for some reason we could not load the graph data 
+          of actions that people in this community have taken...
+        </Text>
+      </Center>
+    );
+  }
+
   const getData = () => {
     for (let i = 0; i < graphData.length; i++) {
       if (updatedNames[graphData[i].name] !== undefined)

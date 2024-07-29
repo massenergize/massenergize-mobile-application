@@ -11,19 +11,15 @@
  *****************************************************************************/
 
 /* Imports and set up */
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Button,
-  Center,
   HStack,
-  Spinner,
   View,
   ScrollView,
   Text,
 } from '@gluestack-ui/themed-native-base';
-import { StyleSheet } from "react-native";
 import EventCard from "./EventCard";
-import { formatDateString } from "../../utils/Utils";
 import { connect } from 'react-redux';
 import { bindActionCreators } from "redux";
 import { toggleUniversalModalAction } from "../../config/redux/actions";
@@ -133,7 +129,9 @@ const EventsScreen = ({ navigation, events, fireAuth, toggleModal }) => {
   /* Displays the information for all events and campaigns */
   return (
     <View bg="white" height="100%" alignItems="center">
-      <ScrollView>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+      >
         {
           renderHeader()
         }
@@ -172,13 +170,6 @@ const EventsScreen = ({ navigation, events, fireAuth, toggleModal }) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  noEventsText: {
-    fontSize: 18,
-    color: '#DC4E34',
-  },
-});
 
 /* 
  * Transforms the local state of the app into the proprieties of the 

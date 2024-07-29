@@ -7,12 +7,12 @@
  *      of the community.
  * 
  *      Written by: Moizes Almeida and Will Soylemez
- *      Last edited: July 25, 2024
+ *      Last edited: July 29, 2024
  * 
  *****************************************************************************/
 
 /* Imports and set up */
-import React, { useState, useCallback, useEffect } from 'react';
+import React from 'react';
 import {
   VStack,
   HStack,
@@ -33,7 +33,6 @@ import Carousel from 'pinar';
 import ActionCard from '../actions/ActionCard';
 import EventCard from '../events/EventCard';
 import { SmallChart } from '../../utils/Charts';
-import { formatDateString } from '../../utils/Utils';
 import { getActionMetric, getSuggestedActions } from '../../utils/common';
 import {
   fetchAllCommunityData,
@@ -298,7 +297,7 @@ const CommunityHomeScreen = ({
 
   /* Displays the community home screen and its information */
   return (
-    <View bg="white">
+    <View bg="white" h="100%">
       <ScrollView
         nestedScrollEnabled={true}
         showsVerticalScrollIndicator={false}

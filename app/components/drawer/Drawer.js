@@ -4,7 +4,7 @@
  *      This page is responsible for rendering the Drawer menu.
  * 
  *      Written by: Frimpong, William Soylemez, and Moizes Almeida
- *      Last edited: July 25, 2024
+ *      Last edited: July 29, 2024
  * 
  *****************************************************************************/
 
@@ -106,14 +106,17 @@ const CustomDrawerContent = ({
         dropdown: true,
         dropdownItems: [
           { name: 'Our Story', route: 'About' },
-          {
-            name: 'Impact',
-            route: 'Goals',
-            params: {
-              community_id: activeCommunity.id,
-              goalsList: goalsList,
-            }
-          },
+          ...(goalsList.length > 0 ? [
+            {
+              name: 'Impact',
+              route: 'Goals',
+              params: {
+                community_id: activeCommunity.id,
+                goalsList: goalsList,
+              },
+            },
+            ] : []
+          ),
         ],
       },
       {
