@@ -5,7 +5,7 @@
  *      information as a component called TeamDetails.
  * 
  *      Written by: Moizes Almeida and William Soylemez
- *      Last edited: July 25, 2024
+ *      Last edited: July 29, 2024
  * 
  *****************************************************************************/
 
