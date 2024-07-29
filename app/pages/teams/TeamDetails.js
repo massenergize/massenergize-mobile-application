@@ -45,9 +45,7 @@ import { FontAwesomeIcon } from '../../components/icons';
 import { apiCall } from '../../api/functions';
 import MEImage from '../../components/image/MEImage';
 import { 
-  Dimensions, 
   Platform, 
-  StyleSheet, 
   KeyboardAvoidingView 
 } from 'react-native';
 
@@ -320,6 +318,23 @@ function TeamDetails({
 
   /* Generates the Members tab */
   const generateMembersTab = () => {
+    if (members.length === 0) {
+      return (
+        <Center>
+          <Text 
+            fontSize="xs"
+            textAlign="center"
+            mt={20}
+            color="gray.400"
+          >
+            <Text bold>
+              {"No members in " + team.name + " for now..."}
+            </Text> {"\n"}
+            You can join the team and start taking action!
+          </Text>
+        </Center>
+      );
+    }
     return <VStack space="2">
       {
         members.map((member, i) => {
@@ -535,7 +550,11 @@ function TeamDetails({
         onPress={() => setActiveTab("members")}
         mr={2}
       >
-        {"Members (" + members.length + ")"}
+        {
+          members.length !== 0 
+            ? "Members (" + members.length + ")"
+            : "Members"
+        }
       </Button>
     );
   }
