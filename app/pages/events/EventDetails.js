@@ -48,6 +48,7 @@ import * as AddCalendarEvent from 'react-native-add-calendar-event';
 import { Icon as SocialIcons } from 'react-native-elements';
 import { COLOR_SCHEME } from '../../stylesheet';
 import { useNavigation } from '@react-navigation/native';
+import { logEventAddEventToCalendar } from '../../api/analytics';
 
 const EventDetails = ({ route, navigation }) => {
   /*
@@ -111,6 +112,9 @@ const EventDetails = ({ route, navigation }) => {
   const addEventToCalendar = () => {
     let notes = event.description ?
       event.description.replace(/<\/?[^>]+(>|$)/g, "") : '';
+
+    /* Update analytics */
+    logEventAddEventToCalendar(event_id, )
 
     /* Adding access link to the notes if the event is online or both */
     if (['online', 'both'].includes(event.event_type) && event.external_link) {

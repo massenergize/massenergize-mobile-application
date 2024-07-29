@@ -51,8 +51,6 @@ const FilterSelector = ({ title, children, filter, handleChangeFilter }) => {
     return child;
   });
 
-  console.log(filters);
-
   return (
     <View style={{ padding: 20 }}>
       <Pressable

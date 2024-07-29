@@ -46,6 +46,13 @@ import { Icon as SocialIcons } from 'react-native-elements';
 import Share from 'react-native-share';
 import { COLOR_SCHEME } from "../../stylesheet";
 import { act } from "react-test-renderer";
+import {
+  logEventAddCompletedAction,
+  logEventAddTodoAction,
+  logEventRemoveCompletedAction,
+  logEventRemoveTodoAction,
+  logEventShareAction
+} from "../../api/analytics";
 
 const ActionDetails = ({
   route,
@@ -110,6 +117,7 @@ const ActionDetails = ({
               error
             );
           }
+          logEventRemoveTodoAction(action_id);
           setIsToDoOpen(false);
         });
       } else {
@@ -120,6 +128,7 @@ const ActionDetails = ({
               error
             );
           }
+          logEventAddTodoAction(action_id);
           setIsToDoOpen(true);
         });
       }
@@ -155,9 +164,17 @@ const ActionDetails = ({
                 error
               );
             }
+            logEventRemoveCompletedAction(action_id);
           });
         } else {
           updateUserAction("users.actions.completed.add", { action_id, hid: 1 }, (res, error) => {
+            if (error) {
+              return console.error(
+                "Failed to add item in completed list: ",
+                error
+              );
+            }
+            logEventAddCompletedAction(action_id);
             setIsDoneOpen(true);
           });
         }
@@ -400,6 +417,9 @@ const ActionDetails = ({
 
   /* Function that handles the action of pressing in one of the Social Icons */
   const shareAction = async (platform) => {
+    /* Update the analytics for the user sharing the action */
+    logEventShareAction(action_id, platform);
+
     /* 
      * Creates the share option for the user, including a title, message,
      * description, and url.
