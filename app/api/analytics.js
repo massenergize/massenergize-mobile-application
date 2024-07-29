@@ -22,6 +22,7 @@ export const logEvent = (eventName, eventParams) => {
 };
 
 export const setUserProperties = (userProperties) => {
+  console.log(`Setting user properties: ${JSON.stringify(userProperties)}`);
   firebase.analytics().setUserProperties(userProperties);
 };
 

@@ -38,6 +38,7 @@ import {
   ZIP_CODE_OPTIONS,
 } from './types';
 import auth from '@react-native-firebase/auth';
+import { setUserActionsCompleted, setUserPropertiesFromUser } from '../../api/analytics';
 
 /* Test action */
 export const test = () => ({type: 'TEST', payload: {value: 'Ankara messi!'}});
@@ -96,6 +97,10 @@ export const fetchUserProfile = (idToken, cb) => dispatch => {
         cb && cb(null, response.error);
         return;
       }
+      
+      /* Update analytics profile */
+      setUserPropertiesFromUser(response.data);
+
       cb && cb(response.data);
       dispatch(setUserProfile(response.data));
     })
@@ -210,6 +215,10 @@ export const fetchAllUserInfo = cb => dispatch => {
     .then(response => {
       const [profile, todo, completed] = response;
       
+      /* Update analytics profile */
+      setUserPropertiesFromUser(profile.data);
+      setUserActionsCompleted(completed.data);
+
       dispatch(setActionWithValue(SET_ME_USER_PROFILE, profile.data));
       dispatch(setActionWithValue(SET_ME_USER_TODO, todo.data));
       dispatch(setActionWithValue(SET_ME_USER_COMPLETED, completed.data));
