@@ -33,7 +33,6 @@ import Carousel from 'pinar';
 import ActionCard from '../actions/ActionCard';
 import EventCard from '../events/EventCard';
 import { SmallChart } from '../../utils/Charts';
-import { formatDateString } from '../../utils/Utils';
 import { getActionMetric, getSuggestedActions } from '../../utils/common';
 import {
   fetchAllCommunityData,
