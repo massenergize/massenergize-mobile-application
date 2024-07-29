@@ -27,7 +27,7 @@ import {
   fetchAllUserInfo,
   setQuestionnaireInfo
 } from '../config/redux/actions';
-import { NavigationContainer, useNavigation } from '@react-navigation/native';
+import { NavigationContainer, useNavigation, useNavigationContainerRef } from '@react-navigation/native';
 import { isUserAuthenticated } from '../config/firebase';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 

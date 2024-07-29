@@ -11,11 +11,13 @@
 
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import firebase from 'firebase';
+import firebase from '@react-native-firebase/app';
+import analytics from '@react-native-firebase/analytics';
 
 
 /*************** Generic Functions *****************/
 export const logEvent = (eventName, eventParams) => {
+  console.log(`Logging event: ${eventName} with params: ${JSON.stringify(eventParams)}`);
   firebase.analytics().logEvent(eventName, eventParams);
 };
 
@@ -32,8 +34,8 @@ export const logEventUserSignup = () => {
   logEvent('user_signup', {});
 }
 
-export const logEventUserLogin = () => {
-  logEvent('user_login', {});
+export const logEventUserLogin = (platform) => {
+  logEvent('user_login', { platform: platform });
 };
 
 export const logEventUserLogout = () => {
@@ -53,19 +55,19 @@ export const logEventRemoveTodoAction = (action) => {
 }
 
 export const logEventAddCompletedAction = (action) => {
-  logEvent('add_to_completed_list', { action: action });
+  logEvent('add_to_completed', { action: action });
 }
 
 export const logEventRemoveCompletedAction = (action) => {
-  logEvent('remove_from_completed_list', { action: action });
+  logEvent('remove_from_completed', { action: action });
 }
 
 export const logEventShareAction = (action, platform) => {
   logEvent('share_action', { action: action, platform: platform });
 }
 
-export const logEventAddEventToCalendar = (event, calendarType) => {
-  logEvent('add_event_to_calendar', { event: event, calendar_type: calendarType });
+export const logEventAddEventToCalendar = (event) => {
+  logEvent('add_event_to_calendar', { event: event });
 }
 
 export const logEventJoinTeam = (teamName) => {

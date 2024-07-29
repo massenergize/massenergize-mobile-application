@@ -10,8 +10,8 @@
 
 import auth from '@react-native-firebase/auth';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
-import store from '../redux/store';
 import { apiCall } from '../../api/functions';
+import { logEventUserLogin, logEventUserLogout, logEventUserSignup } from '../../api/analytics';
 
 /**
  * Checks if the user is authenticated and calls the callback function with the result.
@@ -40,6 +40,7 @@ export const registerWithEmailAndPassword = (email, password, cb) => {
       return user.sendEmailVerification();
     })
     .then(() => {
+      logEventUserSignup();
       cb && cb(null);
     })
     .catch(e => cb && cb(e?.toString()));
@@ -73,7 +74,10 @@ export const createUserProfile = (profile, callBackFn = null) => {
 export const authenticateWithEmailAndPassword = (email, password, cb) => {
   auth()
     .signInWithEmailAndPassword(email, password)
-    .then(response => cb && cb(response))
+    .then(response => {
+      logEventUserLogin("email_password");
+      cb && cb(response);
+    })
     .catch(e => cb && cb(null, e?.toString()));
 };
 
@@ -90,7 +94,10 @@ export const authenticateWithEmailOnly = (email, cb) => {
 
   auth()
     .sendSignInLinkToEmail(email, actionCodeSettings)
-    .then(response => cb && cb(response))
+    .then(response => {
+      logEventUserLogin("email_only");
+      cb && cb(response);
+    })
     .catch(e => cb && cb(null, e?.message));
 };
 
@@ -106,6 +113,7 @@ export const authenticateWithGmail = async cb => {
       userInfo.idToken,
     );
     const response = await auth().signInWithCredential(googleCredential);
+    logEventUserLogin("google");
     cb && cb(response);
   } catch (error) {
     console.error('GOOGLE_SIGN_IN_ERROR:', error);
@@ -122,7 +130,11 @@ export const firebaseSignOut = cb => {
     cb && cb();
     return;
   }
-  auth().signOut().then(cb);
+  
+  auth().signOut().then(() => {
+    logEventUserLogout();
+    cb && cb();
+  });
 };
 
 /**
