@@ -12,7 +12,7 @@
  * 
  *****************************************************************************/
 
-import { View, Text } from 'react-native';
+import { AppState } from 'react-native';
 import React, { useEffect } from 'react';
 import MEDrawerNavigator from '../components/drawer/Drawer';
 import MEBottomSheet from '../components/modal/MEBottomSheet';
@@ -55,6 +55,7 @@ import EmailOnly from './auth/EmailOnly';
 import AddEvent from './events/AddEvent';
 import AddTeam from './teams/AddTeam';
 import Questionnaire from './onboarding/Questionnaire';
+import { endSession, startSession } from '../api/analytics';
 
 GoogleSignin.configure({
   webClientId:
@@ -149,6 +150,23 @@ const RootWrapper = ({
         setQuestionnaireInfo(JSON.parse(data));
       })
       .catch(e => console.log('ERROR_FETCHING_QUESTIONAIRE_DATA', e.toString()));
+  }, []);
+
+  /* Log opening and closing app */
+  useEffect(() => {
+    const handleAppStateChange = (nextAppState) => {
+      if (nextAppState === 'active') {
+        startSession();
+      } else if (nextAppState.match(/background/)) {
+        endSession();
+      }
+    };
+
+    const subscription = AppState.addEventListener('change', handleAppStateChange);
+
+    return () => {
+      subscription.remove();
+    };
   }, []);
 
   return (

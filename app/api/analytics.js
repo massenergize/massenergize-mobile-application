@@ -122,14 +122,16 @@ export const setUserActionsCompleted = (completedList) => {
 
 // Session duration functions
 export const startSession = () => {
-  firebase.analytics().logEvent('session_start', {});
+  logEvent('open_app', {});
   AsyncStorage.setItem('sessionStartTime', Date.now().toString());
 }
 
 export const endSession = () => {
   AsyncStorage.getItem('sessionStartTime').then((sessionStartTime) => {
+    if (!sessionStartTime) return;
     const sessionDuration = Date.now() - parseInt(sessionStartTime);
-    firebase.analytics().logEvent('session_end', { session_duration: sessionDuration });
+    logEvent('close_app', { session_duration: sessionDuration });
+    AsyncStorage.removeItem('sessionStartTime');
 
     // // Update total session duration
     // AsyncStorage.getItem('totalSessionDuration').then((totalSessionDuration) => {
