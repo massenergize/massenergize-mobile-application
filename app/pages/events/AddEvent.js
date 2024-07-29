@@ -37,6 +37,7 @@ import { launchImageLibrary } from "react-native-image-picker";
 import { Alert, KeyboardAvoidingView } from "react-native";
 import MEDropdown from "../../components/dropdown/MEDropdown";
 import ImagePicker from "../../components/imagePicker/ImagePicker";
+import { logEventCreateContent } from "../../api/analytics";
 
 /* 
  * This serves as a validation schema to prevent the user to add an
@@ -259,6 +260,7 @@ const AddEvent = ({
         }
 
         console.log('EVENT_ADDED');
+        logEventCreateContent('event');
         setIsSent(true);
 
         /* Add the new event to the redux store */

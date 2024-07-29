@@ -50,6 +50,7 @@ import {
   StyleSheet, 
   KeyboardAvoidingView 
 } from 'react-native';
+import { logEventJoinTeam } from '../../api/analytics';
 
 /* 
  * This serves as a validation schema to prevent the user to send a 
@@ -131,6 +132,7 @@ function TeamDetails({
       (response, error) => {
         if (error) return console.error("Failed to join team", error);
         console.log("JOINED TEAM");
+        logEventJoinTeam(team_id)
         setIsJoinLoading(false);
       }
     );

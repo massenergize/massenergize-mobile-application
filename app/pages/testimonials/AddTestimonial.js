@@ -31,6 +31,7 @@ import { SET_TESTIMONIALS_LIST } from '../../config/redux/types';
 import { FontAwesomeIcon } from '../../components/icons';
 import MEDropdown from '../../components/dropdown/MEDropdown';
 import ImagePicker from '../../components/imagePicker/ImagePicker';
+import { logEventCreateContent } from '../../api/analytics';
 
 /* 
  * This serves as a validation schema to prevent the user to add a
@@ -161,6 +162,8 @@ const AddTestimonial = ({
           console.error('ERROR_ADDING_TESTIMONIAL:', response);
           return;
         }
+
+        logEventCreateContent('testimonial');
         setIsSent(true);
         setIsFormDirty(false);
 

@@ -39,6 +39,7 @@ import { FontAwesomeIcon } from '../../components/icons';
 import MEDropdown from '../../components/dropdown/MEDropdown';
 import { Alert, KeyboardAvoidingView } from 'react-native';
 import ImagePicker from '../../components/imagePicker/ImagePicker';
+import { logEventCreateContent } from '../../api/analytics';
 
 /* 
  * This serves as a validation schema to prevent the user to add a
@@ -181,7 +182,7 @@ const AddTeam = ({
       tagline: values.tagline,
       admin_emails: adminsEmails,
       description: values.description,
-      logo: imageData,
+      ...(imageData ? {logo: imageData,} : null),
       parent_id: values.parent ? parseInt(values.parent, 10) : null,
     };
   
@@ -196,6 +197,7 @@ const AddTeam = ({
         }
   
         setIsSent(true);
+        logEventCreateContent('team');
         console.log('TEAM_ADDED: ', response.data);
         setIsFormDirty(false);
       })
