@@ -12,7 +12,7 @@
  *****************************************************************************/
 
 /* Imports and set up */
-import React, { useState, useCallback, useEffect } from 'react';
+import React from 'react';
 import {
   VStack,
   HStack,

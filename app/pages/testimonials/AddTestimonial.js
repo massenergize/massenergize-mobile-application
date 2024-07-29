@@ -4,7 +4,7 @@
  *      This page allows users to add a testimonial for a particular action.
  * 
  *      Written by: William Soylemez and Moizes Almeida
- *      Last edited: July 24, 2024
+ *      Last edited: July 29, 2024
  * 
  *****************************************************************************/
 
@@ -249,25 +249,29 @@ const AddTestimonial = ({
                     value={values.action}
                   />
 
-                  {/* Vendor select */}
-                  <Text mt={3}>Associated Vendor</Text>
-                  <MEDropdown
-                    borderRadius={10}
-                    mb={3}
-                    selectedValue={values.vendor}
-                    minWidth={200}
-                    onChange={
-                      (itemValue) => {
-                        setFieldValue('vendor', itemValue);
-                        setIsFormDirty(true);
-                      }
-                    }
-                    options={vendors.map((vendor, index) => (
-                      { label: vendor.name, value: vendor.id }
-                    ))}
-                    value={values.vendor}
-                  />
-
+                  {/* Vendor select (if there are any vendors) */}
+                  {
+                    vendors.length > 0 && 
+                      <>
+                        <Text mt={3}>Associated Vendor</Text>
+                        <MEDropdown
+                          borderRadius={10}
+                          mb={3}
+                          selectedValue={values.vendor}
+                          minWidth={200}
+                          onChange={
+                            (itemValue) => {
+                              setFieldValue('vendor', itemValue);
+                              setIsFormDirty(true);
+                            }
+                          }
+                          options={vendors.map((vendor, index) => (
+                            { label: vendor.name, value: vendor.id }
+                          ))}
+                          value={values.vendor}
+                        />
+                      </>
+                  }
 
                   {/* Name */}
                   <Text mt={3}>Name</Text>
