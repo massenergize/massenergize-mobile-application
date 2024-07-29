@@ -6,7 +6,7 @@
  *      of the actions completed by each community.
  * 
  *      Written by: Moizes Almeida and Will Soylemez
- *      Last edited: July 19, 2024
+ *      Last edited: July 29, 2024
  * 
  *****************************************************************************/
 
@@ -206,7 +206,7 @@ function BigPieChart({ goal, color }) {
                 : goal.goal
             } 
             
-            {goal.nameShort}
+            {" " + goal.nameShort}
           </Text>
           <Text fontSize="sm">
             ({(goal.current / goal.goal * 100).toFixed(1)}% of Goal)
