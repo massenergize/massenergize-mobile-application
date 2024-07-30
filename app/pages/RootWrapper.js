@@ -8,7 +8,7 @@
  *      causes the user data to be refreshed when auth state changes.
  * 
  *      Written by: William Soylemez
- *      Last edited: July 19, 2024
+ *      Last edited: July 29, 2024
  * 
  *****************************************************************************/
 
@@ -27,13 +27,12 @@ import {
   fetchAllUserInfo,
   setQuestionnaireInfo
 } from '../config/redux/actions';
-import { NavigationContainer, useNavigation, useNavigationContainerRef } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { isUserAuthenticated } from '../config/firebase';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 import CommunitySelect from './community-select/CommunitySelect';
 import { createStackNavigator } from '@react-navigation/stack';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 import LoadingScreen from './misc/LoadingScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { COMMUNITY_CHOICE, DONE_ONBOARDING, QUESTIONNAIRE_DATA } from '../utils/values';

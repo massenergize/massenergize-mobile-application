@@ -3,13 +3,12 @@
  * 
  *      This file contains all the actions that are used in the redux store.
  * 
- *      Written by: William Soylemez and Frimpong Opoku-Agyemang
- *      Last edited: June 11, 2023
+ *      Written by: William Soylemez, Frimpong and Moizes Almeida
+ *      Last edited: July 29, 2024
  * 
  *****************************************************************************/
 
 import {apiCall} from '../../api/functions';
-import {showError} from '../../utils/common';
 import {firebaseSignOut} from '../firebase';
 import store from './store';
 import {
@@ -33,12 +32,14 @@ import {
   SET_TESTIMONIALS_PAGE_INFO,
   SET_VENDORS_LIST,
   SET_VENDORS_PAGE_INFO,
-  SIGN_OUT,
   TOGGLE_UNIVERSAL_MODAL,
   ZIP_CODE_OPTIONS,
 } from './types';
 import auth from '@react-native-firebase/auth';
-import { setUserActionsCompleted, setUserPropertiesFromUser } from '../../api/analytics';
+import { 
+  setUserActionsCompleted, 
+  setUserPropertiesFromUser 
+} from '../../api/analytics';
 
 /* Test action */
 export const test = () => ({type: 'TEST', payload: {value: 'Ankara messi!'}});

@@ -5,7 +5,7 @@
  *      an event to the selected community.
  * 
  *      Written by: Moizes Almeida and Will Soylemez
- *      Last edited: July 24, 2024
+ *      Last edited: July 29, 2024
  * 
  *****************************************************************************/
 
@@ -31,11 +31,9 @@ import * as Yup from 'yup';
 import { apiCall } from "../../api/functions";
 import { setActionWithValue } from "../../config/redux/actions";
 import { SET_EVENT_LIST } from "../../config/redux/types";
-import { showError, showSuccess } from "../../utils/common";
+import { showError } from "../../utils/common";
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { launchImageLibrary } from "react-native-image-picker";
 import { Alert, KeyboardAvoidingView } from "react-native";
-import MEDropdown from "../../components/dropdown/MEDropdown";
 import ImagePicker from "../../components/imagePicker/ImagePicker";
 import { logEventCreateContent } from "../../api/analytics";
 

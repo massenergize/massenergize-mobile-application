@@ -130,7 +130,7 @@ function TeamDetails({
       (response, error) => {
         if (error) return console.error("Failed to join team", error);
         console.log("JOINED TEAM");
-        logEventJoinTeam(team_id)
+        logEventJoinTeam(team_id);
         setIsJoinLoading(false);
       }
     );
