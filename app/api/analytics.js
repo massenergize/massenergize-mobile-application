@@ -5,12 +5,13 @@
  *      properties in Firebase Analytics.
  * 
  *      Written by: Moizes Almeida and William Soylemez
- *      Last edited: July 29, 2024
+ *      Last edited: July 31, 2024
  * 
  *****************************************************************************/
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import firebase from '@react-native-firebase/app';
+import analytics from '@react-native-firebase/analytics';
 
 /*************** Generic Functions *****************/
 export const logEvent = (eventName, eventParams) => {
