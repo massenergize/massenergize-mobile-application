@@ -82,9 +82,10 @@ export const logEventCreateContent = (contentType) => {
 // User Properties
 // Sets user properties based on the user object
 export const setUserPropertiesFromUser = (user) => {
+  if (!user) return;
 
   // Account age
-  const accountAge = Date.now() - Date.parse(user.joined);
+  const accountAge = user.joined ? Date.now() - Date.parse(user.joined) : 0;
   let accountAgeString = '';
   if (accountAge < 604800000) accountAgeString = '0-1w';
   else if (accountAge < 2592000000) accountAgeString = '1-4w';
