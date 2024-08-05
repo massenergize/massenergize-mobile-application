@@ -76,7 +76,7 @@ Open the updated `GoogleService-Info.plist` and copy the value under `REVERSED_C
 Open XCode and click on the project in the left-hand navigator. Ensure the correct project is picked under "targets" then navigate to "info" and open "URL Types". Replace the value in "URL Schemes" with the ID you just copied from `GoogleService-Info.plist`.
 
 ### 4. Copy the Firebase client id into Info.plist
-Copy the Firebase client ID, the last section of the `REVERSED_CLIENT_ID` from the section above, into the corresponding sections of the `GIDClientID` field of [ios/MassenergizeAppV2/Info.plist](ios/MassenergizeAppV2/Info.plist).
+Copy the Firebase client ID, the last section of the `REVERSED_CLIENT_ID` from the section above, into the first section of the `GIDClientID` field of [ios/MassenergizeAppV2/Info.plist](ios/MassenergizeAppV2/Info.plist).
 
 ### 5. Copy the Firebase client Id into rootwrapper
 Lastly, open [app/pages/RootWrapper.js](app/pages/RootWrapper.js) and update the lines under `GoogleSignIn.Configure` with the same part of the `REVERSED_CLIENT_ID` as the last step:
@@ -87,7 +87,7 @@ GoogleSignin.configure({
 });
 ```
 
-With that, the app should use the production backend. Please reach out to [William Soylemez](will.soylemez@massenergize.org) with questions!
+With that, the app should use the production backend. Please reach out to [William Soylemez](mailto:will.soylemez@massenergize.org) with questions!
 
 -----------------------------------------------
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
