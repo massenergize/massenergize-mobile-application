@@ -1,3 +1,15 @@
+/******************************************************************************
+ *                            Functions
+ * 
+ *      This file contains a wrapper function for making POST requests to the
+ *      backend.
+ * 
+ *      Written by: Frimpong Opoku-Agyemang
+ *      Last edited: 2024
+ * 
+ * *****************************************************************************/
+
+
 import { IS_LOCAL } from "./config";
 import URLS from "./urls";
 

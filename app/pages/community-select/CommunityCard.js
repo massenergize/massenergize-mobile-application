@@ -1,3 +1,15 @@
+/******************************************************************************
+ *                            CommmunityCard
+ * 
+ *      This file contains a component that displays basic info about a single
+ *      community. 
+ * 
+ *      Written by: William Soylemez and Frimpong Opoku-Agyemang
+ *      Last edited: June 4, 2024
+ * 
+ * *****************************************************************************/
+
+
 import React from 'react';
 import {Image, Text, TouchableOpacity, View} from 'react-native';
 import {COLOR_SCHEME} from '../../stylesheet';

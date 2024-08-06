@@ -107,6 +107,8 @@ function ContactUsScreen({
           keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
         >
           <VStack>
+
+            {/* Header */}
             <Text bold fontSize="md" mt={5}>
               Community Administrator
             </Text>
@@ -131,6 +133,8 @@ function ContactUsScreen({
               feedback! Reach the community administrator by filling in the
               form.
             </Text>
+
+            {/* Form */}
             <Formik
               initialValues={{
                 name: user?.full_name,
@@ -150,6 +154,8 @@ function ContactUsScreen({
                 touched,
               }) => (
                 <VStack>
+
+                  {/* Name */}
                   <FormControl
                     mt={5}
                     isRequired
@@ -177,6 +183,8 @@ function ContactUsScreen({
                       ) : null
                     }
                   </FormControl>
+
+                  {/* Email */}
                   <FormControl
                     mt={3}
                     isRequired
@@ -204,6 +212,8 @@ function ContactUsScreen({
                       ) : null
                     }
                   </FormControl>
+
+                  {/* Subject */}
                   <FormControl
                     mt={3}
                     isRequired
@@ -231,6 +241,8 @@ function ContactUsScreen({
                       ) : null
                     }
                   </FormControl>
+
+                  {/* Message */}
                   <FormControl
                     mt={3}
                     isRequired
@@ -283,20 +295,20 @@ function ContactUsScreen({
             <Modal.Content maxWidth={400}>
               <Modal.Body>
                 <Center mb="5">
-                    <FontAwesomeIcon
-                      name="paper-plane"
-                      size={90}
-                      color="green"
-                    />
-                    <Text fontSize="lg" fontWeight="bold" py="5">
-                      Message Sent!
-                    </Text>
-                    <Text textAlign="center">
-                      The admin team will get in touch with you soon!
-                    </Text>
+                  <FontAwesomeIcon
+                    name="paper-plane"
+                    size={90}
+                    color="green"
+                  />
+                  <Text fontSize="lg" fontWeight="bold" py="5">
+                    Message Sent!
+                  </Text>
+                  <Text textAlign="center">
+                    The admin team will get in touch with you soon!
+                  </Text>
                 </Center>
                 <Button colorScheme={"gray"} onPress={exitModal}>
-                    Back
+                  Back
                 </Button>
               </Modal.Body>
             </Modal.Content>

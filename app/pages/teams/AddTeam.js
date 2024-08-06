@@ -222,6 +222,7 @@ const AddTeam = ({
           showsVerticalScrollIndicator={false}
           px={3}
         >
+          {/* Header */}
           <VStack>
             <Text
               bold
@@ -235,6 +236,7 @@ const AddTeam = ({
               Create Team
             </Text>
 
+            {/* Form */}
             <Formik
               initialValues={{
                 name: "",

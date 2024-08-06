@@ -1,3 +1,16 @@
+/******************************************************************************
+ *                            MEButton
+ * 
+ *      This file defines a button component that is used throughout the app.
+ *      It can be given a loading state, a disabled state, and can be styled
+ *      as a link.
+ * 
+ *      Written by: Frimpong Opoku-Agyemang
+ *      Last edited: 2024
+ * 
+ * *****************************************************************************/
+
+
 import {View, Text, TouchableOpacity, ActivityIndicator} from 'react-native';
 import React from 'react';
 import {COLOR_SCHEME} from '../../stylesheet';

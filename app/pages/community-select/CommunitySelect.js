@@ -45,6 +45,8 @@ const CommunitySelect = ({
 }) => {
   const [{ zipcode, miles }, setZipcodeOptions] = useState(zipcodeOptions || {});
 
+
+  /* Getting the zipcode from eihter the input or the user's location */
   useEffect(() => {
     // If the zipcode is already set, then we don't need to do anything
     if (zipcodeOptions.zipcode) {
@@ -70,6 +72,7 @@ const CommunitySelect = ({
     });
   }, [zipcodeOptions]);
 
+  /* Function to choose a community */
   const chooseCommunity = async community => {
     setActiveCommunity(community);
     const id = community?.id;
@@ -77,6 +80,7 @@ const CommunitySelect = ({
     navigation.navigate('Loading', { community_id: id });
   };
 
+  /* Gets the list of communities */
   const organisedData = () => {
     if (communities === LOADING)
       return { fetchingContent: true, matches: [], near: [] };
@@ -86,6 +90,7 @@ const CommunitySelect = ({
   };
   let { fetchingContent, matches, near } = organisedData();
 
+  /* Renders the list of communities */
   const renderCommunityList = (communityList, title) => {
     if (fetchingContent) return <Loader />;
     if ((!fetchingContent && !communityList?.length) || !communities)
@@ -112,6 +117,7 @@ const CommunitySelect = ({
     );
   };
 
+  /* The main return statement */
   return (
     <SafeAreaView edges={['top']}>
       <View style={{ height: '100%', backgroundColor: 'white' }}>
@@ -123,6 +129,8 @@ const CommunitySelect = ({
             flex: 1,
           }}
         />
+
+        {/* Header */}
         <View
           style={{
             width: "100%",
@@ -148,6 +156,8 @@ const CommunitySelect = ({
             Become Part of a Community
           </Text>
         </View>
+
+        {/* Zipcode enter */}
         <View
           style={{
             height: '75%',
@@ -197,6 +207,7 @@ const CommunitySelect = ({
             </Text>
           </View>
 
+          {/* Community list */}
           <ScrollView
             verticals
             style={{ paddingHorizontal: 20, paddingVertical: 20 }}

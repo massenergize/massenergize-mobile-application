@@ -3,8 +3,8 @@
  * 
  *      Renders a list of authentication options for the user to choose from.
  * 
- *      Written by: Frimpong Opoku-Agyemang
- *      Last edited: Jul 15
+ *      Written by: Frimpong Opoku-Agyemang and William Soylemez
+ *      Last edited: July 15, 2024
  * 
  *****************************************************************************/
 

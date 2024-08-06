@@ -4,7 +4,7 @@
  *      This page is responsible for rendering the zip code input
  *      component use to get the user's zipcode.
  * 
- *      Written by: Frimpong and Will Soylemez
+ *      Written by: Frimpong Opoku-Agyemang and Will Soylemez
  *      Last edited: July 16, 2024
  * 
  *****************************************************************************/
@@ -31,7 +31,7 @@ const ZipCodeInput = ({
   const [newZipcode, setNewZipcode] = useState(zipcode);
   const [newMiles, setNewMiles] = useState(miles);
 
-
+  /* Handles the search */
   const search = () => {
     const newZipcodeOptions = {zipcode: newZipcode, max_distance: newMiles};
     setLoading(true);
@@ -45,6 +45,8 @@ const ZipCodeInput = ({
       closeModal();
     });
   };
+
+  
   return (
     <View style={{padding: 20}}>
       <Textbox

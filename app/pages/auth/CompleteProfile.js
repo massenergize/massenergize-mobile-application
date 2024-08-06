@@ -143,15 +143,15 @@ const CompleteProfile = ({
               Complete Your Profile!
             </Text>
             {/* <Text
-        style={{
-          fontWeight: '500',
-          paddingHorizontal: 25,
-          fontSize: 14,
-          marginBottom: 20,
-        }}>
-        When you join, we can count your impact. We do not collect sensitive
-        personal data and do not share data.
-      </Text> */}
+              style={{
+                fontWeight: '500',
+                paddingHorizontal: 25,
+                fontSize: 14,
+                marginBottom: 20,
+              }}>
+              When you join, we can count your impact. We do not collect sensitive
+              personal data and do not share data.
+            </Text> */}
 
             {/* Text fields */}
             <View style={{ width: '100%', paddingHorizontal: '10%' }}>

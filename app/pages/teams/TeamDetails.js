@@ -397,6 +397,8 @@ function TeamDetails({
             <Text fontWeight="bold" fontSize="lg">
               Contact admin of this team
             </Text>
+
+            {/* Form for entering information */}
             <Formik
               initialValues={{
                 subject: '',

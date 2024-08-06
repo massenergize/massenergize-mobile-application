@@ -109,6 +109,7 @@ const ActionsScreen = ({ navigation, actions, questionnaire }) => {
           </MEInfoModal>
         </HStack>
 
+        {/* Action filter */}
         <FilterSelector filter={filter} handleChangeFilter={applyFilter}>
           <FilterSelector.Filter name="Role">
             <FilterSelector.Option value="All" />

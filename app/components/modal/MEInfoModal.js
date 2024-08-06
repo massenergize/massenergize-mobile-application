@@ -1,5 +1,5 @@
 /******************************************************************************
- *                       MEInfoModal
+ *                            MEInfoModal
  * 
  *      This component displays an info button which opens a popup displaying
  *      the child elements, designed to display additional information to users

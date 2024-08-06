@@ -1,3 +1,14 @@
+/******************************************************************************
+ *                            TabNavigator
+ * 
+ *      This file contains a component that can be used to create a tab,
+ *      allowing the user to navigate between different screens.
+ * 
+ *      Written by: Frimpong Opoku-Agyemang and William Soylemez
+ *      Last edited: 2024
+ * 
+ * *****************************************************************************/
+
 import {View, Text, TouchableOpacity} from 'react-native';
 import React from 'react';
 

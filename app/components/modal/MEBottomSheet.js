@@ -1,3 +1,17 @@
+/******************************************************************************
+ *                            MEBottomSheet
+ * 
+ *      This file contains a modal component that can be used to display a
+ *      given component in a modal. It should be added to the app's main
+ *      component, and can be opened and closed by changing the isVisible
+ *      prop.
+ * 
+ *      Written by: Frimpong Opoku-Agyemang and William Soylemez
+ *      Last edited: July 22, 2024
+ * 
+ * *****************************************************************************/
+
+
 import React, { useEffect, useRef, useState } from 'react';
 import {
   View,

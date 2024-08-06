@@ -1,3 +1,17 @@
+/******************************************************************************
+ *                            FilterSelector
+ * 
+ *      This file contains a generic component that can be used to filter a
+ *      given set of data. It should be given a list of filters, each with a
+ *      name and a list of options, as well as a filter object and a function
+ *      to update the filter.
+ * 
+ *      Written by: Will Soylemez
+ *      Last edited: August 6, 2024
+ * 
+ * *****************************************************************************/
+
+
 import { Pressable, Text, View } from "react-native";
 import HStack from "../stacks/HStack";
 import { IonicIcon } from "../icons";

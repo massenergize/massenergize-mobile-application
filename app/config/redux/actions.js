@@ -3,7 +3,7 @@
  * 
  *      This file contains all the actions that are used in the redux store.
  * 
- *      Written by: William Soylemez, Frimpong and Moizes Almeida
+ *      Written by: William Soylemez, Frimpong Opoku-Agyemang, and Moizes Almeida
  *      Last edited: July 29, 2024
  * 
  *****************************************************************************/

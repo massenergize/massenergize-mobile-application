@@ -1,3 +1,17 @@
+/******************************************************************************
+ *                            TopTabsComponent
+ * 
+ *      This file contains a component that can be used to display a set of tabs
+ *      at the top of the screen. It should be given an array of tabs, each with
+ *      a key, name, and component. It will display the component of the active
+ *      tab and hide the others.
+ * 
+ *      Written by: Frimpong Opoku-Agyemang
+ *      Last edited: 2024
+ * 
+ * *****************************************************************************/
+
+
 import React, {useEffect, useState} from 'react';
 import {View, Text, ScrollView, TouchableOpacity} from 'react-native';
 import {COLOR_SCHEME} from '../../stylesheet';

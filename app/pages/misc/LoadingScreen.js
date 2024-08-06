@@ -1,3 +1,15 @@
+/******************************************************************************
+ *                            LoadingScreen
+ * 
+ *      This page displays a loading screen while the app fetches the data for the
+ *      community, then redirects to the CommunityPages page.
+ * 
+ *      Written by: Frimpong Opoku-Agyemang
+ *      Last edited: 2024
+ * 
+ * *****************************************************************************/
+
+
 import {View, Text} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import VStack from '../../components/stacks/VStack';

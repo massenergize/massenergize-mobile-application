@@ -1,3 +1,14 @@
+/******************************************************************************
+ *                            Textbox
+ * 
+ *      This file contains a component that can be used to create a textbox.
+ * 
+ *      Written by: Frimpong Opoku-Agyemang
+ *      Last edited: 2024
+ * 
+ * *****************************************************************************/
+
+
 import {View, Text, TextInput} from 'react-native';
 import React from 'react';
 import {COLOR_SCHEME} from '../../stylesheet';

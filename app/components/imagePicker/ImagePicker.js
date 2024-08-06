@@ -1,3 +1,15 @@
+/******************************************************************************
+ *                            ImagePicker
+ * 
+ *      This file contains a component to select and display an image. It should
+ *      be given a value and a function to update the value.
+ * 
+ *      Written by: Will Soylemez
+ *      Last edited: 2024
+ * 
+ * *****************************************************************************/
+
+
 import React, { useState } from 'react';
 import { Image, View, Text, Platform } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';

@@ -171,6 +171,7 @@ const RootWrapper = ({
   return (
     // <NavigationContainer>
     <>
+      {/* Main app navigation stack */}
       <MainStack.Navigator screenOptions={screenOptions} initialRouteName="Onboarding">
         <MainStack.Screen
           options={{ headerShown: false }}
