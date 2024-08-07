@@ -29,7 +29,6 @@ export const isValidZipCode = zipCode => {
  *                     communities.
  */
 export const groupCommunities = communities => {
-  console.log('communities', JSON.stringify(communities, null, 2));
   const geographically_focused = communities.filter(c => c.is_geographically_focused);
   const not_geographically_focused = communities.filter(c => !c.is_geographically_focused);
   return {geographically_focused, not_geographically_focused};

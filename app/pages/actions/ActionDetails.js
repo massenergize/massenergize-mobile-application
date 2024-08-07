@@ -469,7 +469,7 @@ const ActionDetails = ({
         </Center>
       ) : (
         <ScrollView
-          showVerticalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
         >
           <VStack
             flex={1}
