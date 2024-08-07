@@ -132,6 +132,7 @@ const EventsScreen = ({ navigation, events, fireAuth, toggleModal }) => {
     <View bg="white" height="100%" alignItems="center">
       <ScrollView
         showsVerticalScrollIndicator={false}
+        style={{ width: '100%' }}
       >
         {
           renderHeader()
