@@ -29,12 +29,18 @@ export const isValidZipCode = zipCode => {
  *                     communities.
  */
 export const groupCommunities = communities => {
-  communities = communities;//.filter(c => c.is_geographically_focused);
-  const matches = communities;//.filter(c => c.location.distance === 0);
-  const near = communities;
-    // .filter(c => c.location.distance !== 0)
-    // .sort((a, b) => a.location.distance - b.location.distance);
-  return {matches, near};
+  console.log('communities', JSON.stringify(communities, null, 2));
+  const geographically_focused = communities.filter(c => c.is_geographically_focused);
+  const not_geographically_focused = communities.filter(c => !c.is_geographically_focused);
+  return {geographically_focused, not_geographically_focused};
+
+
+  // Outdated: used to manually match, now API does it
+  // const matches = communities.filter(c => c.location.distance === 0);
+  // const near = communities
+  //   .filter(c => c.location.distance !== 0)
+  //   .sort((a, b) => a.location.distance - b.location.distance);
+  // return {matches, near};
 };
 
 /**

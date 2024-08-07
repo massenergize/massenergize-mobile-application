@@ -83,25 +83,25 @@ const CommunitySelect = ({
   /* Gets the list of communities */
   const organisedData = () => {
     if (communities === LOADING)
-      return { fetchingContent: true, matches: [], near: [] };
+      return { fetchingContent: true, geographically_focused: [], not_geographically_focused: [] };
 
     return groupCommunities(communities);
     // return communities;
   };
-  let { fetchingContent, matches, near } = organisedData();
+  let { fetchingContent, geographically_focused, not_geographically_focused } = organisedData();
 
   /* Renders the list of communities */
   const renderCommunityList = (communityList, title) => {
     if (fetchingContent) return <Loader />;
     if ((!fetchingContent && !communityList?.length) || !communities)
       return (
-        <Text style={{ marginVertical: 10 }}>
+        <Text style={{ fontWeight: 'bold', fontSize: 20, textAlign: 'center', color: COLOR_SCHEME.GREEN, marginBottom: 15 }}>
           No matching communities found.
         </Text>
       );
     return (
       <View style={{ marginVertical: 10 }}>
-        <Text style={{ fontWeight: 'bold', fontSize: 20, textAlign: 'center', color: COLOR_SCHEME.GREEN, marginBottom: 15 }}>
+        <Text style={{ fontWeight: 'bold', fontSize: 16, textAlign: 'center', color: COLOR_SCHEME.GREEN, marginBottom: 15 }}>
           {title}
         </Text>
 
@@ -212,9 +212,9 @@ const CommunitySelect = ({
             verticals
             style={{ paddingHorizontal: 20, paddingVertical: 20 }}
           >
-            {renderCommunityList(matches, "MATCHED COMMUNITIES")}
+            {renderCommunityList(geographically_focused, "MATCHED COMMUNITIES")}
 
-            {renderCommunityList(near, "COMMUNITIES NEARBY")}
+            {renderCommunityList(not_geographically_focused, "NON-GEOGRAPHICALLY FOCUSED COMMUNITIES")}
           </ScrollView>
         </View>
       </View>
