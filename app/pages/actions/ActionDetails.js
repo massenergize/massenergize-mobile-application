@@ -31,7 +31,7 @@ import ServiceProviderCard from "../service-providers/ServiceProviderCard";
 import { useDetails } from "../../utils/hooks";
 import { TestimonialCard } from "../testimonials/TestimonialCard";
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { getActionMetric } from "../../utils/common";
+import { getActionMetric, showError } from "../../utils/common";
 import AuthOptions from "../auth/AuthOptions";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -53,6 +53,7 @@ import {
   logEventRemoveTodoAction,
   logEventShareAction
 } from "../../api/analytics";
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 const ActionDetails = ({
   route,
@@ -84,7 +85,10 @@ const ActionDetails = ({
    */
   const [activeSection, setActiveSection] = useState(0);
   const [isDoneOpen, setIsDoneOpen] = useState(false);
-  const [isToDoOpen, setIsToDoOpen] = useState(false);
+  const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+
+  /* We want to track the date the action was completed */
+  const [completedDate, setCompletedDate] = useState(new Date());
 
   /* Function that checks if this action is in the user's to-do list */
   const actionInToDo = () => todoList?.some(
@@ -118,7 +122,6 @@ const ActionDetails = ({
             );
           }
           logEventRemoveTodoAction(action_id);
-          setIsToDoOpen(false);
         });
       } else {
         updateUserAction("users.actions.todo.add", { action_id, hid: 1 }, (res, error) => {
@@ -129,7 +132,6 @@ const ActionDetails = ({
             );
           }
           logEventAddTodoAction(action_id);
-          setIsToDoOpen(true);
         });
       }
     } else {
@@ -150,25 +152,32 @@ const ActionDetails = ({
    * action as completed. 
    */
   const handleCompletedPress = async () => {
-    const doCompletion = () => {
-      if (fireAuth) {
-        if (actionCompleted()) {
-          const rel_id = completedList.find(
-            (completed) => completed.action.id === action_id
-          ).id;
+    setIsConfirmationOpen(false);
+    if (fireAuth) {
+      if (actionCompleted()) {
+        const rel_id = completedList.find(
+          (completed) => completed.action.id === action_id
+        ).id;
 
-          updateUserAction("users.actions.remove", { id: rel_id }, (res, error) => {
+        updateUserAction("users.actions.remove", { id: rel_id }, (res, error) => {
+          if (error) {
+            showError("Error removing action from completed list");
+            return console.log(
+              "Failed to remove item from completed list: ",
+              error
+            );
+          }
+          logEventRemoveCompletedAction(action_id);
+        });
+      } else {
+        const completedDateStr = completedDate.toISOString().split('T')[0];
+        setCompletedDate(new Date());
+        updateUserAction(
+          "users.actions.completed.add",
+          { action_id, hid: 1, date_completed: completedDateStr },
+          (res, error) => {
             if (error) {
-              return console.log(
-                "Failed to remove item from completed list: ",
-                error
-              );
-            }
-            logEventRemoveCompletedAction(action_id);
-          });
-        } else {
-          updateUserAction("users.actions.completed.add", { action_id, hid: 1 }, (res, error) => {
-            if (error) {
+              showError("Error adding action to completed list");
               return console.error(
                 "Failed to add item in completed list: ",
                 error
@@ -176,34 +185,16 @@ const ActionDetails = ({
             }
             logEventAddCompletedAction(action_id);
             setIsDoneOpen(true);
-          });
-        }
-      } else {
-        toggleModal({
-          isVisible: true,
-          Component: AuthOptions,
-          title: 'How would you like to sign in or Join?'
-        });
+          }
+        );
       }
-    };
-
-    Alert.alert(
-      actionCompleted() ? "Mark as Not Completed" : "Mark as Completed",
-      actionCompleted()
-        ? "Are you sure you want to mark this action as not completed?"
-        : "Are you sure you want to mark this action as completed?",
-      [
-        {
-          text: "Cancel",
-          onPress: () => { },
-          style: "cancel"
-        },
-        {
-          text: "Yes",
-          onPress: doCompletion
-        }
-      ]
-    );
+    } else {
+      toggleModal({
+        isVisible: true,
+        Component: AuthOptions,
+        title: 'How would you like to sign in or Join?'
+      });
+    }
   };
 
   /* 
@@ -301,34 +292,6 @@ const ActionDetails = ({
         action?.vendors.length > 0,
     }
   ].filter(section => section.condition !== false);
-
-  /* Function that renders the Header of the Section in the accordion layout */
-  const renderHeader = (section, _, isActive) => {
-    return (
-      <Box>
-        <HStack
-          justifyContent="center"
-          alignItems="center"
-          p={3}
-          bg={isActive ? "gray.200" : "white"}
-          borderTopRadius={5}
-        >
-          <Text
-            bold
-            color={isActive ? "black" : "green"}
-            mr={2}
-          >
-            {section.title}
-          </Text>
-          <Ionicons
-            name={isActive ? "chevron-up-outline" : "chevron-down-outline"}
-            size={20}
-            color={isActive ? "black" : "green"}
-          />
-        </HStack>
-      </Box>
-    );
-  };
 
   /* Function that renders the content of the section in the accordion layout */
   const renderContent = (section) => {
@@ -564,7 +527,7 @@ const ActionDetails = ({
                       color: actionCompleted() ? "primary.600" : "white",
                       fontWeight: "bold"
                     }}
-                    onPress={handleCompletedPress}
+                    onPress={() => setIsConfirmationOpen(true)}
                   >
                     {actionCompleted() ? "Action Completed!" : "Mark as Done"}
                   </Button>
@@ -573,7 +536,7 @@ const ActionDetails = ({
                 {/* Tab buttons to navigate through the sections */}
                 <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
                   {SECTIONS.map((section, index) => (
-                    <Button 
+                    <Button
                       onPress={() => setActiveSection(index)}
                       key={index + " " + (activeSection === index)}
                       variant={activeSection === index ? "solid" : "outline"}
@@ -607,6 +570,81 @@ const ActionDetails = ({
           <Container height={20}></Container>
         </ScrollView>
       )}
+
+      {/* Modal displayed to confirm action completion */}
+      <Modal
+        isOpen={isConfirmationOpen}
+        onClose={() => { }}
+      >
+        <Modal.Content maxWidth={400}>
+          <Modal.Body>
+
+            <Text
+              fontSize="xl"
+              fontWeight="bold"
+              py={2}
+              textAlign="center"
+            >
+              Confirm
+            </Text>
+
+            <Text
+              fontSize="md"
+              textAlign="center"
+              // mb={5}
+            >
+              Mark action as {actionCompleted() ? "uncompleted" : "done"}?
+            </Text>
+
+            {!actionCompleted() && (
+              <View
+                style={{
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginVertical: 10,
+                }}
+              >
+                <Text
+                  mb={2}
+                >
+                  When did you complete this action?
+                </Text>
+                <DateTimePicker
+                  value={completedDate}
+                  onChange={(event, selectedDate) => {
+                    setCompletedDate(selectedDate || completedDate);
+                  }}
+                  mode="date"
+                  display="default"
+                />
+              </View>
+            )}
+
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginVertical: 10,
+              }}
+            >
+              <Button
+                onPress={() => setIsConfirmationOpen(false)}
+                colorScheme="red"
+              >
+                Cancel
+              </Button>
+              <Button
+                onPress={handleCompletedPress}
+              >
+                Confirm
+              </Button>
+            </View>
+          </Modal.Body>
+        </Modal.Content>
+
+      </Modal>
 
       {/* Modal displayed when the user marks the action as completed */}
       <Modal
