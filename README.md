@@ -54,6 +54,17 @@ Run the app by running `npm start` in the project root directory and pressing `i
 
 That's it! Please reach out to [William Soylemez](mailto:will.soylemez@massenergize.org) or [Moizes Almeida](mailto:moizes.almeida@massenergize.org) by email or Slack with any questions.
 
+
+## Uploading to App Store Connect
+To distribute the app on the Apple App Store or on Testflight, we need to upload the app archive to App Store Connect.
+
+### 1. Archive the app
+In XCode, switch the target device to "Any iOS Device (arm64)", then click on Product -> Archive.
+
+### 2. Upload
+Once the app has finished building, a popup should open displaying all app archives (if not, open it under Window -> Organizer). Select the verison you wish to distribute, click on "Distribute App", and follow the instructions.
+
+
 ## Switching between dev and prod backend
 The instructions above will configure the app to use the developer (local) backend. To use the production backend, follow these steps:
 
