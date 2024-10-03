@@ -1,54 +1,90 @@
-import {View, Text} from 'react-native';
+/******************************************************************************
+ *                            TabNavigator
+ * 
+ *      This file contains a component that can be used to create a tab,
+ *      allowing the user to navigate between different screens.
+ * 
+ *      Written by: Frimpong Opoku-Agyemang and William Soylemez
+ *      Last edited: 2024
+ * 
+ * *****************************************************************************/
+
+import {View, Text, TouchableOpacity} from 'react-native';
 import React from 'react';
 
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import AboutUsScreen from '../../pages/about/AboutUsScreen';
 
-const TABS = {
-  community: {
-    name: 'community',
-    icon: 'home',
-    key: 'community',
-    component: AboutUsScreen,
-  },
-  actions: {
-    name: 'Actions',
-    icon: 'flash',
-    key: 'actions',
-    component: AboutUsScreen,
-  },
-  events: {
-    name: 'Events',
-    icon: 'calendar',
-    key: 'events',
-    component: AboutUsScreen,
-  },
-  profile: {
-    name: 'profile',
-    icon: 'person-circle',
-    key: 'community',
-    component: AboutUsScreen,
-  },
+import {FontAwesomeIcon, IonicIcon} from '../icons';
+import {COLOR_SCHEME} from '../../stylesheet';
+
+
+const CustomTabBar = ({state, descriptors, navigation, tabs}) => {
+  return (
+    <View
+      style={{
+        flexDirection: 'row',
+        backgroundColor: 'white',
+        borderTopWidth: 1,
+        borderColor: COLOR_SCHEME.LIGHT_GREY,
+      }}>
+      {state.routes.map((route, index) => {
+        const {options} = descriptors[route.key];
+        const isFocused = state.index === index;
+        const tintColor = isFocused ? COLOR_SCHEME.GREEN : 'grey';
+
+        let tab = tabs[route.name];
+        const icon = tab?.icon;
+
+        return (
+          <TouchableOpacity
+            key={route.key}
+            onPress={() => {
+              const event = navigation.emit({
+                type: 'tabPress',
+                target: route.key,
+                canPreventDefault: true,
+              });
+
+              if (!isFocused && !event.defaultPrevented) {
+                navigation.navigate(route.name);
+              }
+            }}
+            style={{flex: 1, alignItems: 'center', padding: 16}}>
+            <FontAwesomeIcon name={icon} size={22} color={tintColor} />
+            <Text
+              style={{
+                color: tintColor,
+                fontSize: 10,
+                marginTop: 5,
+                fontWeight: isFocused ? 'bold' : '400',
+              }}>
+              {route.name}
+            </Text>
+          </TouchableOpacity>
+        );
+      })}
+    </View>
+  );
 };
-const TabNavigator = () => {
+
+const TabNavigator = ({tabs, initialRoute}) => {
   const Tab = createBottomTabNavigator();
 
   return (
     <View style={{height: '100%', backgroundColor: 'red'}}>
-      <View></View>
       <Tab.Navigator
-        screenOptions={({route}) => ({
-          tabBarIcon: ({focused, color, size}) => {
-            let tab = TABS[route.name];
-            return <Ionicons name={tab?.icon} size={size} color={color} />;
-          },
-          tabBarActiveTintColor: '#64B058',
-          tabBarInactiveTintColor: '#B3B2BD',
-          tabBarLabel: TABS[route.name]?.name,
+        // tabBarOptions={{
+        //   showLabel: false,
+        //   style: {backgroundColor: 'white'},
+        // }}
+        initialRouteName={initialRoute || Object.values(tabs)[0]?.name}
+        tabBar={props => <CustomTabBar {...props} tabs={tabs} />}
+        screenOptions={({}) => ({
+          tabBarShowLabel: false,
+          tabBarStyle: [{backgroundColor: 'white'}, null],
           headerShown: false,
         })}>
-        {Object.entries(TABS).map(([key, value]) => {
+        {Object.entries(tabs).map(([key, value]) => {
           return (
             <Tab.Screen
               key={key}
